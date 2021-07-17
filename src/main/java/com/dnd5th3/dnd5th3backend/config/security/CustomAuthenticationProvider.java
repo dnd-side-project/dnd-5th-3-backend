@@ -20,8 +20,8 @@ public class CustomAuthenticationProvider implements AuthenticationProvider {
     private final UserDetailsService userDetailsService;
     private PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
 
-    @Override
     @Transactional
+    @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         String email = authentication.getName();
         String password = (String) authentication.getCredentials();

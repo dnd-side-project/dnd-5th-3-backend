@@ -1,10 +1,7 @@
 package com.dnd5th3.dnd5th3backend.domain.member;
 
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
@@ -20,11 +17,14 @@ public class Member extends BaseTime {
 
     private String password;
 
+    private String name;
+
     @Column(unique = true)
     private String email;
 
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
+    @Setter
     private String refreshToken;
 }
