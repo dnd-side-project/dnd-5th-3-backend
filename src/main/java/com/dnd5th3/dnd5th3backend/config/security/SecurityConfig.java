@@ -14,6 +14,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
+    private final CustomAuthenticationSuccessHandler successHandler;
+    private final CustomAuthenticationFailureHandler failureHandler;
 
     @Override
     protected void configure(AuthenticationManagerBuilder auth){
@@ -38,6 +40,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     public CustomLoginProcessingFilter customLoginProcessingFilter() throws Exception {
         CustomLoginProcessingFilter customLoginProcessingFilter =  new CustomLoginProcessingFilter();
         customLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
+        customLoginProcessingFilter.setAuthenticationSuccessHandler(successHandler);
+        customLoginProcessingFilter.setAuthenticationFailureHandler(failureHandler);
         return customLoginProcessingFilter;
     }
 }
