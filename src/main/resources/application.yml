@@ -1,3 +1,12 @@
+spring:
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            clientId: 307344693010-lp7l03o1le6f2ciotshdd07qevas458m.apps.googleusercontent.com
+            clientSecret: R7wJHk71-jqSoLfhRXilR6L3
+            scope : profile,email
 
 jwt:
   secret: d2h5LWRpZC15b3UtYnV5LXRoaXMtc2VjcmV0LWtleS13aHktZGlkLXlvdS1idXktdGhpcy1zZWNyZXQta2V5

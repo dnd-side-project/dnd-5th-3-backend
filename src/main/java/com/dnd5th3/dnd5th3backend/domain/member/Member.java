@@ -23,6 +23,9 @@ public class Member extends BaseTime {
     private String email;
 
     @Enumerated(value = EnumType.STRING)
+    private MemberType memberType;
+
+    @Enumerated(value = EnumType.STRING)
     private Role role;
 
     @Setter

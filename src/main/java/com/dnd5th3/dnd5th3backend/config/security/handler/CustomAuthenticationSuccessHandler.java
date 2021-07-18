@@ -9,6 +9,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     private ObjectMapper objectMapper = new ObjectMapper();
     private final JwtTokenProvider jwtTokenProvider;
+    private final MemberRepository memberRepository;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
@@ -34,9 +37,18 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        Member member =  (Member)authentication.getPrincipal();
-        String accessToken  = jwtTokenProvider.createAccessToken(authentication);
-        String refreshToken = jwtTokenProvider.createRefreshToken(authentication);
+
+        Member member;
+        if(authentication.getPrincipal() instanceof DefaultOAuth2User){
+            OAuth2User oAuth2User = (DefaultOAuth2User) authentication.getPrincipal();
+            String email = (String) oAuth2User.getAttributes().get("email");
+            member = memberRepository.findByEmail(email);
+        }else {
+            member =  (Member)authentication.getPrincipal();
+        }
+
+        String accessToken  = jwtTokenProvider.createAccessToken(member);
+        String refreshToken = jwtTokenProvider.createRefreshToken(member);
 
         MemberResponseDto memberResponseDto = MemberResponseDto.createMemberResponseDto(member, accessToken, refreshToken);
 

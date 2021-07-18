@@ -4,6 +4,7 @@ import com.dnd5th3.dnd5th3backend.config.security.handler.CustomAccessDeniedHand
 import com.dnd5th3.dnd5th3backend.config.security.handler.CustomAuthenticationFailureHandler;
 import com.dnd5th3.dnd5th3backend.config.security.handler.CustomAuthenticationSuccessHandler;
 import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtAuthenticationFilter;
+import com.dnd5th3.dnd5th3backend.config.security.oauth2.CustomOAuth2UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
@@ -18,9 +19,11 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     private final CustomAuthenticationProvider customAuthenticationProvider;
-    private final CustomAuthenticationSuccessHandler successHandler;
-    private final CustomAuthenticationFailureHandler failureHandler;
-    private final CustomAccessDeniedHandler accessDeniedHandler;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+    private final CustomAuthenticationSuccessHandler customAuthenticationSuccessHandler;
+    private final CustomAuthenticationFailureHandler customAuthenticationfailureHandler;
+    private final CustomAccessDeniedHandler customAccessDeniedHandler;
+    private final CustomOAuth2UserServiceImpl customOAuth2UserService;
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
 
     @Override
@@ -35,15 +38,21 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                         .authorizeRequests()
+                        .antMatchers("/api/v1/member/test2").permitAll()
                         .antMatchers("/api/v1/member/test").hasRole("USER")
                         .anyRequest().authenticated()
                     .and()
-                        .addFilterBefore(customLoginProcessingFilter(), UsernamePasswordAuthenticationFilter.class);
-
+                        .addFilterBefore(customAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
+                        .oauth2Login()
+                        .userInfoEndpoint()
+                        .userService(customOAuth2UserService)
+                        .and()
+                        .successHandler(customAuthenticationSuccessHandler)
+                        .failureHandler(customAuthenticationfailureHandler);
             http
                     .exceptionHandling()
-                    .authenticationEntryPoint(new CustomLoginAuthenticationEntryPoint())
-                    .accessDeniedHandler(accessDeniedHandler);
+                    .authenticationEntryPoint(customAuthenticationEntryPoint)
+                    .accessDeniedHandler(customAccessDeniedHandler);
 
             http
                     .addFilterBefore(jwtAuthenticationFilter,UsernamePasswordAuthenticationFilter.class);
@@ -51,11 +60,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     }
 
     @Bean
-    public CustomLoginProcessingFilter customLoginProcessingFilter() throws Exception {
-        CustomLoginProcessingFilter customLoginProcessingFilter =  new CustomLoginProcessingFilter();
-        customLoginProcessingFilter.setAuthenticationManager(authenticationManagerBean());
-        customLoginProcessingFilter.setAuthenticationSuccessHandler(successHandler);
-        customLoginProcessingFilter.setAuthenticationFailureHandler(failureHandler);
-        return customLoginProcessingFilter;
+    public CustomAuthenticationProcessingFilter customAuthenticationProcessingFilter() throws Exception {
+        CustomAuthenticationProcessingFilter customAuthenticationProcessingFilter =  new CustomAuthenticationProcessingFilter();
+        customAuthenticationProcessingFilter.setAuthenticationManager(authenticationManagerBean());
+        customAuthenticationProcessingFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
+        customAuthenticationProcessingFilter.setAuthenticationFailureHandler(customAuthenticationfailureHandler);
+        return customAuthenticationProcessingFilter;
     }
 }
