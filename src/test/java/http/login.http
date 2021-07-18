@@ -1,0 +1,13 @@
+POST http://localhost:8080/api/member/login
+Content-Type: application/json
+
+{
+  "email"    : "test@gmail.com",
+  "password" : "1234"
+}
+
+###
+GET http://localhost:8080/api/member/test1
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImNsYWltIjp7fSwiaWF0IjoxNjI2NTA2MjE2LCJleHAiOjE2MjY1MDY1NzZ9.pqElWPvVQAuvEjH-X6NQPav3Cn6ojJiItdGPf_oXSkw
+
+###
