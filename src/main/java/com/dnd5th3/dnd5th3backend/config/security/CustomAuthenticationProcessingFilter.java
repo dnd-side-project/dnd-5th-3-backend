@@ -11,11 +11,11 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-public class CustomLoginProcessingFilter extends AbstractAuthenticationProcessingFilter {
+public class CustomAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
 
-    protected CustomLoginProcessingFilter() {
+    protected CustomAuthenticationProcessingFilter() {
         super(new AntPathRequestMatcher("/api/member/login"));
     }
 
