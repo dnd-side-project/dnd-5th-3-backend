@@ -49,8 +49,7 @@ public class JwtTokenProvider {
         this.jwtParser = Jwts.parserBuilder().setSigningKey(secretKey).build();
     }
 
-    private String createToken(Authentication authentication,long expiredTime,boolean isRefreshToken){
-        Member member = (Member)authentication.getPrincipal();
+    private String createToken(Member member,long expiredTime,boolean isRefreshToken){
         Claims claims = Jwts.claims();
         if(isRefreshToken){
             UUID uuid = UUID.randomUUID();
@@ -65,18 +64,17 @@ public class JwtTokenProvider {
                 .compact();
     }
 
-    public String createRefreshToken(Authentication authentication){
-        String refreshToken = createToken(authentication, REFRESH_TOKEN_EXPIRED_TIME, true);
-        saveRefreshToken(authentication,refreshToken);
-        return createToken(authentication,REFRESH_TOKEN_EXPIRED_TIME,true);
+    public String createRefreshToken(Member member){
+        String refreshToken = createToken(member, REFRESH_TOKEN_EXPIRED_TIME, true);
+        saveRefreshToken(member,refreshToken);
+        return createToken(member,REFRESH_TOKEN_EXPIRED_TIME,true);
     }
 
-    public String createAccessToken(Authentication authentication){
-      return createToken(authentication,ACCESS_TOKEN_EXPIRED_TIME,false);
+    public String createAccessToken(Member member){
+      return createToken(member,ACCESS_TOKEN_EXPIRED_TIME,false);
     }
 
-    public void saveRefreshToken(Authentication authentication,String refreshToken){
-        Member member = (Member)authentication.getPrincipal();
+    public void saveRefreshToken(Member member,String refreshToken){
         Member targetMember = memberRepository.findById(member.getId())
                 .orElseThrow(()->new MemberNotFoundException("save RefreshToken Error"));
         targetMember.setRefreshToken(refreshToken);
