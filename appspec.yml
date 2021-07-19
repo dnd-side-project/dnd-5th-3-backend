@@ -7,5 +7,5 @@ files:
 
 hooks:
   ApplicationStart:
-    - location: scripts/deploy.sh
+    - location: deploy.sh
       timeout: 180
