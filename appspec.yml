@@ -8,4 +8,4 @@ files:
 hooks:
   ApplicationStart:
     - location: deploy.sh
-      timeout: 180
+      timeout: 360
