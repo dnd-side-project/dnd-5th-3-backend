@@ -40,4 +40,4 @@ out/
 /src/main/generated/
 
 ### db_volume ###
-./db_volume
+db_volume
