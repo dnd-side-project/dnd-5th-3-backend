@@ -1,6 +1,7 @@
 spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/wtb?serverTimezone=UTC&characterEncoding=UTF-8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/moomool?serverTimezone=UTC&characterEncoding=UTF-8
     username: root
     password: 1234
   jpa:
