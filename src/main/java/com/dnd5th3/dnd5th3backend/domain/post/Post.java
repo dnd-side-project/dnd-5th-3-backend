@@ -3,6 +3,7 @@ package com.dnd5th3.dnd5th3backend.domain.post;
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -57,5 +58,14 @@ public class Post extends BaseTime {
     @NotNull
     @Column
     private boolean isDeleted = false;
+
+    @Builder
+    public Post(Member member, String title, String productName, String content, String productImageUrl) {
+        this.member = member;
+        this.title = title;
+        this.productName = productName;
+        this.content = content;
+        this.productImageUrl = productImageUrl;
+    }
 
 }
