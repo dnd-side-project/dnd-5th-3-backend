@@ -1,7 +1,7 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
-import com.dnd5th3.dnd5th3backend.controller.dto.post.PostSaveRequestDto;
-import com.dnd5th3.dnd5th3backend.controller.dto.post.PostSaveResponseDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveResponseDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.post.Post;
 import com.dnd5th3.dnd5th3backend.service.MemberServiceImpl;
@@ -21,11 +21,11 @@ public class PostController {
     private final MemberServiceImpl memberService;
 
     @PostMapping("/")
-    public PostSaveResponseDto savePost(@RequestBody PostSaveRequestDto postSaveRequestDto) {
+    public SaveResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto) {
         Member writer = memberService.findMemberById(postSaveRequestDto.getMemberId());
         Post savedPost = postService.savePost(writer, postSaveRequestDto.getTitle(), postSaveRequestDto.getProductName(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
 
-        return PostSaveResponseDto.builder()
+        return SaveResponseDto.builder()
                 .name(savedPost.getMember().getName())
                 .title(savedPost.getTitle())
                 .productName(savedPost.getProductName())
