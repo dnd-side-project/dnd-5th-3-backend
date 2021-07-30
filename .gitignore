@@ -38,3 +38,6 @@ out/
 
 ### QueryDsl ###
 /src/main/generated/
+
+### db_volume ###
+db_volume
