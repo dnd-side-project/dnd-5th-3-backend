@@ -10,11 +10,15 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
-public class MemberServiceImpl implements MemberService {
+public class MemberServiceImpl implements MemberService{
 
     private final MemberRepository memberRepository;
 
     public Member findMemberById(Long id) {
         return memberRepository.findById(id).orElseThrow(() -> new MemberNotFoundException("존재하지 않는 회원입니다."));
+    }
+
+    public Member saveMember(Member member) {
+        return memberRepository.save(member);
     }
 }

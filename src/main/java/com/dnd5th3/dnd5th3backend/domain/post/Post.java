@@ -60,7 +60,8 @@ public class Post extends BaseTime {
     private boolean isDeleted = false;
 
     @Builder
-    public Post(Member member, String title, String productName, String content, String productImageUrl) {
+    public Post(Long id, Member member, String title, String productName, String content, String productImageUrl) {
+        this.id = id;
         this.member = member;
         this.title = title;
         this.productName = productName;
