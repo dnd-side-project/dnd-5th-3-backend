@@ -2,7 +2,7 @@ package com.dnd5th3.dnd5th3backend.repository;
 
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
-import com.dnd5th3.dnd5th3backend.domain.post.Post;
+import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,53 +14,51 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @DataJpaTest
 @ExtendWith(SpringExtension.class)
-public class PostRepositoryTest {
+public class PostsRepositoryTest {
 
     @Autowired
     private PostRepository postRepository;
 
     private Member member;
-    private Post post;
+    private Posts posts;
 
     @BeforeEach
     public void setUp() {
         member = Member.builder().email("test@gmail.com").password("1234").role(Role.ROLE_USER).name("닉네임").build();
-        post = Post.builder().member(member).title("test").productName("testProduct").content("test content").build();
+        posts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
     }
 
     @DisplayName("id 테스트")
     @Test
     public void idStrategyTest() {
-        Post post2 = Post.builder().member(member).title("test2").productName("testProduct2").content("test content2").build();
-        postRepository.save(post);
-        postRepository.save(post2);
+        Posts posts2 = Posts.builder().member(member).title("test2").productName("testProduct2").content("test content2").build();
+        postRepository.save(posts);
+        postRepository.save(posts2);
 
-        Assertions.assertEquals(1, Math.abs(post2.getId() - post.getId()));
+        Assertions.assertEquals(1, Math.abs(posts2.getId() - posts.getId()));
     }
 
     @DisplayName("post 생성 테스트")
     @Test
     public void savePostTest() {
-        Post post = Post.builder().member(member).title("test").productName("testProduct").content("test content").build();
-        Post savedPost = postRepository.save(post);
+        Posts posts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
+        Posts savedPosts = postRepository.save(posts);
 
-        Assertions.assertEquals(post.getMember().getId(), savedPost.getMember().getId());
-        Assertions.assertEquals(post.getTitle(), savedPost.getTitle());
+        Assertions.assertEquals(posts.getMember().getId(), savedPosts.getMember().getId());
+        Assertions.assertEquals(posts.getTitle(), savedPosts.getTitle());
     }
 
     @DisplayName("findById 테스트")
     @Test
     public void findByIdTest() {
-        postRepository.save(post);
-        Optional<Post> foundPost = postRepository.findById(1L);
+        postRepository.save(posts);
+        Optional<Posts> foundPost = postRepository.findById(1L);
 
         foundPost.ifPresent(p -> {
-            Assertions.assertEquals(p.getTitle(), post.getTitle());
-            Assertions.assertEquals(p.getContent(), post.getContent());
+            Assertions.assertEquals(p.getTitle(), posts.getTitle());
+            Assertions.assertEquals(p.getContent(), posts.getContent());
         });
     }
 }

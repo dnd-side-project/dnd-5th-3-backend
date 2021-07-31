@@ -3,7 +3,7 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveResponseDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.domain.post.Post;
+import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.service.MemberServiceImpl;
 import com.dnd5th3.dnd5th3backend.service.PostService;
 import lombok.RequiredArgsConstructor;
@@ -21,8 +21,8 @@ public class PostController {
     @PostMapping("/api/v1/posts")
     public SaveResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto) {
         Member writer = memberService.findMemberById(postSaveRequestDto.getMemberId());
-        Post savedPost = postService.savePost(writer, postSaveRequestDto.getTitle(), postSaveRequestDto.getProductName(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
+        Posts savedPosts = postService.savePost(writer, postSaveRequestDto.getTitle(), postSaveRequestDto.getProductName(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
 
-        return SaveResponseDto.builder().id(savedPost.getId()).build();
+        return SaveResponseDto.builder().id(savedPosts.getId()).build();
     }
 }

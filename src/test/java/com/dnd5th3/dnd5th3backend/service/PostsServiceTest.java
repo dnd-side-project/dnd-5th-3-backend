@@ -2,7 +2,7 @@ package com.dnd5th3.dnd5th3backend.service;
 
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
-import com.dnd5th3.dnd5th3backend.domain.post.Post;
+import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.repository.PostRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,11 +14,10 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-class PostServiceTest {
+class PostsServiceTest {
 
     @Mock
     private PostRepository postRepository;
@@ -37,14 +36,14 @@ class PostServiceTest {
     @Test
     public void savePostTest() throws Exception{
         //given
-        Post newPost = Post.builder().member(member).title("test").productName("testProduct").content("test content").build();
-        when(postRepository.save(any(Post.class))).thenReturn(newPost);
+        Posts newPosts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
+        when(postRepository.save(any(Posts.class))).thenReturn(newPosts);
 
         //when
-        Post savedPost = postService.savePost(newPost.getMember(), newPost.getTitle(), newPost.getProductName(), newPost.getContent(), newPost.getProductImageUrl());
+        Posts savedPosts = postService.savePost(newPosts.getMember(), newPosts.getTitle(), newPosts.getProductName(), newPosts.getContent(), newPosts.getProductImageUrl());
 
         //then
-        Assertions.assertEquals(savedPost.getId(), newPost.getId());
-        Assertions.assertEquals(savedPost.getMember().getId(), newPost.getMember().getId());
+        Assertions.assertEquals(savedPosts.getId(), newPosts.getId());
+        Assertions.assertEquals(savedPosts.getMember().getId(), newPosts.getMember().getId());
     }
 }

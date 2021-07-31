@@ -3,7 +3,7 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
-import com.dnd5th3.dnd5th3backend.domain.post.Post;
+import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.service.MemberServiceImpl;
 import com.dnd5th3.dnd5th3backend.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -30,7 +30,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-public class PostControllerTest {
+public class PostsControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -59,7 +59,7 @@ public class PostControllerTest {
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
-        Post response = Post.builder()
+        Posts response = Posts.builder()
                 .id(1L)
                 .member(member)
                 .title("test")
