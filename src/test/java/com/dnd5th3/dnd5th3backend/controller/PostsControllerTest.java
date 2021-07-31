@@ -12,21 +12,28 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.restdocs.AutoConfigureRestDocs;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentRequest;
+import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
+@AutoConfigureRestDocs
 @ExtendWith(SpringExtension.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
@@ -72,7 +79,7 @@ public class PostsControllerTest {
         given(postService.savePost(member, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
 
         //when
-        ResultActions result = mvc.perform(post("/api/v1/posts")
+        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
@@ -80,8 +87,23 @@ public class PostsControllerTest {
         );
 
         //then
-        result.andExpect(status().isOk())
+        result
+                .andExpect(status().isOk())
                 .andDo(print())
+                .andDo(document("posts/save",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("memberId").description("사용자 id"),
+                                fieldWithPath("title").description("글 제목"),
+                                fieldWithPath("productName").description("상품 이름"),
+                                fieldWithPath("content").description("글 내용"),
+                                fieldWithPath("productImageUrl").description("상품 이미지")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("게시글 id").type(Long.class)
+                        )
+                ))
                 .andExpect(jsonPath("$.id").value(1L));
     }
 }
