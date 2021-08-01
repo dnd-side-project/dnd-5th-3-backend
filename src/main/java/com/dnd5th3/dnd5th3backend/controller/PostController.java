@@ -4,7 +4,7 @@ import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveResponseDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.service.MemberServiceImpl;
+import com.dnd5th3.dnd5th3backend.service.MemberService;
 import com.dnd5th3.dnd5th3backend.service.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class PostController {
 
     private final PostService postService;
-    private final MemberServiceImpl memberService;
+    private final MemberService memberService;
 
     @PostMapping("/api/v1/posts")
     public SaveResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto) {

@@ -4,7 +4,7 @@ import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.service.MemberServiceImpl;
+import com.dnd5th3.dnd5th3backend.service.MemberService;
 import com.dnd5th3.dnd5th3backend.service.PostService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -42,7 +42,7 @@ public class PostsControllerTest {
     @Autowired
     private MockMvc mvc;
     @MockBean
-    private MemberServiceImpl memberServiceImpl;
+    private MemberService memberService;
     @MockBean
     private PostService postService;
     @Autowired
@@ -75,7 +75,7 @@ public class PostsControllerTest {
                 .productImageUrl("test.jpg")
                 .build();
 
-        given(memberServiceImpl.findMemberById(requestDto.getMemberId())).willReturn(member);
+        given(memberService.findMemberById(requestDto.getMemberId())).willReturn(member);
         given(postService.savePost(member, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
 
         //when
