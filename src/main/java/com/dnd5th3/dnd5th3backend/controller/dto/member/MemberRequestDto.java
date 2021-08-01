@@ -1,4 +1,4 @@
-package com.dnd5th3.dnd5th3backend.controller.dto;
+package com.dnd5th3.dnd5th3backend.controller.dto.member;
 
 import lombok.Getter;
 

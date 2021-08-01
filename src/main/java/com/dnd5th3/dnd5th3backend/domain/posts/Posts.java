@@ -2,16 +2,14 @@ package com.dnd5th3.dnd5th3backend.domain.posts;
 
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 @Entity
 public class Posts extends BaseTime {
@@ -37,18 +35,18 @@ public class Posts extends BaseTime {
     private String productImageUrl;
 
     @NotNull
-    private boolean isVoted = false;
+    private Boolean isVoted = false;
 
     @NotNull
-    private int permitCount = 0;
+    private Integer permitCount = 0;
 
     @NotNull
-    private int rejectCount = 0;
+    private Integer rejectCount = 0;
 
     @NotNull
-    private int viewCount = 0;
+    private Integer viewCount = 0;
 
     @NotNull
-    private boolean isDeleted = false;
+    private Boolean isDeleted = false;
 
 }
