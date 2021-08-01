@@ -1,8 +1,9 @@
-package com.dnd5th3.dnd5th3backend.domain.post;
+package com.dnd5th3.dnd5th3backend.domain.posts;
 
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -12,7 +13,7 @@ import javax.validation.constraints.NotNull;
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity
-public class Post extends BaseTime {
+public class Posts extends BaseTime {
 
     @Id
     @Column(name = "post_id")
@@ -57,5 +58,15 @@ public class Post extends BaseTime {
     @NotNull
     @Column
     private boolean isDeleted = false;
+
+    @Builder
+    public Posts(Long id, Member member, String title, String productName, String content, String productImageUrl) {
+        this.id = id;
+        this.member = member;
+        this.title = title;
+        this.productName = productName;
+        this.content = content;
+        this.productImageUrl = productImageUrl;
+    }
 
 }

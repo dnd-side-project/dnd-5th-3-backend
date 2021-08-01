@@ -40,6 +40,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                         .authorizeRequests()
                         .antMatchers("/api/v1/member/test2").permitAll()
                         .antMatchers("/api/v1/member/test").hasRole("USER")
+                        .antMatchers("/api/v1/posts/**").permitAll()
                         .anyRequest().authenticated()
                     .and()
                         .addFilterBefore(customAuthenticationProcessingFilter(), UsernamePasswordAuthenticationFilter.class)
