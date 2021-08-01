@@ -26,14 +26,41 @@ public class PostsRepositoryTest {
 
     @BeforeEach
     public void setUp() {
-        member = Member.builder().email("test@gmail.com").password("1234").role(Role.ROLE_USER).name("닉네임").build();
-        posts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
+        member = Member.builder()
+                .email("test@gmail.com")
+                .password("1234")
+                .role(Role.ROLE_USER)
+                .name("닉네임").
+                build();
+        posts = Posts.builder()
+                .member(member)
+                .title("test")
+                .productName("testProduct")
+                .content("test content")
+                .productImageUrl("test.jpg")
+                .isVoted(false)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(0)
+                .isDeleted(false)
+                .build();
     }
 
     @DisplayName("id 테스트")
     @Test
     public void idStrategyTest() {
-        Posts posts2 = Posts.builder().member(member).title("test2").productName("testProduct2").content("test content2").build();
+        Posts posts2 = Posts.builder()
+                .member(member)
+                .title("test2")
+                .productName("testProduct2")
+                .content("test content2")
+                .productImageUrl("test2.jpg")
+                .isVoted(false)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(0)
+                .isDeleted(false)
+                .build();
         postsRepository.save(posts);
         postsRepository.save(posts2);
 
@@ -43,7 +70,6 @@ public class PostsRepositoryTest {
     @DisplayName("post 생성 테스트")
     @Test
     public void savePostTest() {
-        Posts posts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
         Posts savedPosts = postsRepository.save(posts);
 
         Assertions.assertEquals(posts.getMember().getId(), savedPosts.getMember().getId());

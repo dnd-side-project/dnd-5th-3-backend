@@ -165,6 +165,7 @@ asciidoctor {
 
 bootJar {
     dependsOn asciidoctor
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
     from("${asciidoctor.outputDir}") {
         into "BOOT-INF/classes/static/docs"
     }
