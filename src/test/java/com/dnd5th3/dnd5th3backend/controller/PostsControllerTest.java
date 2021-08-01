@@ -5,7 +5,7 @@ import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.service.MemberService;
-import com.dnd5th3.dnd5th3backend.service.PostService;
+import com.dnd5th3.dnd5th3backend.service.PostsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +44,7 @@ public class PostsControllerTest {
     @MockBean
     private MemberService memberService;
     @MockBean
-    private PostService postService;
+    private PostsService postsService;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -76,7 +76,7 @@ public class PostsControllerTest {
                 .build();
 
         given(memberService.findMemberById(requestDto.getMemberId())).willReturn(member);
-        given(postService.savePost(member, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
+        given(postsService.savePost(member, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
 
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")

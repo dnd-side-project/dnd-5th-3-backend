@@ -19,7 +19,7 @@ import java.util.Optional;
 public class PostsRepositoryTest {
 
     @Autowired
-    private PostRepository postRepository;
+    private PostsRepository postsRepository;
 
     private Member member;
     private Posts posts;
@@ -34,8 +34,8 @@ public class PostsRepositoryTest {
     @Test
     public void idStrategyTest() {
         Posts posts2 = Posts.builder().member(member).title("test2").productName("testProduct2").content("test content2").build();
-        postRepository.save(posts);
-        postRepository.save(posts2);
+        postsRepository.save(posts);
+        postsRepository.save(posts2);
 
         Assertions.assertEquals(1, Math.abs(posts2.getId() - posts.getId()));
     }
@@ -44,7 +44,7 @@ public class PostsRepositoryTest {
     @Test
     public void savePostTest() {
         Posts posts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
-        Posts savedPosts = postRepository.save(posts);
+        Posts savedPosts = postsRepository.save(posts);
 
         Assertions.assertEquals(posts.getMember().getId(), savedPosts.getMember().getId());
         Assertions.assertEquals(posts.getTitle(), savedPosts.getTitle());
@@ -53,8 +53,8 @@ public class PostsRepositoryTest {
     @DisplayName("findById 테스트")
     @Test
     public void findByIdTest() {
-        postRepository.save(posts);
-        Optional<Posts> foundPost = postRepository.findById(1L);
+        postsRepository.save(posts);
+        Optional<Posts> foundPost = postsRepository.findById(1L);
 
         foundPost.ifPresent(p -> {
             Assertions.assertEquals(p.getTitle(), posts.getTitle());
