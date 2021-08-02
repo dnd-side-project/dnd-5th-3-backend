@@ -49,4 +49,16 @@ public class Posts extends BaseTime {
     @NotNull
     private Boolean isDeleted;
 
+    public void update(String title, String productName, String content, String productImageUrl) {
+        if (title != null) {
+            this.title = title;
+        }
+        if (productName != null) {
+            this.productName = productName;
+        }
+        if (content != null) {
+            this.content = content;
+        }
+        this.productImageUrl = productImageUrl;
+    }
 }
