@@ -39,4 +39,20 @@ public class PostsService {
         Hibernate.initialize(foundPost.getMember());
         return foundPost;
     }
+
+    @Transactional
+    public Posts updatePost(Long id, String title, String productName, String content, String productImageUrl) {
+        Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
+        //프록시 객체 초기화
+        Hibernate.initialize(foundPost.getMember());
+        foundPost.update(title, productName, content, productImageUrl);
+
+        return foundPost;
+    }
+
+    @Transactional
+    public void deletePost(Long id) {
+        Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
+        postsRepository.delete(foundPost);
+    }
 }

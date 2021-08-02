@@ -87,4 +87,14 @@ public class PostsRepositoryTest {
             Assertions.assertEquals(p.getContent(), posts.getContent());
         });
     }
+
+    @DisplayName("post 삭제 테스트")
+    @Test
+    public void deletePostTest() throws Exception {
+        postsRepository.save(posts);
+        postsRepository.delete(posts);
+        Optional<Posts> foundPost = postsRepository.findById(posts.getId());
+
+        Assertions.assertEquals(foundPost, Optional.empty());
+    }
 }

@@ -1,6 +1,7 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
 import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.UpdateRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
@@ -23,11 +24,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
-import java.util.Optional;
 
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
-import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -93,7 +92,7 @@ public class PostsControllerTest {
 
         //then
         result
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(document("posts/save",
                         getDocumentRequest(),
@@ -167,5 +166,101 @@ public class PostsControllerTest {
                 .andExpect(jsonPath("$.rejectRatio").value(80L))
                 .andExpect(jsonPath("$.createdDate").value("2021-08-01T12:00:00"));
 
+    }
+
+    @DisplayName("post 수정 api 테스트")
+    @Test
+    public void updatePostApiTest() throws Exception {
+        //given
+        Posts response = Posts.builder()
+                .id(1L)
+                .member(member)
+                .title("update")
+                .productName("update product")
+                .content("update content")
+                .productImageUrl("update.jpg")
+                .isVoted(false)
+                .permitCount(36)
+                .rejectCount(25)
+                .viewCount(70)
+                .isDeleted(false)
+                .build();
+        response.setCreatedDate(LocalDateTime.of(2021, 8, 2, 12, 0, 0));
+        UpdateRequestDto requestDto = UpdateRequestDto.builder()
+                .title("update")
+                .productName("update product")
+                .content("update content")
+                .productImageUrl("update.jpg")
+                .build();
+
+        given(postsService.updatePost(1L, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
+
+        //when
+        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts/{id}", 1L)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsString(requestDto))
+        );
+
+        //then
+        result
+                .andDo(print())
+                .andDo(document("posts/update",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("게시글 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("title").description("수정할 제목"),
+                                fieldWithPath("productName").description("수정할 상품 이름"),
+                                fieldWithPath("content").description("수정할 내용"),
+                                fieldWithPath("productImageUrl").description("수정할 상품 이미지")
+                        ),
+                        responseFields(
+                                fieldWithPath("name").description("작성자 이름"),
+                                fieldWithPath("title").description("수정된 제목"),
+                                fieldWithPath("productName").description("수정된 상품 이름"),
+                                fieldWithPath("content").description("수정된 내용"),
+                                fieldWithPath("productImageUrl").description("수정된 상품 이미지"),
+                                fieldWithPath("isVoted").description("투표 종료 여부"),
+                                fieldWithPath("permitRatio").description("찬성 투표 비율"),
+                                fieldWithPath("rejectRatio").description("반대 투표 비율"),
+                                fieldWithPath("createdDate").description("작성된 시간")
+                        )
+                ))
+                .andExpect(jsonPath("$.name").value("name"))
+                .andExpect(jsonPath("$.title").value("update"))
+                .andExpect(jsonPath("$.productName").value("update product"))
+                .andExpect(jsonPath("$.content").value("update content"))
+                .andExpect(jsonPath("$.productImageUrl").value("update.jpg"))
+                .andExpect(jsonPath("$.isVoted").value(false))
+                .andExpect(jsonPath("$.permitRatio").value(59L))
+                .andExpect(jsonPath("$.rejectRatio").value(41L))
+                .andExpect(jsonPath("$.createdDate").value("2021-08-02T12:00:00"));
+    }
+
+    @DisplayName("post 삭제 api 테스트")
+    @Test
+    public void deletePostApiTest() throws Exception {
+        //when
+        ResultActions result  = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/posts/{id}", 1L));
+
+        //then
+        result
+                .andDo(print())
+                .andDo(document("posts/delete",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("게시글 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("삭제된 게시글 id")
+                        )
+                ))
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("id").value(1L));
     }
 }
