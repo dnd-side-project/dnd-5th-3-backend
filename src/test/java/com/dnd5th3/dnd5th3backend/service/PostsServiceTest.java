@@ -1,5 +1,6 @@
 package com.dnd5th3.dnd5th3backend.service;
 
+import com.dnd5th3.dnd5th3backend.controller.dto.post.UpdateRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
@@ -16,7 +17,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class PostsServiceTest {
@@ -73,6 +74,37 @@ class PostsServiceTest {
         //then
         Assertions.assertEquals(post.getMember().getName(), foundPost.getMember().getName());
         Assertions.assertEquals(post.getTitle(), foundPost.getTitle());
+    }
+
+    @DisplayName("post 수정 테스트")
+    @Test
+    public void updatePostTest() throws Exception {
+        //given
+        Posts post = Posts.builder().id(1L).member(member).title("test").productName("testProduct").content("test content").build();
+        UpdateRequestDto requestDto = UpdateRequestDto.builder().title("update").productName("update product").content("update contest").productImageUrl("update.jpg").build();
+        when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
+
+        //when
+        Posts updatedPost = postsService.updatePost(post.getId(), requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl());
+
+        //then
+        Assertions.assertEquals(updatedPost.getTitle(), requestDto.getTitle());
+        Assertions.assertEquals(updatedPost.getContent(), requestDto.getContent());
+        Assertions.assertEquals(updatedPost.getProductImageUrl(), requestDto.getProductImageUrl());
+    }
+
+    @DisplayName("post 삭제 테스트")
+    @Test
+    public void deletePostTest() throws Exception {
+        //given
+        Posts post = Posts.builder().id(1L).member(member).title("test").productName("testProduct").content("test content").build();
+        when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
+
+        //when
+        postsService.deletePost(post.getId());
+
+        //then
+        verify(postsRepository, times(1)).delete(eq(post));
     }
 
 }

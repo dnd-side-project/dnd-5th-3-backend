@@ -60,8 +60,8 @@ public class PostsController {
     }
 
     @DeleteMapping("/api/v1/posts/{id}")
-    public Long deletePost(@PathVariable(name = "id") Long id) {
+    public DeleteResponseDto deletePost(@PathVariable(name = "id") Long id) {
         postsService.deletePost(id);
-        return id;
+        return DeleteResponseDto.builder().id(id).build();
     }
 }
