@@ -92,7 +92,7 @@ public class PostsControllerTest {
 
         //then
         result
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(document("posts/save",
                         getDocumentRequest(),
@@ -260,6 +260,7 @@ public class PostsControllerTest {
                                 fieldWithPath("id").description("삭제된 게시글 id")
                         )
                 ))
+                .andExpect(status().isNoContent())
                 .andExpect(jsonPath("id").value(1L));
     }
 }

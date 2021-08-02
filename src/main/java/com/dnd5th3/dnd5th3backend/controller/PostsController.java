@@ -6,6 +6,7 @@ import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.service.MemberService;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -15,6 +16,7 @@ public class PostsController {
     private final PostsService postsService;
     private final MemberService memberService;
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/posts")
     public SaveResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto) {
         Member writer = memberService.findMemberById(postSaveRequestDto.getMemberId());
@@ -59,6 +61,7 @@ public class PostsController {
                 .build();
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/v1/posts/{id}")
     public DeleteResponseDto deletePost(@PathVariable(name = "id") Long id) {
         postsService.deletePost(id);
