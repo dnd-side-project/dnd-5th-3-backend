@@ -13,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.Optional;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -36,7 +38,18 @@ class PostsServiceTest {
     @Test
     public void savePostTest() throws Exception{
         //given
-        Posts newPosts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
+        Posts newPosts = Posts.builder()
+                .member(member)
+                .title("test")
+                .productName("testProduct")
+                .content("test content")
+                .productImageUrl("test.jpg")
+                .isVoted(false)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(0)
+                .isDeleted(false)
+                .build();
         when(postsRepository.save(any(Posts.class))).thenReturn(newPosts);
 
         //when
@@ -46,4 +59,20 @@ class PostsServiceTest {
         Assertions.assertEquals(savedPosts.getId(), newPosts.getId());
         Assertions.assertEquals(savedPosts.getMember().getId(), newPosts.getMember().getId());
     }
+
+    @DisplayName("post 상세조회 테스트")
+    @Test
+    public void findPostByIdTest() throws Exception{
+        //given
+        Posts post = Posts.builder().id(1L).member(member).title("test").productName("testProduct").content("test content").build();
+        when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
+
+        //when
+        Posts foundPost = postsService.findPostById(1L);
+
+        //then
+        Assertions.assertEquals(post.getMember().getName(), foundPost.getMember().getName());
+        Assertions.assertEquals(post.getTitle(), foundPost.getTitle());
+    }
+
 }

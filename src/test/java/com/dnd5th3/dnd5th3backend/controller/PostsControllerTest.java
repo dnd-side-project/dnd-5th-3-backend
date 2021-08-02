@@ -22,12 +22,17 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
+import java.time.LocalDateTime;
+import java.util.Optional;
+
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
+import static org.assertj.core.internal.bytebuddy.matcher.ElementMatchers.is;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -105,5 +110,62 @@ public class PostsControllerTest {
                         )
                 ))
                 .andExpect(jsonPath("$.id").value(1L));
+    }
+
+    @DisplayName("post 상세조회 api 테스트")
+    @Test
+    public void findPostByIdApiTest() throws Exception {
+        //given
+        Posts post = Posts.builder()
+                .id(1L)
+                .member(member)
+                .title("test")
+                .productName("test product")
+                .content("content")
+                .productImageUrl("test.jpg")
+                .isVoted(false)
+                .permitCount(2)
+                .rejectCount(8)
+                .viewCount(100)
+                .isDeleted(false)
+                .build();
+        post.setCreatedDate(LocalDateTime.of(2021, 8, 1, 12, 0, 0));
+
+        given(postsService.findPostById(1L)).willReturn(post);
+
+        //when
+        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts/{id}", 1L));
+
+        //then
+        result
+                .andDo(print())
+                .andDo(document("posts/getById",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("게시글 id")
+                        ),
+                        responseFields(
+                                fieldWithPath("name").description("작성자 이름"),
+                                fieldWithPath("title").description("글 제목"),
+                                fieldWithPath("productName").description("상품 이름"),
+                                fieldWithPath("content").description("글 내용"),
+                                fieldWithPath("productImageUrl").description("상품 이미지"),
+                                fieldWithPath("isVoted").description("투표 종료 여부"),
+                                fieldWithPath("permitRatio").description("찬성 투표 비율"),
+                                fieldWithPath("rejectRatio").description("반대 투표 비율"),
+                                fieldWithPath("createdDate").description("작성된 시간")
+                        )
+                ))
+                .andExpect(jsonPath("$.name").value("name"))
+                .andExpect(jsonPath("$.title").value("test"))
+                .andExpect(jsonPath("$.productName").value("test product"))
+                .andExpect(jsonPath("$.content").value("content"))
+                .andExpect(jsonPath("$.productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.isVoted").value(false))
+                .andExpect(jsonPath("$.permitRatio").value(20L))
+                .andExpect(jsonPath("$.rejectRatio").value(80L))
+                .andExpect(jsonPath("$.createdDate").value("2021-08-01T12:00:00"));
+
     }
 }

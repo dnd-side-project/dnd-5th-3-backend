@@ -24,3 +24,18 @@ include::{snippets}/posts/save/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/posts/save/response-fields.adoc[]
+
+[[posts-getById]]
+== GET :: Id로 게시물 조회
+
+=== HTTP Request
+include::{snippets}/posts/getById/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/posts/getById/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/posts/getById/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/posts/getById/response-fields.adoc[]

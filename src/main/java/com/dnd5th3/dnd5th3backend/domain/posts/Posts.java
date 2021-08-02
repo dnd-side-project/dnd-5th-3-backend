@@ -35,18 +35,18 @@ public class Posts extends BaseTime {
     private String productImageUrl;
 
     @NotNull
-    private Boolean isVoted = false;
+    private Boolean isVoted;
 
     @NotNull
-    private Integer permitCount = 0;
+    private Integer permitCount;
 
     @NotNull
-    private Integer rejectCount = 0;
+    private Integer rejectCount;
 
     @NotNull
-    private Integer viewCount = 0;
+    private Integer viewCount;
 
     @NotNull
-    private Boolean isDeleted = false;
+    private Boolean isDeleted;
 
 }
