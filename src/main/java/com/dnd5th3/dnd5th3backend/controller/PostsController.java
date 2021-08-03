@@ -9,6 +9,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @RequiredArgsConstructor
 @RestController
 public class PostsController {
@@ -66,5 +69,24 @@ public class PostsController {
     public DeleteResponseDto deletePost(@PathVariable(name = "id") Long id) {
         postsService.deletePost(id);
         return DeleteResponseDto.builder().id(id).build();
+    }
+
+    @GetMapping("/api/v1/posts")
+    public AllResponseDto findPostsList(@RequestParam String sorted) {
+        List<Posts> postsList = postsService.findAllPosts(sorted);
+        List<PostsListDto> dtoList = postsList.stream().map( p -> {
+            CalculateRatioDto ratioDto = CalculateRatioDto.calculate(p);
+            return PostsListDto.builder()
+                    .name(p.getMember().getName())
+                    .title(p.getTitle())
+                    .productImageUrl(p.getProductImageUrl())
+                    .isVoted(p.getIsVoted())
+                    .permitRatio(ratioDto.getPermitRatio())
+                    .rejectRatio(ratioDto.getRejectRatio())
+                    .createdDate(p.getCreatedDate())
+                    .build();
+        }).collect(Collectors.toList());
+
+        return new AllResponseDto(dtoList);
     }
 }

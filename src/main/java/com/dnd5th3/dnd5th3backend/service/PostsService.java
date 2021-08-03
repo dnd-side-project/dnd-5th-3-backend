@@ -9,6 +9,8 @@ import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 @Service
@@ -54,5 +56,26 @@ public class PostsService {
     public void deletePost(Long id) {
         Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
         postsRepository.delete(foundPost);
+    }
+
+    public List<Posts> findAllPosts(String sorted) {
+        if (sorted.equals("viewCount")) {
+            List<Posts> allPosts = postsRepository.findPostsOrderByViewCount();
+            allPosts.stream().forEach(p -> Hibernate.initialize(p.getMember()));
+
+            return allPosts;
+        }
+        if (sorted.equals("createdDate")) {
+            List<Posts> allPosts = postsRepository.findPostsOrderByCreatedDate();
+            allPosts.stream().forEach(p -> Hibernate.initialize(p.getMember()));
+
+            return allPosts;
+        }
+
+        List<Posts> allPosts = postsRepository.findAll();
+        //프록시 객체 초기화
+        allPosts.stream().forEach(p -> Hibernate.initialize(p.getMember()));
+
+        return allPosts;
     }
 }
