@@ -1,6 +1,6 @@
 package com.dnd5th3.dnd5th3backend.config.security;
 
-import com.dnd5th3.dnd5th3backend.controller.dto.MemberRequestDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;

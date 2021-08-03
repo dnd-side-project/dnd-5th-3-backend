@@ -12,7 +12,8 @@ import javax.persistence.*;
 @AllArgsConstructor
 public class Member extends BaseTime {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "member_id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private String password;

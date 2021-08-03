@@ -1,7 +1,7 @@
 package com.dnd5th3.dnd5th3backend.config.security.handler;
 
 import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtTokenProvider;
-import com.dnd5th3.dnd5th3backend.controller.dto.MemberResponseDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberResponseDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -13,7 +13,6 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
