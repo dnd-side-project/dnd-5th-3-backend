@@ -11,9 +11,4 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/api/v1/member")
 public class MemberController {
 
-    @GetMapping("/test")
-    public String registerMember(MemberRequestDto memberRequestDto){
-        return "test";
-    }
-
 }

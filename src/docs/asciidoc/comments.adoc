@@ -1,0 +1,26 @@
+= Posts API Docs
+강성효
+1.0.0, 04/08/2021
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+[[comment-save]]
+== POST :: 댓글 등록
+
+=== HTTP Request
+include::{snippets}/comment/save/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/comment/save/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/save/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/save/response-fields.adoc[]
