@@ -42,8 +42,6 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
         return query
                 .select(posts)
                 .from(posts)
-                .join(posts.member, member)
-                .on(posts.member.id.eq(member.id))
                 .where(posts.isVoted.eq(true))
                 .orderBy(posts.voteDeadline.asc())
                 .limit(10)
@@ -55,8 +53,6 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
         return query
                 .select(posts)
                 .from(posts)
-                .join(posts.member, member)
-                .on(posts.member.id.eq(member.id))
                 .where(posts.isVoted.eq(false))
                 .orderBy(posts.voteDeadline.asc())
                 .limit(10)

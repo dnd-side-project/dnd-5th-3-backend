@@ -73,14 +73,10 @@ public class PostsService {
 
         if (sorted.equals("view-count")) {
             List<Posts> allPostsOrderByViewCount = postsRepository.findPostsOrderByViewCount();
-            allPostsOrderByViewCount.stream().forEach(p -> Hibernate.initialize(p.getMember()));
-
             return allPostsOrderByViewCount;
         }
         if (sorted.equals("created-date")) {
             List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
-            allPostsOrderByCreatedDate.stream().forEach(p -> Hibernate.initialize(p.getMember()));
-
             return allPostsOrderByCreatedDate;
         }
         if (sorted.equals("already-done")) {
