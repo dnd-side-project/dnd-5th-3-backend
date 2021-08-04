@@ -61,30 +61,30 @@ public class PostsService {
         postsRepository.delete(foundPost);
     }
 
-    public List<Posts> findAllPosts(String sorted) {
+    public List<Posts> findAllPosts(String sorted, int offset) {
         List<Posts> allPosts = postsRepository.findAll();
         //프록시 객체 초기화, 투표 종료 여부 초기화
         allPosts.stream().forEach(p -> {
             Hibernate.initialize(p.getMember());
-            if (LocalDateTime.now().isAfter(p.getVoteDeadline())) {
+            if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
                 p.updateVoteStatus();
             }
         });
 
         if (sorted.equals("view-count")) {
-            List<Posts> allPostsOrderByViewCount = postsRepository.findPostsOrderByViewCount();
+            List<Posts> allPostsOrderByViewCount = postsRepository.findPostsOrderByViewCount(offset);
             return allPostsOrderByViewCount;
         }
         if (sorted.equals("created-date")) {
-            List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
+            List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate(offset);
             return allPostsOrderByCreatedDate;
         }
         if (sorted.equals("already-done")) {
-            List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
+            List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone(offset);
             return allPostsOrderByAlreadyDone;
         }
         if (sorted.equals("almost-done")) {
-            List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
+            List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone(offset);
             return allPostsOrderByAlmostDone;
         }
 

@@ -72,8 +72,8 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts")
-    public AllResponseDto findPostsList(@RequestParam String sorted) {
-        List<Posts> postsList = postsService.findAllPosts(sorted);
+    public AllResponseDto findPostsList(@RequestParam String sorted, @RequestParam int offset) {
+        List<Posts> postsList = postsService.findAllPosts(sorted, offset);
         List<PostsListDto> dtoList = postsList.stream().map( p -> {
             CalculateRatioDto ratioDto = CalculateRatioDto.calculate(p);
             return PostsListDto.builder()
