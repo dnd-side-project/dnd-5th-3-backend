@@ -28,5 +28,4 @@ public class CommentResponseDto {
                 .content(comment.getContent())
                 .build();
     }
-
 }

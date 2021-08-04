@@ -6,5 +6,6 @@ import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 
 public interface CommentService {
-    Comment saveComment(CommentRequestDto requestDto, @AuthenticationPrincipal Member member);
+    Comment saveComment(CommentRequestDto requestDto,Member member);
+    long updateComment(CommentRequestDto requestDto);
 }

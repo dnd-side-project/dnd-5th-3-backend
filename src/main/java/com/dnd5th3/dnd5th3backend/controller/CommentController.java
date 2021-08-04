@@ -24,4 +24,10 @@ public class CommentController {
         return ResponseEntity.ok(commentResponseDto);
     }
 
+    @PutMapping
+    public ResponseEntity<Long> modifyAPI(@RequestBody CommentRequestDto requestDto){
+        long commentId = commentService.updateComment(requestDto);
+        return ResponseEntity.ok(commentId);
+    }
+
 }
