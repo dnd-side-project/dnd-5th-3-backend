@@ -11,7 +11,7 @@
 :operation-http-response-title: Example Response
 
 [[posts-save]]
-== POST :: 게시물 등록
+== POST :: 게시글 등록
 
 === HTTP Request
 include::{snippets}/posts/save/http-request.adoc[]
@@ -24,3 +24,51 @@ include::{snippets}/posts/save/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/posts/save/response-fields.adoc[]
+
+[[posts-getById]]
+== GET :: Id로 게시글 조회
+
+=== HTTP Request
+include::{snippets}/posts/getById/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/posts/getById/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/posts/getById/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/posts/getById/response-fields.adoc[]
+
+[[posts-update]]
+== POST :: 게시글 수정
+
+=== HTTP Request
+include::{snippets}/posts/update/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/posts/update/path-parameters.adoc[]
+
+=== Request Fields
+include::{snippets}/posts/update/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/posts/update/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/posts/update/response-fields.adoc[]
+
+[[posts-delete]]
+== DELETE :: 게시글 삭제
+
+=== HTTP Request
+include::{snippets}/posts/delete/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/posts/delete/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/posts/delete/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/posts/delete/response-fields.adoc[]

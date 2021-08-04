@@ -19,23 +19,50 @@ import java.util.Optional;
 public class PostsRepositoryTest {
 
     @Autowired
-    private PostRepository postRepository;
+    private PostsRepository postsRepository;
 
     private Member member;
     private Posts posts;
 
     @BeforeEach
     public void setUp() {
-        member = Member.builder().email("test@gmail.com").password("1234").role(Role.ROLE_USER).name("닉네임").build();
-        posts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
+        member = Member.builder()
+                .email("test@gmail.com")
+                .password("1234")
+                .role(Role.ROLE_USER)
+                .name("닉네임").
+                build();
+        posts = Posts.builder()
+                .member(member)
+                .title("test")
+                .productName("testProduct")
+                .content("test content")
+                .productImageUrl("test.jpg")
+                .isVoted(false)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(0)
+                .isDeleted(false)
+                .build();
     }
 
     @DisplayName("id 테스트")
     @Test
     public void idStrategyTest() {
-        Posts posts2 = Posts.builder().member(member).title("test2").productName("testProduct2").content("test content2").build();
-        postRepository.save(posts);
-        postRepository.save(posts2);
+        Posts posts2 = Posts.builder()
+                .member(member)
+                .title("test2")
+                .productName("testProduct2")
+                .content("test content2")
+                .productImageUrl("test2.jpg")
+                .isVoted(false)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(0)
+                .isDeleted(false)
+                .build();
+        postsRepository.save(posts);
+        postsRepository.save(posts2);
 
         Assertions.assertEquals(1, Math.abs(posts2.getId() - posts.getId()));
     }
@@ -43,8 +70,7 @@ public class PostsRepositoryTest {
     @DisplayName("post 생성 테스트")
     @Test
     public void savePostTest() {
-        Posts posts = Posts.builder().member(member).title("test").productName("testProduct").content("test content").build();
-        Posts savedPosts = postRepository.save(posts);
+        Posts savedPosts = postsRepository.save(posts);
 
         Assertions.assertEquals(posts.getMember().getId(), savedPosts.getMember().getId());
         Assertions.assertEquals(posts.getTitle(), savedPosts.getTitle());
@@ -53,12 +79,22 @@ public class PostsRepositoryTest {
     @DisplayName("findById 테스트")
     @Test
     public void findByIdTest() {
-        postRepository.save(posts);
-        Optional<Posts> foundPost = postRepository.findById(1L);
+        postsRepository.save(posts);
+        Optional<Posts> foundPost = postsRepository.findById(1L);
 
         foundPost.ifPresent(p -> {
             Assertions.assertEquals(p.getTitle(), posts.getTitle());
             Assertions.assertEquals(p.getContent(), posts.getContent());
         });
+    }
+
+    @DisplayName("post 삭제 테스트")
+    @Test
+    public void deletePostTest() throws Exception {
+        postsRepository.save(posts);
+        postsRepository.delete(posts);
+        Optional<Posts> foundPost = postsRepository.findById(posts.getId());
+
+        Assertions.assertEquals(foundPost, Optional.empty());
     }
 }
