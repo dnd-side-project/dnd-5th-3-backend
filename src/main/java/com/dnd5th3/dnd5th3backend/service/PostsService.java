@@ -71,23 +71,23 @@ public class PostsService {
             }
         });
 
-        if (sorted.equals("viewCount")) {
+        if (sorted.equals("view-count")) {
             List<Posts> allPostsOrderByViewCount = postsRepository.findPostsOrderByViewCount();
             allPostsOrderByViewCount.stream().forEach(p -> Hibernate.initialize(p.getMember()));
 
             return allPostsOrderByViewCount;
         }
-        if (sorted.equals("createdDate")) {
+        if (sorted.equals("created-date")) {
             List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
             allPostsOrderByCreatedDate.stream().forEach(p -> Hibernate.initialize(p.getMember()));
 
             return allPostsOrderByCreatedDate;
         }
-        if (sorted.equals("alreadyDone")) {
+        if (sorted.equals("already-done")) {
             List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
             return allPostsOrderByAlreadyDone;
         }
-        if (sorted.equals("almostDone")) {
+        if (sorted.equals("almost-done")) {
             List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
             return allPostsOrderByAlmostDone;
         }
