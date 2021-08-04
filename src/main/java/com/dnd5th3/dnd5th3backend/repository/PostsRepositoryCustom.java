@@ -8,4 +8,6 @@ public interface PostsRepositoryCustom {
 
     List<Posts> findPostsOrderByViewCount();
     List<Posts> findPostsOrderByCreatedDate();
+    List<Posts> findPostsOrderByAlreadyDone();
+    List<Posts> findPostsOrderByAlmostDone();
 }
