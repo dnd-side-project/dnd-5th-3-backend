@@ -1,6 +1,6 @@
 = Posts API Docs
 강성효
-1.0.0, 04/08/2021
+1.0.0, 05/08/2021
 :doctype: book
 :icons: font
 :source-highlighter: highlightjs
@@ -24,3 +24,18 @@ include::{snippets}/comment/save/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/comment/save/response-fields.adoc[]
+
+[[comment-edit]]
+== PUT :: 댓글 수정
+
+=== HTTP Request
+include::{snippets}/comment/edit/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/comment/edit/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/edit/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/edit/response-fields.adoc[]

@@ -10,10 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
-import org.springframework.test.annotation.Rollback;
-import org.springframework.test.context.ActiveProfiles;
-
-import javax.transaction.Transactional;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -55,7 +51,7 @@ class CommentServiceTest {
         commentService.saveComment(commentRequestDto, member);
 
         commentRequestDto = new CommentRequestDto(1L, 1L, 1L, 0, 0, "comment update");
-        long commentId = commentService.updateComment(commentRequestDto);
+        long commentId = commentService.editComment(commentRequestDto);
 
         assertEquals(commentRequestDto.getCommentId(),commentId,"댓글 수정이 정상적으로 되었는지 확인");
     }

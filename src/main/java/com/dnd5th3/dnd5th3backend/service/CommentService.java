@@ -21,7 +21,7 @@ public class CommentService {
     }
 
     @Transactional
-    public long updateComment(CommentRequestDto requestDto) {
+    public long editComment(CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(requestDto.getCommentId())
                                            .orElseThrow(IllegalArgumentException::new);
         comment.update(requestDto);
