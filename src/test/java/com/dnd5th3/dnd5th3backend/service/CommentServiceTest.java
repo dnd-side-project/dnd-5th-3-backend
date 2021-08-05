@@ -51,7 +51,7 @@ class CommentServiceTest {
 
         CommentRequestDto commentRequestDto = new CommentRequestDto(null, 1L, null, null, null, "comment update");
         long commentId = commentService.editComment(commentRequestDto);
-        assertEquals(commentRequestDto.getCommentId(),commentId,"응답에 오류가 없는지 확인");
+        assertEquals(commentRequestDto.getCommentId(),commentId,"응답에 오류가 없는지 확인(수정)");
     }
 
     @Order(3)
@@ -61,6 +61,6 @@ class CommentServiceTest {
 
         CommentRequestDto commentRequestDto = new CommentRequestDto(null, 1L, null, null, null, null);
         long commentId = commentService.deleteComment(commentRequestDto);
-        assertEquals(commentRequestDto.getCommentId(),commentId,"응답에 오류가 없는지 확인");
+        assertEquals(commentRequestDto.getCommentId(),commentId,"응답에 오류가 없는지 확인(삭제)");
     }
 }
