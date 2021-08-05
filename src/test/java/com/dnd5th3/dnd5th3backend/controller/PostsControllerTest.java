@@ -129,6 +129,7 @@ public class PostsControllerTest {
                 .rejectCount(8)
                 .viewCount(100)
                 .isDeleted(false)
+                .voteDeadline(LocalDateTime.of(2021, 8, 2, 12, 0, 0))
                 .build();
         post.setCreatedDate(LocalDateTime.of(2021, 8, 1, 12, 0, 0));
 
@@ -155,7 +156,8 @@ public class PostsControllerTest {
                                 fieldWithPath("isVoted").description("투표 종료 여부"),
                                 fieldWithPath("permitRatio").description("찬성 투표 비율"),
                                 fieldWithPath("rejectRatio").description("반대 투표 비율"),
-                                fieldWithPath("createdDate").description("작성된 시간")
+                                fieldWithPath("createdDate").description("작성된 시간"),
+                                fieldWithPath("voteDeadline").description("투표 종료 시간")
                         )
                 ))
                 .andExpect(jsonPath("$.name").value("name"))
@@ -166,7 +168,8 @@ public class PostsControllerTest {
                 .andExpect(jsonPath("$.isVoted").value(false))
                 .andExpect(jsonPath("$.permitRatio").value(20L))
                 .andExpect(jsonPath("$.rejectRatio").value(80L))
-                .andExpect(jsonPath("$.createdDate").value("2021-08-01T12:00:00"));
+                .andExpect(jsonPath("$.createdDate").value("2021-08-01T12:00:00"))
+                .andExpect(jsonPath("$.voteDeadline").value("2021-08-02T12:00:00"));
 
     }
 
@@ -186,6 +189,7 @@ public class PostsControllerTest {
                 .rejectCount(25)
                 .viewCount(70)
                 .isDeleted(false)
+                .voteDeadline(LocalDateTime.of(2021, 8, 3, 12, 0, 0))
                 .build();
         response.setCreatedDate(LocalDateTime.of(2021, 8, 2, 12, 0, 0));
         UpdateRequestDto requestDto = UpdateRequestDto.builder()
@@ -229,7 +233,8 @@ public class PostsControllerTest {
                                 fieldWithPath("isVoted").description("투표 종료 여부"),
                                 fieldWithPath("permitRatio").description("찬성 투표 비율"),
                                 fieldWithPath("rejectRatio").description("반대 투표 비율"),
-                                fieldWithPath("createdDate").description("작성된 시간")
+                                fieldWithPath("createdDate").description("작성된 시간"),
+                                fieldWithPath("voteDeadline").description("투표 종료 시간")
                         )
                 ))
                 .andExpect(jsonPath("$.name").value("name"))
@@ -240,7 +245,8 @@ public class PostsControllerTest {
                 .andExpect(jsonPath("$.isVoted").value(false))
                 .andExpect(jsonPath("$.permitRatio").value(59L))
                 .andExpect(jsonPath("$.rejectRatio").value(41L))
-                .andExpect(jsonPath("$.createdDate").value("2021-08-02T12:00:00"));
+                .andExpect(jsonPath("$.createdDate").value("2021-08-02T12:00:00"))
+                .andExpect(jsonPath("$.voteDeadline").value("2021-08-03T12:00:00"));
     }
 
     @DisplayName("post 삭제 api 테스트")

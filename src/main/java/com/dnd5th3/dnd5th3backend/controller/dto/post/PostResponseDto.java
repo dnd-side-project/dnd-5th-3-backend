@@ -18,4 +18,5 @@ public class PostResponseDto {
     private Long permitRatio;
     private Long rejectRatio;
     private LocalDateTime createdDate;
+    private LocalDateTime voteDeadline;
 }

@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-class PostsServiceTest {
+public class PostsServiceTest {
 
     @Mock
     private PostsRepository postsRepository;
@@ -32,17 +32,13 @@ class PostsServiceTest {
     private PostsService postsService;
 
     private Member member;
+    private Posts post;
 
     @BeforeEach
     public void setUp() {
         member = Member.builder().email("test@gmail.com").password("1234").role(Role.ROLE_USER).name("닉네임").build();
-    }
-
-    @DisplayName("post 저장 테스트")
-    @Test
-    public void savePostTest() throws Exception{
-        //given
-        Posts newPosts = Posts.builder()
+        post = Posts.builder()
+                .id(1L)
                 .member(member)
                 .title("test")
                 .productName("testProduct")
@@ -53,22 +49,28 @@ class PostsServiceTest {
                 .rejectCount(0)
                 .viewCount(0)
                 .isDeleted(false)
+                .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
-        when(postsRepository.save(any(Posts.class))).thenReturn(newPosts);
+    }
+
+    @DisplayName("post 저장 테스트")
+    @Test
+    public void savePostTest() throws Exception{
+        //given
+        when(postsRepository.save(any(Posts.class))).thenReturn(post);
 
         //when
-        Posts savedPosts = postsService.savePost(newPosts.getMember(), newPosts.getTitle(), newPosts.getProductName(), newPosts.getContent(), newPosts.getProductImageUrl());
+        Posts savedPosts = postsService.savePost(post.getMember(), post.getTitle(), post.getProductName(), post.getContent(), post.getProductImageUrl());
 
         //then
-        Assertions.assertEquals(savedPosts.getId(), newPosts.getId());
-        Assertions.assertEquals(savedPosts.getMember().getId(), newPosts.getMember().getId());
+        Assertions.assertEquals(savedPosts.getId(), post.getId());
+        Assertions.assertEquals(savedPosts.getMember().getId(), post.getMember().getId());
     }
 
     @DisplayName("post 상세조회 테스트")
     @Test
     public void findPostByIdTest() throws Exception{
         //given
-        Posts post = Posts.builder().id(1L).member(member).title("test").productName("testProduct").content("test content").build();
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
         //when
@@ -77,13 +79,13 @@ class PostsServiceTest {
         //then
         Assertions.assertEquals(post.getMember().getName(), foundPost.getMember().getName());
         Assertions.assertEquals(post.getTitle(), foundPost.getTitle());
+        Assertions.assertEquals(post.getViewCount(), 1);
     }
 
     @DisplayName("post 수정 테스트")
     @Test
     public void updatePostTest() throws Exception {
         //given
-        Posts post = Posts.builder().id(1L).member(member).title("test").productName("testProduct").content("test content").build();
         UpdateRequestDto requestDto = UpdateRequestDto.builder().title("update").productName("update product").content("update contest").productImageUrl("update.jpg").build();
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
@@ -100,13 +102,13 @@ class PostsServiceTest {
     @Test
     public void deletePostTest() throws Exception {
         //given
-        Posts post = Posts.builder().id(1L).member(member).title("test").productName("testProduct").content("test content").build();
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
         //when
         postsService.deletePost(post.getId());
 
         //then
+        Assertions.assertEquals(post.getIsDeleted(), true);
         verify(postsRepository, times(1)).delete(eq(post));
     }
 

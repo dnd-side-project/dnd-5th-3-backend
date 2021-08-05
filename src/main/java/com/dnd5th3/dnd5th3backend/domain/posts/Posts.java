@@ -66,7 +66,15 @@ public class Posts extends BaseTime {
         this.productImageUrl = productImageUrl;
     }
 
-    public void updateVoteStatus() {
+    public void increaseViewCount() {
+        this.viewCount += 1;
+    }
+
+    public void makeVotedStatusTrue() {
         this.isVoted = true;
+    }
+
+    public void makeDeletedStatusTrue() {
+        this.isDeleted = true;
     }
 }

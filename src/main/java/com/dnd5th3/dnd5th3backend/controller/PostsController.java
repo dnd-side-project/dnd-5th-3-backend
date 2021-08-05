@@ -43,6 +43,7 @@ public class PostsController {
                 .permitRatio(ratioDto.getPermitRatio())
                 .rejectRatio(ratioDto.getRejectRatio())
                 .createdDate(foundPost.getCreatedDate())
+                .voteDeadline(foundPost.getVoteDeadline())
                 .build();
     }
 
@@ -61,6 +62,7 @@ public class PostsController {
                 .permitRatio(ratioDto.getPermitRatio())
                 .rejectRatio(ratioDto.getRejectRatio())
                 .createdDate(updatedPost.getCreatedDate())
+                .voteDeadline(updatedPost.getVoteDeadline())
                 .build();
     }
 
