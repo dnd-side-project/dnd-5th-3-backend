@@ -44,6 +44,9 @@ public class PostsService {
         if (LocalDateTime.now().isAfter(foundPost.getVoteDeadline())) {
             foundPost.updateVoteStatus();
         }
+        //조회수 증가
+        foundPost.increaseViewCount();
+
         return foundPost;
     }
 

@@ -68,7 +68,19 @@ class PostsServiceTest {
     @Test
     public void findPostByIdTest() throws Exception{
         //given
-        Posts post = Posts.builder().id(1L).member(member).title("test").productName("testProduct").content("test content").build();
+        Posts post = Posts.builder()
+                .member(member)
+                .title("test")
+                .productName("testProduct")
+                .content("test content")
+                .productImageUrl("test.jpg")
+                .isVoted(false)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(0)
+                .isDeleted(false)
+                .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .build();
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
         //when
@@ -77,6 +89,7 @@ class PostsServiceTest {
         //then
         Assertions.assertEquals(post.getMember().getName(), foundPost.getMember().getName());
         Assertions.assertEquals(post.getTitle(), foundPost.getTitle());
+        Assertions.assertEquals(post.getViewCount(), 1);
     }
 
     @DisplayName("post 수정 테스트")
