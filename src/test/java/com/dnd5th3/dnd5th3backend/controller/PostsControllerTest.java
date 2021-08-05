@@ -24,14 +24,16 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
+import static com.dnd5th3.dnd5th3backend.domain.posts.QPosts.posts;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -262,5 +264,113 @@ public class PostsControllerTest {
                 ))
                 .andExpect(status().isNoContent())
                 .andExpect(jsonPath("id").value(1L));
+    }
+
+    @DisplayName("post 리스트 조회 api 테스트")
+    @Test
+    public void findPostsListApiTest() throws Exception {
+        //given
+        Posts posts1 = Posts.builder()
+                .id(1L)
+                .member(member)
+                .title("test1")
+                .productImageUrl("test1.jpg")
+                .isVoted(false)
+                .viewCount(15)
+                .permitCount(10)
+                .rejectCount(25)
+                .build();
+        posts1.setCreatedDate(LocalDateTime.of(2021, 8, 4, 12, 0, 0));
+        Posts posts2 = Posts.builder()
+                .id(2L)
+                .member(member)
+                .title("test2")
+                .productImageUrl("test2.jpg")
+                .isVoted(false)
+                .viewCount(10)
+                .permitCount(30)
+                .rejectCount(10)
+                .build();
+        posts2.setCreatedDate(LocalDateTime.of(2021, 8, 4, 15, 0, 0));
+
+        List<Posts> orderByCreatedDateList = new ArrayList<>();
+        orderByCreatedDateList.add(posts2);
+        orderByCreatedDateList.add(posts1);
+
+        given(postsService.findAllPosts("created-date", 0)).willReturn(orderByCreatedDateList);
+
+        //when
+        ResultActions viewCountResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=view-count&offset=0"));
+        ResultActions createdDateResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=created-date&offset=0"));
+        ResultActions alreadyDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=already-done&offset=0"));
+        ResultActions almostDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=almost-done&offset=0"));
+
+        //then
+        viewCountResult
+                .andDo(document("posts/findAll/viewCount",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("sorted").description("정렬 방법"),
+                                parameterWithName("offset").description("오프셋")
+                        )
+                ))
+                .andExpect(status().isOk());
+
+        createdDateResult
+                .andDo(document("posts/findAll/createdDate",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("sorted").description("정렬 방법"),
+                                parameterWithName("offset").description("오프셋")
+                        ),
+                        responseFields(
+                                fieldWithPath("posts.[].name").description("작성자 이름"),
+                                fieldWithPath("posts.[].title").description("글 제목"),
+                                fieldWithPath("posts.[].productImageUrl").description("상품 이미지"),
+                                fieldWithPath("posts.[].isVoted").description("투표 종료 여부"),
+                                fieldWithPath("posts.[].permitRatio").description("찬성 투표 비율"),
+                                fieldWithPath("posts.[].rejectRatio").description("반대 투표 비율"),
+                                fieldWithPath("posts.[].createdDate").description("작성된 시간")
+                        )
+                ))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.posts[0].name").value("name"))
+                .andExpect(jsonPath("$.posts[0].title").value("test2"))
+                .andExpect(jsonPath("$.posts[0].productImageUrl").value("test2.jpg"))
+                .andExpect(jsonPath("$.posts[0].isVoted").value(false))
+                .andExpect(jsonPath("$.posts[0].permitRatio").value(75L))
+                .andExpect(jsonPath("$.posts[0].rejectRatio").value(25L))
+                .andExpect(jsonPath("$.posts[0].createdDate").value("2021-08-04T15:00:00"))
+                .andExpect(jsonPath("$.posts[1].name").value("name"))
+                .andExpect(jsonPath("$.posts[1].title").value("test1"))
+                .andExpect(jsonPath("$.posts[1].productImageUrl").value("test1.jpg"))
+                .andExpect(jsonPath("$.posts[1].isVoted").value(false))
+                .andExpect(jsonPath("$.posts[1].permitRatio").value(29L))
+                .andExpect(jsonPath("$.posts[1].rejectRatio").value(71L))
+                .andExpect(jsonPath("$.posts[1].createdDate").value("2021-08-04T12:00:00"));
+
+        alreadyDoneResult
+                .andDo(document("posts/findAll/alreadyDone",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("sorted").description("정렬 방법"),
+                                parameterWithName("offset").description("오프셋")
+                        )
+                ))
+                .andExpect(status().isOk());
+
+        almostDoneResult
+                .andDo(document("posts/findAll/almostDone",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestParameters(
+                                parameterWithName("sorted").description("정렬 방법"),
+                                parameterWithName("offset").description("오프셋")
+                        )
+                ))
+                .andExpect(status().isOk());
     }
 }

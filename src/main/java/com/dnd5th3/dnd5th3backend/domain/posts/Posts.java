@@ -6,6 +6,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.LocalDateTime;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -49,6 +50,9 @@ public class Posts extends BaseTime {
     @NotNull
     private Boolean isDeleted;
 
+    @NotNull
+    private LocalDateTime voteDeadline;
+
     public void update(String title, String productName, String content, String productImageUrl) {
         if (title != null) {
             this.title = title;
@@ -60,5 +64,9 @@ public class Posts extends BaseTime {
             this.content = content;
         }
         this.productImageUrl = productImageUrl;
+    }
+
+    public void updateVoteStatus() {
+        this.isVoted = true;
     }
 }

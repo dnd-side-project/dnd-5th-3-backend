@@ -72,3 +72,25 @@ include::{snippets}/posts/delete/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/posts/delete/response-fields.adoc[]
+
+[[posts-list]]
+== GET :: 게시글 리스트 조회
+
+=== HTTP Request
+==== 인기순
+include::{snippets}/posts/findAll/viewCount/http-request.adoc[]
+==== 최근순
+include::{snippets}/posts/findAll/createdDate/http-request.adoc[]
+==== 최근마감순
+include::{snippets}/posts/findAll/alreadyDone/http-request.adoc[]
+==== 마감임박순
+include::{snippets}/posts/findAll/almostDone/http-request.adoc[]
+
+=== Request Parameters
+include::{snippets}/posts/findAll/viewCount/request-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/posts/findAll/createdDate/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/posts/findAll/createdDate/response-fields.adoc[]

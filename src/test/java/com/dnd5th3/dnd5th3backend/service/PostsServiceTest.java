@@ -14,6 +14,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
@@ -105,6 +108,102 @@ class PostsServiceTest {
 
         //then
         verify(postsRepository, times(1)).delete(eq(post));
+    }
+
+    @DisplayName("post 리스트 조회 테스트")
+    @Test
+    public void findPostsListTest() throws Exception {
+        //given
+        Posts posts1 = Posts.builder()
+                .id(1L)
+                .member(member)
+                .title("test1")
+                .productName("testProduct1")
+                .content("test content1")
+                .productImageUrl("test1.jpg")
+                .isVoted(false)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(15)
+                .isDeleted(false)
+                .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .build();
+        Posts posts2 = Posts.builder()
+                .id(2L)
+                .member(member)
+                .title("test2")
+                .productName("testProduct2")
+                .content("test content2")
+                .productImageUrl("test2.jpg")
+                .isVoted(false)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(10)
+                .isDeleted(false)
+                .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .build();
+
+        List<Posts> viewCountList = new ArrayList<>();
+        viewCountList.add(posts1);
+        viewCountList.add(posts2);
+
+        List<Posts> createdDateList = new ArrayList<>();
+        createdDateList.add(posts2);
+        createdDateList.add(posts1);
+
+        Posts posts3 = Posts.builder()
+                .id(3L)
+                .member(member)
+                .title("test3")
+                .productName("testProduct3")
+                .content("test content3")
+                .productImageUrl("test3.jpg")
+                .isVoted(true)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(20)
+                .isDeleted(false)
+                .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .build();
+        Posts posts4 = Posts.builder()
+                .id(4L)
+                .member(member)
+                .title("test4")
+                .productName("testProduct4")
+                .content("test content4")
+                .productImageUrl("test4.jpg")
+                .isVoted(true)
+                .permitCount(0)
+                .rejectCount(0)
+                .viewCount(25)
+                .isDeleted(false)
+                .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .build();
+
+        List<Posts> alreadyDoneList = new ArrayList<>();
+        alreadyDoneList.add(posts3);
+        alreadyDoneList.add(posts4);
+
+        List<Posts> almostDoneList = new ArrayList<>();
+        almostDoneList.add(posts1);
+        alreadyDoneList.add(posts2);
+
+        when(postsRepository.findPostsOrderByViewCount(0)).thenReturn(viewCountList);
+        when(postsRepository.findPostsOrderByCreatedDate(0)).thenReturn(createdDateList);
+        when(postsRepository.findPostsOrderByAlreadyDone(0)).thenReturn(alreadyDoneList);
+        when(postsRepository.findPostsOrderByAlmostDone(0)).thenReturn(almostDoneList);
+
+        //when
+        List<Posts> orderByViewCountList = postsService.findAllPosts("view-count", 0);
+        List<Posts> orderByCreatedDateList = postsService.findAllPosts("created-date", 0);
+        List<Posts> orderByAlreadyDoneList = postsService.findAllPosts("already-done", 0);
+        List<Posts> orderByAlmostDoneList = postsService.findAllPosts("almost-done", 0);
+
+        //then
+        Assertions.assertEquals(orderByViewCountList.get(0).getId(), posts1.getId());
+        Assertions.assertEquals(orderByCreatedDateList.get(0).getId(), posts2.getId());
+        Assertions.assertEquals(orderByAlreadyDoneList.get(0).getId(), posts3.getId());
+        Assertions.assertEquals(orderByAlmostDoneList.get(0).getId(), posts1.getId());
     }
 
 }
