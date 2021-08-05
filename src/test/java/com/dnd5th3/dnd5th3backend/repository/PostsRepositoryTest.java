@@ -45,7 +45,7 @@ public class PostsRepositoryTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("testProduct")
+                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -66,9 +66,9 @@ public class PostsRepositoryTest {
                 .id(2L)
                 .member(member)
                 .title("test2")
-                .productName("testProduct2")
-                .content("test content2")
-                .productImageUrl("test2.jpg")
+                .productName("test product")
+                .content("test content")
+                .productImageUrl("test.jpg")
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
@@ -117,12 +117,11 @@ public class PostsRepositoryTest {
     @Test
     public void findPostsOrderByViewCountTest() throws Exception {
         Posts posts2 = Posts.builder()
-                .id(2L)
                 .member(member)
                 .title("test2")
-                .productName("testProduct2")
-                .content("test content2")
-                .productImageUrl("test2.jpg")
+                .productName("test product")
+                .content("test content")
+                .productImageUrl("test.jpg")
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
@@ -135,20 +134,19 @@ public class PostsRepositoryTest {
 
         List<Posts> orderByViewCount = postsRepository.findPostsOrderByViewCount(0);
 
-        Assertions.assertEquals(orderByViewCount.get(0).getTitle(), "test2");
-        Assertions.assertEquals(orderByViewCount.get(1).getTitle(), "test");
+        Assertions.assertEquals(orderByViewCount.get(0).getTitle(), posts2.getTitle());
+        Assertions.assertEquals(orderByViewCount.get(1).getTitle(), posts.getTitle());
     }
 
     @DisplayName("최신순 조회 테스트")
     @Test
     public void findPostsOrderByCreatedDateTest() throws Exception {
         Posts posts2 = Posts.builder()
-                .id(2L)
                 .member(member)
                 .title("test2")
-                .productName("testProduct2")
-                .content("test content2")
-                .productImageUrl("test2.jpg")
+                .productName("test product")
+                .content("test content")
+                .productImageUrl("test.jpg")
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
@@ -161,20 +159,19 @@ public class PostsRepositoryTest {
 
         List<Posts> orderByCreatedDate = postsRepository.findPostsOrderByCreatedDate(0);
 
-        Assertions.assertEquals(orderByCreatedDate.get(0).getId(), 2L);
-        Assertions.assertEquals(orderByCreatedDate.get(1).getId(), 1L);
+        Assertions.assertEquals(orderByCreatedDate.get(0).getTitle(), posts2.getTitle());
+        Assertions.assertEquals(orderByCreatedDate.get(1).getTitle(), posts.getTitle());
     }
 
     @DisplayName("최근마감순 조회 테스트")
     @Test
     public void findPostsOrderByAlreadyDoneTest() throws Exception {
         Posts posts2 = Posts.builder()
-                .id(2L)
                 .member(member)
                 .title("test2")
-                .productName("testProduct2")
-                .content("test content2")
-                .productImageUrl("test2.jpg")
+                .productName("test product")
+                .content("test content")
+                .productImageUrl("test.jpg")
                 .isVoted(true)
                 .permitCount(0)
                 .rejectCount(0)
@@ -182,26 +179,25 @@ public class PostsRepositoryTest {
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
-        posts.updateVoteStatus();
+        posts.makeVotedStatusTrue();
         postsRepository.save(posts);
         postsRepository.save(posts2);
 
         List<Posts> orderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone(0);
 
-        Assertions.assertEquals(orderByAlreadyDone.get(0).getId(), posts.getId());
-        Assertions.assertEquals(orderByAlreadyDone.get(1).getId(), posts2.getId());
+        Assertions.assertEquals(orderByAlreadyDone.get(0).getTitle(), posts.getTitle());
+        Assertions.assertEquals(orderByAlreadyDone.get(1).getTitle(), posts2.getTitle());
     }
 
     @DisplayName("마감임박순 조회 테스트")
     @Test
     public void findPostsOrderByAlmostDoneTest() throws Exception {
         Posts posts2 = Posts.builder()
-                .id(2L)
                 .member(member)
                 .title("test2")
-                .productName("testProduct2")
-                .content("test content2")
-                .productImageUrl("test2.jpg")
+                .productName("test product")
+                .content("test content")
+                .productImageUrl("test.jpg")
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
@@ -214,7 +210,7 @@ public class PostsRepositoryTest {
 
         List<Posts> orderByAlmostDone = postsRepository.findPostsOrderByAlmostDone(0);
 
-        Assertions.assertEquals(orderByAlmostDone.get(0).getId(), 1L);
-        Assertions.assertEquals(orderByAlmostDone.get(1).getId(), 2L);
+        Assertions.assertEquals(orderByAlmostDone.get(0).getTitle(), posts.getTitle());
+        Assertions.assertEquals(orderByAlmostDone.get(1).getTitle(), posts2.getTitle());
     }
 }
