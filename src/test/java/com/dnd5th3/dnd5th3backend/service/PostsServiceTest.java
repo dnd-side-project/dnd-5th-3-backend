@@ -108,6 +108,7 @@ public class PostsServiceTest {
         postsService.deletePost(post.getId());
 
         //then
+        Assertions.assertEquals(post.getIsDeleted(), true);
         verify(postsRepository, times(1)).delete(eq(post));
     }
 

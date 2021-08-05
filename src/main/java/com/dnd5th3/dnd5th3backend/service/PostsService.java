@@ -42,7 +42,7 @@ public class PostsService {
         Hibernate.initialize(foundPost.getMember());
         //투표 종료 여부
         if (LocalDateTime.now().isAfter(foundPost.getVoteDeadline())) {
-            foundPost.updateVoteStatus();
+            foundPost.makeVotedStatusTrue();
         }
         //조회수 증가
         foundPost.increaseViewCount();
@@ -61,6 +61,7 @@ public class PostsService {
 
     public void deletePost(Long id) {
         Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
+        foundPost.makeDeletedStatusTrue();
         postsRepository.delete(foundPost);
     }
 
@@ -70,7 +71,7 @@ public class PostsService {
         allPosts.stream().forEach(p -> {
             Hibernate.initialize(p.getMember());
             if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
-                p.updateVoteStatus();
+                p.makeVotedStatusTrue();
             }
         });
 

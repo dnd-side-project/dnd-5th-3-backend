@@ -70,7 +70,11 @@ public class Posts extends BaseTime {
         this.viewCount += 1;
     }
 
-    public void updateVoteStatus() {
+    public void makeVotedStatusTrue() {
         this.isVoted = true;
+    }
+
+    public void makeDeletedStatusTrue() {
+        this.isDeleted = true;
     }
 }
