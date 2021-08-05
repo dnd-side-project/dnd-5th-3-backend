@@ -20,6 +20,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
         return query
                 .select(posts)
                 .from(posts)
+                .where(posts.isVoted.eq(false))
                 .orderBy(posts.viewCount.desc())
                 .offset(offset)
                 .limit(10)
