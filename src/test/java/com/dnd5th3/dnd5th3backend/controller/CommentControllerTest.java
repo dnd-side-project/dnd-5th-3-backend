@@ -124,7 +124,7 @@ class CommentControllerTest {
         request.put("commentId",1L);
         request.put("content","comment edit");
 
-        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/comment")
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/comment")
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -143,6 +143,41 @@ class CommentControllerTest {
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("commentId").description("댓글 번호")
+                        )
+                ))
+                .andExpect(jsonPath("$.commentId").value(1L));
+
+    }
+
+    @DisplayName("댓글 삭제 API 테스트")
+    @Test
+    void deleteAPI() throws Exception {
+
+        Member member = memberRepository.findByEmail("test@gmail.com");
+        CommentRequestDto commentRequestDto = new CommentRequestDto(1L, 1L, 1L, 0, 0, "comment test");
+        commentService.saveComment(commentRequestDto,member);
+
+        Map<Object,Object> request = new HashMap<>();
+        request.put("commentId",1L);
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/comment")
+                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString())
+                .content(objectMapper.writeValueAsString(request)));
+
+        actions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("comment/delete",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        relaxedRequestFields(
+                                fieldWithPath("commentId").description("삭제할 댓글 번호")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("commentId").description("삭제한 댓글 번호")
                         )
                 ))
                 .andExpect(jsonPath("$.commentId").value(1L));

@@ -55,4 +55,7 @@ public class Comment extends BaseTime {
     public void update(CommentRequestDto requestDto){
         this.content = requestDto.getContent();
     }
+    public void delete(){
+        this.isDeleted = true;
+    }
 }

@@ -27,4 +27,12 @@ public class CommentService {
         comment.update(requestDto);
         return comment.getId();
     }
+
+    @Transactional
+    public long deleteComment(CommentRequestDto requestDto) {
+        Comment comment = commentRepository.findById(requestDto.getCommentId())
+                .orElseThrow(IllegalArgumentException::new);
+        comment.delete();
+        return comment.getId();
+    }
 }
