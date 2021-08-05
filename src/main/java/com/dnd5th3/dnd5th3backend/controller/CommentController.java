@@ -24,4 +24,26 @@ public class CommentController {
         return ResponseEntity.ok(commentResponseDto);
     }
 
+    @PutMapping
+    public ResponseEntity<CommentResponseDto> editAPI(@RequestBody CommentRequestDto requestDto){
+        long commentId = commentService.editComment(requestDto);
+
+        CommentResponseDto commentResponseDto = CommentResponseDto.builder()
+                .commentId(commentId)
+                .build();
+
+        return ResponseEntity.ok(commentResponseDto);
+    }
+
+    @DeleteMapping
+    public ResponseEntity<CommentResponseDto> deleteAPI(@RequestBody CommentRequestDto requestDto){
+        long commentId = commentService.deleteComment(requestDto);
+
+        CommentResponseDto commentResponseDto = CommentResponseDto.builder()
+                .commentId(commentId)
+                .build();
+
+        return ResponseEntity.ok(commentResponseDto);
+    }
+
 }

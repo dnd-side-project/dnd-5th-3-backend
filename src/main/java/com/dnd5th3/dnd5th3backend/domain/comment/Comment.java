@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.transaction.Transactional;
 
 @Builder
 @Getter
@@ -40,8 +41,8 @@ public class Comment extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     private Posts posts;
 
-    public static Comment createComment(CommentRequestDto requestDto,Member member){
-         return Comment.builder()
+    public static Comment create(CommentRequestDto requestDto,Member member) {
+        return Comment.builder()
                 .member(member)
                 .id(requestDto.getCommentId())
                 .groupNo(requestDto.getGroupNo())
@@ -49,5 +50,12 @@ public class Comment extends BaseTime {
                 .commentOrder(requestDto.getCommentOrder())
                 .content(requestDto.getContent())
                 .build();
+    }
+
+    public void update(CommentRequestDto requestDto){
+        this.content = requestDto.getContent();
+    }
+    public void delete(){
+        this.isDeleted = true;
     }
 }
