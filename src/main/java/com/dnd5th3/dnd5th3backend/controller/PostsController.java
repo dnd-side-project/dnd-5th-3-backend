@@ -3,10 +3,10 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.*;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.service.MemberService;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -17,13 +17,11 @@ import java.util.stream.Collectors;
 public class PostsController {
 
     private final PostsService postsService;
-    private final MemberService memberService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/posts")
-    public SaveResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto) {
-        Member writer = memberService.findMemberById(postSaveRequestDto.getMemberId());
-        Posts savedPosts = postsService.savePost(writer, postSaveRequestDto.getTitle(), postSaveRequestDto.getProductName(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
+    public SaveResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto, @AuthenticationPrincipal Member member) {
+        Posts savedPosts = postsService.savePost(member, postSaveRequestDto.getTitle(), postSaveRequestDto.getProductName(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
 
         return SaveResponseDto.builder().id(savedPosts.getId()).build();
     }

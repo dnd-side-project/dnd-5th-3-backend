@@ -7,7 +7,6 @@ import lombok.Getter;
 @Getter
 public class SaveRequestDto {
 
-    private Long memberId;
     private String title;
     private String productName;
     private String content;

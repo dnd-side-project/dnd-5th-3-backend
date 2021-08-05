@@ -1,5 +1,6 @@
 package com.dnd5th3.dnd5th3backend.service;
 
+import com.dnd5th3.dnd5th3backend.config.QuerydslConfig;
 import com.dnd5th3.dnd5th3backend.controller.dto.comment.CommentRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
@@ -13,7 +14,7 @@ import org.springframework.test.annotation.Rollback;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DataJpaTest
-@Import(CommentService.class)
+@Import({CommentService.class, QuerydslConfig.class})
 @TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class CommentServiceTest {
 

@@ -1,11 +1,11 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
+import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.UpdateRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.service.MemberService;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,10 +18,15 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.restdocs.RestDocumentationContextProvider;
+import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,23 +37,25 @@ import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentReque
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
+import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
+import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 @AutoConfigureRestDocs
-@ExtendWith(SpringExtension.class)
+@ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
 public class PostsControllerTest {
 
     @Autowired
     private MockMvc mvc;
-    @MockBean
-    private MemberService memberService;
+    @Autowired
+    private WebApplicationContext context;
     @MockBean
     private PostsService postsService;
     @Autowired
@@ -57,8 +64,16 @@ public class PostsControllerTest {
     private Member member;
 
     @BeforeEach
-    public void setUp() {
-        member = Member.builder().id(1L).email("test@gmail.com").password("1234").role(Role.ROLE_USER).name("name").build();
+    public void setUp(RestDocumentationContextProvider restDocumentation) {
+        mvc = MockMvcBuilders.webAppContextSetup(context)
+                .apply(documentationConfiguration(restDocumentation))
+                .apply(springSecurity(new MockSecurityFilter()))
+                .build();
+        member = Member.builder().email("test@gmail.com")
+                .password("1234")
+                .role(Role.ROLE_USER)
+                .name("name")
+                .build();
     }
 
     @DisplayName("post 생성 api 테스트")
@@ -66,7 +81,6 @@ public class PostsControllerTest {
     public void savePostApiTest() throws Exception {
         //given
         SaveRequestDto requestDto = SaveRequestDto.builder()
-                .memberId(1L)
                 .title("test")
                 .productName("testProduct")
                 .content("test content")
@@ -81,11 +95,11 @@ public class PostsControllerTest {
                 .productImageUrl("test.jpg")
                 .build();
 
-        given(memberService.findMemberById(requestDto.getMemberId())).willReturn(member);
         given(postsService.savePost(member, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
 
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
+                .principal(new UsernamePasswordAuthenticationToken(member, null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
@@ -100,7 +114,6 @@ public class PostsControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("memberId").description("사용자 id"),
                                 fieldWithPath("title").description("글 제목"),
                                 fieldWithPath("productName").description("상품 이름"),
                                 fieldWithPath("content").description("글 내용"),
