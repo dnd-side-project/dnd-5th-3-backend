@@ -4,6 +4,7 @@ import com.dnd5th3.dnd5th3backend.controller.dto.post.*;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
+import com.dnd5th3.dnd5th3backend.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,13 +18,14 @@ import java.util.stream.Collectors;
 public class PostsController {
 
     private final PostsService postsService;
+    private final VoteService voteService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/posts")
-    public SaveResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto, @AuthenticationPrincipal Member member) {
+    public IdResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto, @AuthenticationPrincipal Member member) {
         Posts savedPosts = postsService.savePost(member, postSaveRequestDto.getTitle(), postSaveRequestDto.getProductName(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
 
-        return SaveResponseDto.builder().id(savedPosts.getId()).build();
+        return IdResponseDto.builder().id(savedPosts.getId()).build();
     }
 
     @GetMapping("/api/v1/posts/{id}")
@@ -88,5 +90,13 @@ public class PostsController {
         }).collect(Collectors.toList());
 
         return new AllResponseDto(dtoList);
+    }
+
+    @PostMapping("/api/v1/posts/{id}/vote")
+    public IdResponseDto votePost(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
+        Posts posts = postsService.findPostById(id);
+        voteService.saveVote(member, posts);
+
+        return IdResponseDto.builder().id(posts.getId()).build();
     }
 }
