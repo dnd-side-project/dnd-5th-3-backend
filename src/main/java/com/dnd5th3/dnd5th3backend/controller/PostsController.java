@@ -3,6 +3,8 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.*;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
+import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import com.dnd5th3.dnd5th3backend.service.VoteService;
 import lombok.RequiredArgsConstructor;
@@ -29,9 +31,11 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts/{id}")
-    public PostResponseDto findPostById(@PathVariable(name = "id") Long id) {
+    public PostResponseDto findPostById(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
         Posts foundPost = postsService.findPostById(id);
         CalculateRatioDto ratioDto = CalculateRatioDto.calculate(foundPost);
+        Vote voteResult = voteService.getVoteResult(member, foundPost);
+        VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
 
         return PostResponseDto.builder()
                 .name(foundPost.getMember().getName())
@@ -44,6 +48,7 @@ public class PostsController {
                 .rejectRatio(ratioDto.getRejectRatio())
                 .createdDate(foundPost.getCreatedDate())
                 .voteDeadline(foundPost.getVoteDeadline())
+                .currentMemberVoteResult(currentMemberVoteResult)
                 .build();
     }
 
@@ -93,9 +98,9 @@ public class PostsController {
     }
 
     @PostMapping("/api/v1/posts/{id}/vote")
-    public IdResponseDto votePost(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
+    public IdResponseDto votePost(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member, @RequestBody VoteRequestDto requestDto) {
         Posts posts = postsService.findPostById(id);
-        voteService.saveVote(member, posts);
+        voteService.saveVote(member, posts, requestDto.getResult());
 
         return IdResponseDto.builder().id(posts.getId()).build();
     }
