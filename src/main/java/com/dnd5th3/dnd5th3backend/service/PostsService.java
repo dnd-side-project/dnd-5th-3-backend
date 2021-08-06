@@ -29,6 +29,7 @@ public class PostsService {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
+                .voteCount(0)
                 .viewCount(0)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
