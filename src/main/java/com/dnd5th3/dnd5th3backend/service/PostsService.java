@@ -29,8 +29,7 @@ public class PostsService {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .voteCount(0)
-                .viewCount(0)
+                .rankCount(0)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -46,7 +45,7 @@ public class PostsService {
             foundPost.makeVotedStatusTrue();
         }
         //조회수 증가
-        foundPost.increaseViewCount();
+        foundPost.increaseRankCount();
 
         return foundPost;
     }
@@ -76,9 +75,9 @@ public class PostsService {
             }
         });
 
-        if (sorted.equals("view-count")) {
-            List<Posts> allPostsOrderByViewCount = postsRepository.findPostsOrderByViewCount(offset);
-            return allPostsOrderByViewCount;
+        if (sorted.equals("rank-count")) {
+            List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount(offset);
+            return allPostsOrderByRankCount;
         }
         if (sorted.equals("created-date")) {
             List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate(offset);

@@ -46,10 +46,7 @@ public class Posts extends BaseTime {
     private Integer rejectCount;
 
     @NotNull
-    private Integer voteCount;
-
-    @NotNull
-    private Integer viewCount;
+    private Integer rankCount;
 
     @NotNull
     private Boolean isDeleted;
@@ -70,8 +67,8 @@ public class Posts extends BaseTime {
         this.productImageUrl = productImageUrl;
     }
 
-    public void increaseViewCount() {
-        this.viewCount += 1;
+    public void increaseRankCount() {
+        this.rankCount += 1;
     }
 
     public void makeVotedStatusTrue() {
@@ -83,8 +80,6 @@ public class Posts extends BaseTime {
     }
 
     public void increaseVoteCount(VoteType result) {
-        this.voteCount += 1;
-
         if (result.equals(VoteType.PERMIT)) {
             this.permitCount += 1;
         } else if (result.equals(VoteType.REJECT)) {
