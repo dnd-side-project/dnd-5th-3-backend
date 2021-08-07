@@ -78,7 +78,7 @@ include::{snippets}/posts/delete/response-fields.adoc[]
 
 === HTTP Request
 ==== 인기순
-include::{snippets}/posts/findAll/viewCount/http-request.adoc[]
+include::{snippets}/posts/findAll/rankCount/http-request.adoc[]
 ==== 최근순
 include::{snippets}/posts/findAll/createdDate/http-request.adoc[]
 ==== 최근마감순
@@ -87,7 +87,7 @@ include::{snippets}/posts/findAll/alreadyDone/http-request.adoc[]
 include::{snippets}/posts/findAll/almostDone/http-request.adoc[]
 
 === Request Parameters
-include::{snippets}/posts/findAll/viewCount/request-parameters.adoc[]
+include::{snippets}/posts/findAll/createdDate/request-parameters.adoc[]
 
 === HTTP Response
 include::{snippets}/posts/findAll/createdDate/http-response.adoc[]

@@ -125,7 +125,7 @@ public class PostsControllerTest {
                                 fieldWithPath("productImageUrl").description("상품 이미지")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("게시글 id").type(Long.class)
+                                fieldWithPath("id").description("생성된 게시글 id").type(Long.class)
                         )
                 ))
                 .andExpect(jsonPath("$.id").value(1L));
@@ -246,28 +246,10 @@ public class PostsControllerTest {
                                 fieldWithPath("productImageUrl").description("수정할 상품 이미지")
                         ),
                         responseFields(
-                                fieldWithPath("name").description("작성자 이름"),
-                                fieldWithPath("title").description("수정된 제목"),
-                                fieldWithPath("productName").description("수정된 상품 이름"),
-                                fieldWithPath("content").description("수정된 내용"),
-                                fieldWithPath("productImageUrl").description("수정된 상품 이미지"),
-                                fieldWithPath("isVoted").description("투표 종료 여부"),
-                                fieldWithPath("permitRatio").description("찬성 투표 비율"),
-                                fieldWithPath("rejectRatio").description("반대 투표 비율"),
-                                fieldWithPath("createdDate").description("작성된 시간"),
-                                fieldWithPath("voteDeadline").description("투표 종료 시간")
+                                fieldWithPath("id").description("수정한 게시글 id").type(Long.class)
                         )
                 ))
-                .andExpect(jsonPath("$.name").value("name"))
-                .andExpect(jsonPath("$.title").value("update"))
-                .andExpect(jsonPath("$.productName").value("update product"))
-                .andExpect(jsonPath("$.content").value("update content"))
-                .andExpect(jsonPath("$.productImageUrl").value("update.jpg"))
-                .andExpect(jsonPath("$.isVoted").value(false))
-                .andExpect(jsonPath("$.permitRatio").value(59L))
-                .andExpect(jsonPath("$.rejectRatio").value(41L))
-                .andExpect(jsonPath("$.createdDate").value("2021-08-02T12:00:00"))
-                .andExpect(jsonPath("$.voteDeadline").value("2021-08-03T12:00:00"));
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @DisplayName("post 삭제 api 테스트")
@@ -290,7 +272,7 @@ public class PostsControllerTest {
                         )
                 ))
                 .andExpect(status().isNoContent())
-                .andExpect(jsonPath("id").value(1L));
+                .andExpect(jsonPath("$.id").value(1L));
     }
 
     @DisplayName("post 리스트 조회 api 테스트")

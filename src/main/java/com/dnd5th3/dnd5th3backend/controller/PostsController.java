@@ -53,29 +53,16 @@ public class PostsController {
     }
 
     @PostMapping("/api/v1/posts/{id}")
-    public PostResponseDto updatePost(@PathVariable(name = "id") Long id, @RequestBody UpdateRequestDto updateRequestDto) {
+    public IdResponseDto updatePost(@PathVariable(name = "id") Long id, @RequestBody UpdateRequestDto updateRequestDto) {
         Posts updatedPost = postsService.updatePost(id, updateRequestDto.getTitle(), updateRequestDto.getProductName(), updateRequestDto.getContent(), updateRequestDto.getProductImageUrl());
-        CalculateRatioDto ratioDto = CalculateRatioDto.calculate(updatedPost);
-
-        return PostResponseDto.builder()
-                .name(updatedPost.getMember().getName())
-                .title(updatedPost.getTitle())
-                .productName(updatedPost.getProductName())
-                .content(updatedPost.getContent())
-                .productImageUrl(updatedPost.getProductImageUrl())
-                .isVoted(updatedPost.getIsVoted())
-                .permitRatio(ratioDto.getPermitRatio())
-                .rejectRatio(ratioDto.getRejectRatio())
-                .createdDate(updatedPost.getCreatedDate())
-                .voteDeadline(updatedPost.getVoteDeadline())
-                .build();
+        return IdResponseDto.builder().id(updatedPost.getId()).build();
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/v1/posts/{id}")
-    public DeleteResponseDto deletePost(@PathVariable(name = "id") Long id) {
+    public IdResponseDto deletePost(@PathVariable(name = "id") Long id) {
         postsService.deletePost(id);
-        return DeleteResponseDto.builder().id(id).build();
+        return IdResponseDto.builder().id(id).build();
     }
 
     @GetMapping("/api/v1/posts")
