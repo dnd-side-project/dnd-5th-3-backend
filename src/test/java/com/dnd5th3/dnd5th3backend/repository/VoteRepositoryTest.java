@@ -42,6 +42,7 @@ public class VoteRepositoryTest {
                 .role(Role.ROLE_USER)
                 .name("닉네임").
                 build();
+        memberRepository.save(member);
         Posts posts = Posts.builder()
                 .id(1L)
                 .member(member)
@@ -56,7 +57,6 @@ public class VoteRepositoryTest {
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
-        memberRepository.save(member);
         postsRepository.save(posts);
 
         Vote vote = Vote.builder()
