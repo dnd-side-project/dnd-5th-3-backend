@@ -94,3 +94,21 @@ include::{snippets}/posts/findAll/createdDate/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/posts/findAll/createdDate/response-fields.adoc[]
+
+[[posts-vote]]
+== POST :: 게시글 투표
+
+=== HTTP Request
+include::{snippets}/posts/vote/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/posts/vote/path-parameters.adoc[]
+
+=== Request Fields
+include::{snippets}/posts/vote/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/posts/vote/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/posts/vote/response-fields.adoc[]
