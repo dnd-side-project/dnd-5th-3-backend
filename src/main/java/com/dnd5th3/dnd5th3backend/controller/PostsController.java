@@ -3,7 +3,10 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.*;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
+import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
+import com.dnd5th3.dnd5th3backend.service.VoteService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -17,19 +20,22 @@ import java.util.stream.Collectors;
 public class PostsController {
 
     private final PostsService postsService;
+    private final VoteService voteService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/posts")
-    public SaveResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto, @AuthenticationPrincipal Member member) {
+    public IdResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto, @AuthenticationPrincipal Member member) {
         Posts savedPosts = postsService.savePost(member, postSaveRequestDto.getTitle(), postSaveRequestDto.getProductName(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
 
-        return SaveResponseDto.builder().id(savedPosts.getId()).build();
+        return IdResponseDto.builder().id(savedPosts.getId()).build();
     }
 
     @GetMapping("/api/v1/posts/{id}")
-    public PostResponseDto findPostById(@PathVariable(name = "id") Long id) {
+    public PostResponseDto findPostById(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
         Posts foundPost = postsService.findPostById(id);
         CalculateRatioDto ratioDto = CalculateRatioDto.calculate(foundPost);
+        Vote voteResult = voteService.getVoteResult(member, foundPost);
+        VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
 
         return PostResponseDto.builder()
                 .name(foundPost.getMember().getName())
@@ -42,33 +48,21 @@ public class PostsController {
                 .rejectRatio(ratioDto.getRejectRatio())
                 .createdDate(foundPost.getCreatedDate())
                 .voteDeadline(foundPost.getVoteDeadline())
+                .currentMemberVoteResult(currentMemberVoteResult)
                 .build();
     }
 
     @PostMapping("/api/v1/posts/{id}")
-    public PostResponseDto updatePost(@PathVariable(name = "id") Long id, @RequestBody UpdateRequestDto updateRequestDto) {
+    public IdResponseDto updatePost(@PathVariable(name = "id") Long id, @RequestBody UpdateRequestDto updateRequestDto) {
         Posts updatedPost = postsService.updatePost(id, updateRequestDto.getTitle(), updateRequestDto.getProductName(), updateRequestDto.getContent(), updateRequestDto.getProductImageUrl());
-        CalculateRatioDto ratioDto = CalculateRatioDto.calculate(updatedPost);
-
-        return PostResponseDto.builder()
-                .name(updatedPost.getMember().getName())
-                .title(updatedPost.getTitle())
-                .productName(updatedPost.getProductName())
-                .content(updatedPost.getContent())
-                .productImageUrl(updatedPost.getProductImageUrl())
-                .isVoted(updatedPost.getIsVoted())
-                .permitRatio(ratioDto.getPermitRatio())
-                .rejectRatio(ratioDto.getRejectRatio())
-                .createdDate(updatedPost.getCreatedDate())
-                .voteDeadline(updatedPost.getVoteDeadline())
-                .build();
+        return IdResponseDto.builder().id(updatedPost.getId()).build();
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/v1/posts/{id}")
-    public DeleteResponseDto deletePost(@PathVariable(name = "id") Long id) {
+    public IdResponseDto deletePost(@PathVariable(name = "id") Long id) {
         postsService.deletePost(id);
-        return DeleteResponseDto.builder().id(id).build();
+        return IdResponseDto.builder().id(id).build();
     }
 
     @GetMapping("/api/v1/posts")
@@ -88,5 +82,13 @@ public class PostsController {
         }).collect(Collectors.toList());
 
         return new AllResponseDto(dtoList);
+    }
+
+    @PostMapping("/api/v1/posts/{id}/vote")
+    public IdResponseDto votePost(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member, @RequestBody VoteRequestDto requestDto) {
+        Posts posts = postsService.findPostById(id);
+        voteService.saveVote(member, posts, requestDto.getResult());
+
+        return IdResponseDto.builder().id(posts.getId()).build();
     }
 }

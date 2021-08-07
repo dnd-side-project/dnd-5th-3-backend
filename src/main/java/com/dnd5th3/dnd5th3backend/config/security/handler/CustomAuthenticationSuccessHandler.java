@@ -3,7 +3,7 @@ package com.dnd5th3.dnd5th3backend.config.security.handler;
 import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtTokenProvider;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberResponseDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

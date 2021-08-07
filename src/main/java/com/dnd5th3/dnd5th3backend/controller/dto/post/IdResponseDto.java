@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Builder
 @Getter
-public class SaveResponseDto {
+public class IdResponseDto {
 
     private Long id;
 }
