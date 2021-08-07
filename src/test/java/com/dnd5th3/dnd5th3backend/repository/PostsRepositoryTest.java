@@ -51,7 +51,7 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(0)
+                .rankCount(0)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -72,7 +72,7 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(0)
+                .rankCount(0)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -125,17 +125,17 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
         postsRepository.save(posts);
         postsRepository.save(posts2);
 
-        List<Posts> orderByViewCount = postsRepository.findPostsOrderByViewCount(0);
+        List<Posts> orderByRankCount = postsRepository.findPostsOrderByRankCount(0);
 
-        Assertions.assertEquals(orderByViewCount.get(0).getTitle(), posts2.getTitle());
-        Assertions.assertEquals(orderByViewCount.get(1).getTitle(), posts.getTitle());
+        Assertions.assertEquals(orderByRankCount.get(0).getTitle(), posts2.getTitle());
+        Assertions.assertEquals(orderByRankCount.get(1).getTitle(), posts.getTitle());
     }
 
     @DisplayName("최신순 조회 테스트")
@@ -150,7 +150,7 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -175,7 +175,7 @@ public class PostsRepositoryTest {
                 .isVoted(true)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -201,7 +201,7 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();

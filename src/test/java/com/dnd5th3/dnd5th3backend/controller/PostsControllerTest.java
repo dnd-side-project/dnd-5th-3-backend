@@ -6,7 +6,10 @@ import com.dnd5th3.dnd5th3backend.controller.dto.post.UpdateRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
+import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
+import com.dnd5th3.dnd5th3backend.service.VoteService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -58,6 +61,8 @@ public class PostsControllerTest {
     private WebApplicationContext context;
     @MockBean
     private PostsService postsService;
+    @MockBean
+    private VoteService voteService;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -82,7 +87,7 @@ public class PostsControllerTest {
         //given
         SaveRequestDto requestDto = SaveRequestDto.builder()
                 .title("test")
-                .productName("testProduct")
+                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
@@ -90,7 +95,7 @@ public class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("testProduct")
+                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
@@ -140,13 +145,15 @@ public class PostsControllerTest {
                 .isVoted(false)
                 .permitCount(2)
                 .rejectCount(8)
-                .viewCount(100)
+                .rankCount(100)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.of(2021, 8, 2, 12, 0, 0))
                 .build();
         post.setCreatedDate(LocalDateTime.of(2021, 8, 1, 12, 0, 0));
+        Vote vote = Vote.builder().id(1L).member(member).posts(post).result(VoteType.NO_RESULT).build();
 
         given(postsService.findPostById(1L)).willReturn(post);
+        given(voteService.getVoteResult(member, post)).willReturn(vote);
 
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts/{id}", 1L));
@@ -170,7 +177,8 @@ public class PostsControllerTest {
                                 fieldWithPath("permitRatio").description("찬성 투표 비율"),
                                 fieldWithPath("rejectRatio").description("반대 투표 비율"),
                                 fieldWithPath("createdDate").description("작성된 시간"),
-                                fieldWithPath("voteDeadline").description("투표 종료 시간")
+                                fieldWithPath("voteDeadline").description("투표 종료 시간"),
+                                fieldWithPath("currentMemberVoteResult").description("현재 사용자의 투표 결과")
                         )
                 ))
                 .andExpect(jsonPath("$.name").value("name"))
@@ -182,8 +190,8 @@ public class PostsControllerTest {
                 .andExpect(jsonPath("$.permitRatio").value(20L))
                 .andExpect(jsonPath("$.rejectRatio").value(80L))
                 .andExpect(jsonPath("$.createdDate").value("2021-08-01T12:00:00"))
-                .andExpect(jsonPath("$.voteDeadline").value("2021-08-02T12:00:00"));
-
+                .andExpect(jsonPath("$.voteDeadline").value("2021-08-02T12:00:00"))
+                .andExpect(jsonPath("$.currentMemberVoteResult").value("NO_RESULT"));
     }
 
     @DisplayName("post 수정 api 테스트")
@@ -200,7 +208,7 @@ public class PostsControllerTest {
                 .isVoted(false)
                 .permitCount(36)
                 .rejectCount(25)
-                .viewCount(70)
+                .rankCount(70)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.of(2021, 8, 3, 12, 0, 0))
                 .build();
@@ -278,7 +286,7 @@ public class PostsControllerTest {
                                 parameterWithName("id").description("게시글 id")
                         ),
                         responseFields(
-                                fieldWithPath("id").description("삭제된 게시글 id")
+                                fieldWithPath("id").description("삭제된 게시글 id").type(Long.class)
                         )
                 ))
                 .andExpect(status().isNoContent())
@@ -295,7 +303,7 @@ public class PostsControllerTest {
                 .title("test1")
                 .productImageUrl("test1.jpg")
                 .isVoted(false)
-                .viewCount(15)
+                .rankCount(15)
                 .permitCount(10)
                 .rejectCount(25)
                 .build();
@@ -306,7 +314,7 @@ public class PostsControllerTest {
                 .title("test2")
                 .productImageUrl("test2.jpg")
                 .isVoted(false)
-                .viewCount(10)
+                .rankCount(10)
                 .permitCount(30)
                 .rejectCount(10)
                 .build();
@@ -319,14 +327,14 @@ public class PostsControllerTest {
         given(postsService.findAllPosts("created-date", 0)).willReturn(orderByCreatedDateList);
 
         //when
-        ResultActions viewCountResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=view-count&offset=0"));
+        ResultActions rankCountResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=rank-count&offset=0"));
         ResultActions createdDateResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=created-date&offset=0"));
         ResultActions alreadyDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=already-done&offset=0"));
         ResultActions almostDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=almost-done&offset=0"));
 
         //then
-        viewCountResult
-                .andDo(document("posts/findAll/viewCount",
+        rankCountResult
+                .andDo(document("posts/findAll/rankCount",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
