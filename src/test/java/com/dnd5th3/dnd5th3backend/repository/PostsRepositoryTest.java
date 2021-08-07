@@ -4,6 +4,8 @@ import com.dnd5th3.dnd5th3backend.config.QuerydslConfig;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

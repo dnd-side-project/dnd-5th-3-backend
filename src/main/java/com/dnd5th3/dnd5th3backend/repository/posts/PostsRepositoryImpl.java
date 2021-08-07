@@ -1,4 +1,4 @@
-package com.dnd5th3.dnd5th3backend.repository;
+package com.dnd5th3.dnd5th3backend.repository.posts;
 
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-import static com.dnd5th3.dnd5th3backend.domain.member.QMember.member;
 import static com.dnd5th3.dnd5th3backend.domain.posts.QPosts.posts;
 
 @RequiredArgsConstructor

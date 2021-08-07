@@ -3,8 +3,7 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
 import com.dnd5th3.dnd5th3backend.controller.dto.comment.CommentRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.repository.CommentRepository;
-import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 
 import com.dnd5th3.dnd5th3backend.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;

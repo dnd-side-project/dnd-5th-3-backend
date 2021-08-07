@@ -1,4 +1,4 @@
-package com.dnd5th3.dnd5th3backend.repository;
+package com.dnd5th3.dnd5th3backend.repository.vote;
 
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;

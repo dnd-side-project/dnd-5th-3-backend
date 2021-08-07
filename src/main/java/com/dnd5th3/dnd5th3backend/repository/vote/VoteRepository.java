@@ -1,4 +1,4 @@
-package com.dnd5th3.dnd5th3backend.repository;
+package com.dnd5th3.dnd5th3backend.repository.vote;
 
 import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import org.springframework.data.jpa.repository.JpaRepository;
