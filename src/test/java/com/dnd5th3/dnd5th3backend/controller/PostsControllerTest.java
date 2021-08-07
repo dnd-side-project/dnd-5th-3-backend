@@ -3,6 +3,7 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.UpdateRequestDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.VoteRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
@@ -381,5 +382,56 @@ public class PostsControllerTest {
                         )
                 ))
                 .andExpect(status().isOk());
+    }
+
+    @DisplayName("투표 생성 api 테스트")
+    @Test
+    public void votePostApiTest() throws Exception {
+        //given
+        VoteRequestDto requestDto = new VoteRequestDto(VoteType.PERMIT);
+        Posts posts = Posts.builder()
+                .id(1L)
+                .member(member)
+                .title("test")
+                .productName("test product")
+                .content("test content")
+                .productImageUrl("test.jpg")
+                .build();
+        Vote response = Vote.builder()
+                .id(1L)
+                .member(member)
+                .posts(posts)
+                .result(VoteType.PERMIT)
+                .build();
+        given(postsService.findPostById(1L)).willReturn(posts);
+        given(voteService.saveVote(member, posts, requestDto.getResult())).willReturn(response);
+
+        //when
+        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts/{id}/vote", 1L)
+                .principal(new UsernamePasswordAuthenticationToken(member, null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding("UTF-8")
+                .content(objectMapper.writeValueAsString(requestDto))
+        );
+
+        //then
+        result
+                .andDo(print())
+                .andDo(document("posts/vote",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("id").description("투표할 게시글 id")
+                        ),
+                        requestFields(
+                                fieldWithPath("result").description("PERMIT(찬성), REJECT(반대)")
+                        ),
+                        responseFields(
+                                fieldWithPath("id").description("투표한 게시글 id")
+                        )
+                ))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1L));
     }
 }
