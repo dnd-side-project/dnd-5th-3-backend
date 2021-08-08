@@ -2,6 +2,7 @@ package com.dnd5th3.dnd5th3backend.domain.posts;
 
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import lombok.*;
 
 import javax.persistence.*;
@@ -45,7 +46,7 @@ public class Posts extends BaseTime {
     private Integer rejectCount;
 
     @NotNull
-    private Integer viewCount;
+    private Integer rankCount;
 
     @NotNull
     private Boolean isDeleted;
@@ -66,8 +67,8 @@ public class Posts extends BaseTime {
         this.productImageUrl = productImageUrl;
     }
 
-    public void increaseViewCount() {
-        this.viewCount += 1;
+    public void increaseRankCount() {
+        this.rankCount += 1;
     }
 
     public void makeVotedStatusTrue() {
@@ -76,5 +77,13 @@ public class Posts extends BaseTime {
 
     public void makeDeletedStatusTrue() {
         this.isDeleted = true;
+    }
+
+    public void increaseVoteCount(VoteType result) {
+        if (result.equals(VoteType.PERMIT)) {
+            this.permitCount += 1;
+        } else if (result.equals(VoteType.REJECT)) {
+            this.rejectCount += 1;
+        }
     }
 }

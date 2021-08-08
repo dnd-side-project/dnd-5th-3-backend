@@ -4,7 +4,7 @@ import com.dnd5th3.dnd5th3backend.controller.dto.post.UpdateRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.repository.PostsRepository;
+import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,7 +47,7 @@ public class PostsServiceTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(0)
+                .rankCount(0)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -79,7 +79,7 @@ public class PostsServiceTest {
         //then
         Assertions.assertEquals(post.getMember().getName(), foundPost.getMember().getName());
         Assertions.assertEquals(post.getTitle(), foundPost.getTitle());
-        Assertions.assertEquals(post.getViewCount(), 1);
+        Assertions.assertEquals(post.getRankCount(), 1);
     }
 
     @DisplayName("post 수정 테스트")
@@ -126,7 +126,7 @@ public class PostsServiceTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(15)
+                .rankCount(15)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -140,14 +140,14 @@ public class PostsServiceTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
 
-        List<Posts> viewCountList = new ArrayList<>();
-        viewCountList.add(posts1);
-        viewCountList.add(posts2);
+        List<Posts> rankCountList = new ArrayList<>();
+        rankCountList.add(posts1);
+        rankCountList.add(posts2);
 
         List<Posts> createdDateList = new ArrayList<>();
         createdDateList.add(posts2);
@@ -163,7 +163,7 @@ public class PostsServiceTest {
                 .isVoted(true)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(20)
+                .rankCount(20)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -177,7 +177,7 @@ public class PostsServiceTest {
                 .isVoted(true)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(25)
+                .rankCount(25)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -190,19 +190,19 @@ public class PostsServiceTest {
         almostDoneList.add(posts1);
         alreadyDoneList.add(posts2);
 
-        when(postsRepository.findPostsOrderByViewCount(0)).thenReturn(viewCountList);
+        when(postsRepository.findPostsOrderByRankCount(0)).thenReturn(rankCountList);
         when(postsRepository.findPostsOrderByCreatedDate(0)).thenReturn(createdDateList);
         when(postsRepository.findPostsOrderByAlreadyDone(0)).thenReturn(alreadyDoneList);
         when(postsRepository.findPostsOrderByAlmostDone(0)).thenReturn(almostDoneList);
 
         //when
-        List<Posts> orderByViewCountList = postsService.findAllPosts("view-count", 0);
+        List<Posts> orderByRankCountList = postsService.findAllPosts("rank-count", 0);
         List<Posts> orderByCreatedDateList = postsService.findAllPosts("created-date", 0);
         List<Posts> orderByAlreadyDoneList = postsService.findAllPosts("already-done", 0);
         List<Posts> orderByAlmostDoneList = postsService.findAllPosts("almost-done", 0);
 
         //then
-        Assertions.assertEquals(orderByViewCountList.get(0).getId(), posts1.getId());
+        Assertions.assertEquals(orderByRankCountList.get(0).getId(), posts1.getId());
         Assertions.assertEquals(orderByCreatedDateList.get(0).getId(), posts2.getId());
         Assertions.assertEquals(orderByAlreadyDoneList.get(0).getId(), posts3.getId());
         Assertions.assertEquals(orderByAlmostDoneList.get(0).getId(), posts1.getId());

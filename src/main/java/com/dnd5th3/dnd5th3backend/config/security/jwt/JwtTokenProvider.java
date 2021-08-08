@@ -4,7 +4,7 @@ import com.dnd5th3.dnd5th3backend.config.security.CustomAuthenticationToken;
 import com.dnd5th3.dnd5th3backend.config.security.MemberContext;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.exception.MemberNotFoundException;
-import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
@@ -14,8 +14,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.crypto.SecretKey;
 import java.util.Date;

@@ -1,7 +1,7 @@
 package com.dnd5th3.dnd5th3backend.config.security;
 
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

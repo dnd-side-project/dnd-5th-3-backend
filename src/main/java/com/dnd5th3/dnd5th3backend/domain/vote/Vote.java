@@ -26,4 +26,7 @@ public class Vote extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Posts posts;
+
+    @Enumerated(value = EnumType.STRING)
+    private VoteType result;
 }

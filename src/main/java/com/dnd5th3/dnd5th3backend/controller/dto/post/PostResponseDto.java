@@ -1,5 +1,6 @@
 package com.dnd5th3.dnd5th3backend.controller.dto.post;
 
+import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -19,4 +20,5 @@ public class PostResponseDto {
     private Long rejectRatio;
     private LocalDateTime createdDate;
     private LocalDateTime voteDeadline;
+    private VoteType currentMemberVoteResult;
 }

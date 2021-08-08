@@ -4,6 +4,8 @@ import com.dnd5th3.dnd5th3backend.config.QuerydslConfig;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -51,7 +53,7 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(0)
+                .rankCount(0)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -72,7 +74,7 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(0)
+                .rankCount(0)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -125,17 +127,17 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
         postsRepository.save(posts);
         postsRepository.save(posts2);
 
-        List<Posts> orderByViewCount = postsRepository.findPostsOrderByViewCount(0);
+        List<Posts> orderByRankCount = postsRepository.findPostsOrderByRankCount(0);
 
-        Assertions.assertEquals(orderByViewCount.get(0).getTitle(), posts2.getTitle());
-        Assertions.assertEquals(orderByViewCount.get(1).getTitle(), posts.getTitle());
+        Assertions.assertEquals(orderByRankCount.get(0).getTitle(), posts2.getTitle());
+        Assertions.assertEquals(orderByRankCount.get(1).getTitle(), posts.getTitle());
     }
 
     @DisplayName("최신순 조회 테스트")
@@ -150,7 +152,7 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -175,7 +177,7 @@ public class PostsRepositoryTest {
                 .isVoted(true)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -201,7 +203,7 @@ public class PostsRepositoryTest {
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
-                .viewCount(10)
+                .rankCount(10)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
