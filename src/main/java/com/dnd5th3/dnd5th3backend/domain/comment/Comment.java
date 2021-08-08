@@ -29,7 +29,6 @@ public class Comment extends BaseTime {
 
     private String content;
 
-    @Column(columnDefinition = "boolean default false")
     private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -52,6 +51,7 @@ public class Comment extends BaseTime {
                 .commentLayer(requestDto.getCommentLayer())
                 .commentOrder(requestDto.getCommentOrder())
                 .content(requestDto.getContent())
+                .isDeleted(Boolean.FALSE)
                 .build();
     }
 
