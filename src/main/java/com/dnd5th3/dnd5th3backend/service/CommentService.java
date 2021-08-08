@@ -7,8 +7,8 @@ import com.dnd5th3.dnd5th3backend.domain.comment.CommentEmoji;
 import com.dnd5th3.dnd5th3backend.domain.comment.CommentEmojiMember;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.repository.CommentRepository;
-import com.dnd5th3.dnd5th3backend.repository.PostsRepository;
+import com.dnd5th3.dnd5th3backend.repository.comment.CommentRepository;
+import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -62,7 +62,7 @@ public class CommentService {
 
                 CommentListResponseDto.EmojiIDto emojiIDto = new CommentListResponseDto.EmojiIDto();
                 emojiIDto.setEmojiId(commentEmoji1.getEmoji().getId());
-                emojiIDto.setCount(commentEmoji1.getCommentEmojiCount());
+                emojiIDto.setEmojiCount(commentEmoji1.getCommentEmojiCount());
                 List<CommentEmojiMember> commentEmojiMembers = commentEmoji1.getCommentEmojiMembers();
 
                 boolean isChecked = false;
@@ -82,7 +82,7 @@ public class CommentService {
         }
 
         return CommentListResponseDto.builder()
-                .commentResponseList(commentDtoList)
+                .commentList(commentDtoList)
                 .totalPage(pagingComment.getTotalPages())
                 .totalCount(pagingComment.getTotalElements())
                 .pageNum(pagingComment.getNumber())

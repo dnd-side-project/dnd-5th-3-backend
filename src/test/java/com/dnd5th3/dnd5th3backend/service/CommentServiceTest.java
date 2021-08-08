@@ -6,7 +6,7 @@ import com.dnd5th3.dnd5th3backend.controller.dto.comment.CommentRequestDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.comment.CommentResponseDto;
 import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import org.junit.jupiter.api.*;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -64,7 +64,7 @@ class CommentServiceTest {
     @Test
     void updateComment() {
 
-        CommentRequestDto commentRequestDto = new CommentRequestDto(null, 1L, null, null, null, "comment update");
+        CommentRequestDto commentRequestDto = new CommentRequestDto(null, 1L, null, null, null, "no.1 test content");
         Comment comment = commentService.editComment(commentRequestDto);
         assertEquals(commentRequestDto.getCommentId(),comment.getId(),"응답에 오류가 없는지 확인(수정)");
     }
@@ -72,7 +72,7 @@ class CommentServiceTest {
     @DisplayName("댓글 목록 조회 테스트")
     @Test
     void getCommentList() {
-        long expectedTotalCount = 6;
+        long expectedTotalCount = 4;
         CommentListResponseDto commentListResponseDto = commentService.getCommentList(1,0,member);
         assertEquals(expectedTotalCount,commentListResponseDto.getTotalCount(),"총 댓글 개수 확인");
     }

@@ -4,7 +4,7 @@ import com.dnd5th3.dnd5th3backend.config.QuerydslConfig;
 import com.dnd5th3.dnd5th3backend.controller.dto.emoji.EmojiRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.comment.CommentEmoji;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -18,7 +18,6 @@ import static org.junit.jupiter.api.Assertions.*;
 @DataJpaTest
 @Import({EmojiService.class, QuerydslConfig.class})
 @ActiveProfiles("h2")
-@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class EmojiServiceTest {
 
     @Autowired

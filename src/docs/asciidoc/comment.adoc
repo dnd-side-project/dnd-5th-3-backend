@@ -1,4 +1,4 @@
-= Posts API Docs
+= Comment API Docs
 강성효
 1.0.0, 05/08/2021
 :doctype: book
@@ -16,8 +16,11 @@
 === HTTP Request
 include::{snippets}/comment/get/http-request.adoc[]
 
-=== Request Fields
-include::{snippets}/comment/get/request-fields.adoc[]
+=== Path Parameters
+include::{snippets}/comment/get/path-parameters.adoc[]
+
+=== Request Parameters
+include::{snippets}/comment/get/request-parameters.adoc[]
 
 === HTTP Response
 include::{snippets}/comment/get/http-response.adoc[]
