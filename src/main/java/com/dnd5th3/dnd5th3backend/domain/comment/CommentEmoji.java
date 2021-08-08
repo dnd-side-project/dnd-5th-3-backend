@@ -6,8 +6,11 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.DynamicInsert;
 
 import javax.persistence.*;
+
+import java.util.List;
 
 import static javax.persistence.FetchType.LAZY;
 
@@ -16,6 +19,7 @@ import static javax.persistence.FetchType.LAZY;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
 public class CommentEmoji {
 
     @Id
@@ -31,7 +35,19 @@ public class CommentEmoji {
     @JoinColumn(name = "emoji_id")
     private Emoji emoji;
 
-    private Integer emojiCount;
+    private Integer commentEmojiCount;
 
+    @OneToMany(fetch = LAZY,mappedBy = "commentEmoji")
+    private List<CommentEmojiMember> commentEmojiMembers;
+
+    public boolean update(boolean isChecked) {
+        if(isChecked){
+            this.commentEmojiCount += 1;
+        }else {
+            this.commentEmojiCount -= 1;
+        }
+        // 이모지 클릭이 0이 될 경우 제거 필요
+        return this.commentEmojiCount == 0;
+    }
 }
 

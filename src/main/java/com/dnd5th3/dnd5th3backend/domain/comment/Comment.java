@@ -4,13 +4,10 @@ import com.dnd5th3.dnd5th3backend.controller.dto.comment.CommentRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
-import javax.transaction.Transactional;
+import java.util.List;
 
 @Builder
 @Getter
@@ -36,14 +33,20 @@ public class Comment extends BaseTime {
     private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     private Posts posts;
 
-    public static Comment create(CommentRequestDto requestDto,Member member) {
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "comment")
+    private List<CommentEmoji> commentEmoji;
+
+    public static Comment create(CommentRequestDto requestDto,Member member,Posts posts) {
         return Comment.builder()
                 .member(member)
+                .posts(posts)
                 .id(requestDto.getCommentId())
                 .groupNo(requestDto.getGroupNo())
                 .commentLayer(requestDto.getCommentLayer())

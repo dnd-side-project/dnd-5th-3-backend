@@ -52,14 +52,15 @@ class EmojiServiceTest {
         CommentEmoji commentEmoji = emojiService.saveCommentEmoji(emojiRequestDto, member);
         assertNotNull(commentEmoji.getId(), "이모지 정상 등록 확인");
 
-        EmojiRequestDto checkedRequest = new EmojiRequestDto(null, null, 1L, true);
+        EmojiRequestDto checkedRequest = new EmojiRequestDto(null, null, commentEmoji.getId(), true);
 
         commentEmoji = emojiService.updateCountCommentEmoji(checkedRequest, member);
-        assertEquals(2, commentEmoji.getCommentEmojiCount(),"이모지 Count Update 확인");
+        assertEquals(2, commentEmoji.getCommentEmojiCount(),"이모지 Count 업데이트 확인");
 
-        final EmojiRequestDto uncheckedRequest = new EmojiRequestDto(null, null, 1L, false);
+        final EmojiRequestDto uncheckedRequest = new EmojiRequestDto(null, null, commentEmoji.getId(), false);
         emojiService.updateCountCommentEmoji(uncheckedRequest,member);
         emojiService.updateCountCommentEmoji(uncheckedRequest,member);
+
         assertThrows(NoSuchElementException.class,()->emojiService.updateCountCommentEmoji(uncheckedRequest,member),
                 "이모지 1개에서 Unchecked 할 경우 댓글 이모지 삭제 확인");
 

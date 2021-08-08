@@ -1,8 +1,6 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
-import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 

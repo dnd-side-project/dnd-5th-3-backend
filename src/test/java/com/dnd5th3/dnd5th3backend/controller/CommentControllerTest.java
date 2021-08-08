@@ -22,6 +22,7 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -46,6 +47,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
+@ActiveProfiles("h2")
 class CommentControllerTest {
 
     private MockMvc mvc;
@@ -70,6 +72,44 @@ class CommentControllerTest {
                 .build();
     }
 
+    @DisplayName("댓글 조회 API 테스트")
+    @Test
+    void getAPI() throws Exception {
+
+        Member member = memberRepository.findByEmail("test@gmail.com");
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/comment/{postId}",1)
+                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString()));
+
+        actions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("comment/save",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("postId").description("글 번호"),
+                                fieldWithPath("commentId").description("댓글 번호"),
+                                fieldWithPath("groupNo").description("댓글 그룹번호"),
+                                fieldWithPath("commentLayer").description("댓글 계층"),
+                                fieldWithPath("commentOrder").description("댓글 순서"),
+                                fieldWithPath("content").description("댓글 내용")
+                        ),
+                        responseFields(
+                                fieldWithPath("memberEmail").description("사용자 이메일"),
+                                fieldWithPath("postId").description("글 번호"),
+                                fieldWithPath("commentId").description("댓글 번호"),
+                                fieldWithPath("groupNo").description("댓글 그룹번호"),
+                                fieldWithPath("commentLayer").description("댓글 계층"),
+                                fieldWithPath("commentOrder").description("댓글 순서"),
+                                fieldWithPath("content").description("댓글 내용")
+                        )
+                ))
+                .andExpect(jsonPath("$.commentId").value(1L));
+
+    }
 
     @DisplayName("댓글 등록 API 테스트")
     @Test
