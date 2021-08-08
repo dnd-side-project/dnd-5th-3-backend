@@ -22,6 +22,7 @@ import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -50,7 +51,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-public class PostsControllerTest {
+@ActiveProfiles("local")
+class PostsControllerTest {
 
     @Autowired
     private MockMvc mvc;
@@ -64,7 +66,7 @@ public class PostsControllerTest {
     private Member member;
 
     @BeforeEach
-    public void setUp(RestDocumentationContextProvider restDocumentation) {
+    void setUp(RestDocumentationContextProvider restDocumentation) {
         mvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocumentation))
                 .apply(springSecurity(new MockSecurityFilter()))
@@ -78,7 +80,7 @@ public class PostsControllerTest {
 
     @DisplayName("post 생성 api 테스트")
     @Test
-    public void savePostApiTest() throws Exception {
+    void savePostApiTest() throws Exception {
         //given
         SaveRequestDto requestDto = SaveRequestDto.builder()
                 .title("test")
@@ -128,7 +130,7 @@ public class PostsControllerTest {
 
     @DisplayName("post 상세조회 api 테스트")
     @Test
-    public void findPostByIdApiTest() throws Exception {
+     void findPostByIdApiTest() throws Exception {
         //given
         Posts post = Posts.builder()
                 .id(1L)
@@ -188,7 +190,7 @@ public class PostsControllerTest {
 
     @DisplayName("post 수정 api 테스트")
     @Test
-    public void updatePostApiTest() throws Exception {
+    void updatePostApiTest() throws Exception {
         //given
         Posts response = Posts.builder()
                 .id(1L)
@@ -264,7 +266,7 @@ public class PostsControllerTest {
 
     @DisplayName("post 삭제 api 테스트")
     @Test
-    public void deletePostApiTest() throws Exception {
+    void deletePostApiTest() throws Exception {
         //when
         ResultActions result  = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/posts/{id}", 1L));
 
@@ -287,7 +289,7 @@ public class PostsControllerTest {
 
     @DisplayName("post 리스트 조회 api 테스트")
     @Test
-    public void findPostsListApiTest() throws Exception {
+    void findPostsListApiTest() throws Exception {
         //given
         Posts posts1 = Posts.builder()
                 .id(1L)

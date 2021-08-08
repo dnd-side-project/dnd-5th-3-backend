@@ -47,8 +47,11 @@ class EmojiServiceTest {
 
     @DisplayName("댓글 이모지 등록 & Count 업데이트 & 삭제")
     @Test
-    void saveCommentEmoji_updateCountCommentEmoji_() {
-        EmojiRequestDto emojiRequestDto = new EmojiRequestDto(1L, 1L, null, null);
+    void saveCommentEmoji_updateCountCommentEmoji() {
+        long commentId = 1;
+        long emojiId = 1;
+
+        EmojiRequestDto emojiRequestDto = new EmojiRequestDto(commentId, emojiId, null, null);
         CommentEmoji commentEmoji = emojiService.saveCommentEmoji(emojiRequestDto, member);
         assertNotNull(commentEmoji.getId(), "이모지 정상 등록 확인");
 
