@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class VoteServiceTest {
+class VoteServiceTest {
 
     @Mock
     private VoteRepository voteRepository;
@@ -39,7 +39,7 @@ public class VoteServiceTest {
     private Vote vote;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         member = Member.builder()
                 .id(1L)
                 .email("test@gmail.com")
@@ -70,7 +70,7 @@ public class VoteServiceTest {
 
     @DisplayName("vote 저장 테스트")
     @Test
-    public void saveVoteTest() throws Exception {
+    void saveVoteTest() throws Exception {
         //given
         when(postsRepository.findById(1L)).thenReturn(Optional.of(posts));
         when(voteRepository.save(any(Vote.class))).thenReturn(vote);
@@ -86,7 +86,7 @@ public class VoteServiceTest {
 
     @DisplayName("투표 결과 조회 테스트")
     @Test
-    public void getVoteResultTest() throws Exception {
+    void getVoteResultTest() throws Exception {
         //given
         when(voteRepository.findByMemberAndPosts(member, posts)).thenReturn(vote);
 

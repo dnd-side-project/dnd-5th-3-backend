@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class PostsServiceTest {
+class PostsServiceTest {
 
     @Mock
     private PostsRepository postsRepository;
@@ -35,7 +35,7 @@ public class PostsServiceTest {
     private Posts post;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         member = Member.builder().email("test@gmail.com").password("1234").role(Role.ROLE_USER).name("닉네임").build();
         post = Posts.builder()
                 .id(1L)
@@ -55,7 +55,7 @@ public class PostsServiceTest {
 
     @DisplayName("post 저장 테스트")
     @Test
-    public void savePostTest() throws Exception{
+    void savePostTest() throws Exception{
         //given
         when(postsRepository.save(any(Posts.class))).thenReturn(post);
 
@@ -69,7 +69,7 @@ public class PostsServiceTest {
 
     @DisplayName("post 상세조회 테스트")
     @Test
-    public void findPostByIdTest() throws Exception{
+    void findPostByIdTest() throws Exception{
         //given
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
@@ -84,7 +84,7 @@ public class PostsServiceTest {
 
     @DisplayName("post 수정 테스트")
     @Test
-    public void updatePostTest() throws Exception {
+    void updatePostTest() throws Exception {
         //given
         UpdateRequestDto requestDto = UpdateRequestDto.builder().title("update").productName("update product").content("update contest").productImageUrl("update.jpg").build();
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
@@ -100,7 +100,7 @@ public class PostsServiceTest {
 
     @DisplayName("post 삭제 테스트")
     @Test
-    public void deletePostTest() throws Exception {
+    void deletePostTest() throws Exception {
         //given
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
@@ -114,7 +114,7 @@ public class PostsServiceTest {
 
     @DisplayName("post 리스트 조회 테스트")
     @Test
-    public void findPostsListTest() throws Exception {
+    void findPostsListTest() throws Exception {
         //given
         Posts posts1 = Posts.builder()
                 .id(1L)
