@@ -88,13 +88,13 @@ class CommentControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("postId").description("게시글 ID")
+                                parameterWithName("postId").description("글 ID")
                         ),
                         requestParameters(
                                 parameterWithName("pageNum").description("페이지 번호")
                         ),
                         responseFields(
-                                fieldWithPath("commentList.[].commentId").description("댓글 고유 번호"),
+                                fieldWithPath("commentList.[].commentId").description("댓글 ID"),
                                 fieldWithPath("commentList.[].groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentList.[].commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
@@ -147,14 +147,14 @@ class CommentControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         relaxedRequestFields(
-                                fieldWithPath("postId").description("글 번호"),
+                                fieldWithPath("postId").description("글 ID"),
                                 fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentOrder").description("댓글 순서"),
                                 fieldWithPath("content").description("댓글 내용")
                         ),
                         responseFields(
-                                fieldWithPath("commentId").description("댓글 번호"),
+                                fieldWithPath("commentId").description("생성된 댓글 ID"),
                                 fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentOrder").description("댓글 순서"),
@@ -193,15 +193,15 @@ class CommentControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         relaxedRequestFields(
-                                fieldWithPath("commentId").description("댓글 번호"),
+                                fieldWithPath("commentId").description("댓글 ID"),
                                 fieldWithPath("content").description("수정할 댓글 내용")
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("commentId").description("댓글 번호"),
+                                fieldWithPath("commentId").description("댓글 ID"),
                                 fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentOrder").description("댓글 순서"),
-                                fieldWithPath("content").description("댓글 내용"),
+                                fieldWithPath("content").description("수정된 댓글 내용"),
                                 fieldWithPath("createdDate").description("생성일자"),
                                 fieldWithPath("updatedDate").description("수정일자"),
                                 fieldWithPath("isDeleted").description("삭제 여부")
@@ -233,10 +233,10 @@ class CommentControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         relaxedRequestFields(
-                                fieldWithPath("commentId").description("삭제할 댓글 번호")
+                                fieldWithPath("commentId").description("삭제할 댓글 ID")
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("commentId").description("삭제된 댓글 번호"),
+                                fieldWithPath("commentId").description("삭제된 댓글 ID"),
                                 fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentOrder").description("댓글 순서"),
