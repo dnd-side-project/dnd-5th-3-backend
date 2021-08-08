@@ -55,7 +55,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
-@ActiveProfiles("local")
 class PostsControllerTest {
 
     @Autowired
@@ -388,7 +387,7 @@ class PostsControllerTest {
 
     @DisplayName("투표 생성 api 테스트")
     @Test
-    public void votePostApiTest() throws Exception {
+    void votePostApiTest() throws Exception {
         //given
         VoteRequestDto requestDto = new VoteRequestDto(VoteType.PERMIT);
         Posts posts = Posts.builder()

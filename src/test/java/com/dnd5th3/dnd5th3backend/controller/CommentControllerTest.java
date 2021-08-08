@@ -3,14 +3,12 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
 import com.dnd5th3.dnd5th3backend.controller.dto.comment.CommentRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
 
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -27,6 +25,9 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
 
@@ -35,8 +36,7 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
+import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,6 +44,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("h2")
 class CommentControllerTest {
 
@@ -70,6 +71,7 @@ class CommentControllerTest {
     }
 
     @DisplayName("댓글 조회 API 테스트")
+    @Order(1)
     @Test
     void getAPI() throws Exception {
         long postId = 1;
@@ -88,19 +90,23 @@ class CommentControllerTest {
                         pathParameters(
                                 parameterWithName("postId").description("게시글 ID")
                         ),
+                        requestParameters(
+                                parameterWithName("pageNum").description("페이지 번호")
+                        ),
                         responseFields(
-                                fieldWithPath("commentResponseList.[].commentId").description("댓글 고유 번호"),
-                                fieldWithPath("commentResponseList.[].groupNo").description("댓글 그룹번호"),
-                                fieldWithPath("commentResponseList.[].commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentResponseList.[].commentOrder").description("댓글 순서"),
-                                fieldWithPath("commentResponseList.[].commentOrder").description("댓글 순서"),
-                                fieldWithPath("commentResponseList.[].content").description("댓글 내용"),
-                                fieldWithPath("commentResponseList.[].createdDate").description("생성일자"),
-                                fieldWithPath("commentResponseList.[].updatedDate").description("수정일자"),
-                                fieldWithPath("commentResponseList.[].emojiList").description("이모지 리스트"),
-                                fieldWithPath("commentResponseList.[].emojiList.[].emojiId").description("이모지 ID"),
-                                fieldWithPath("commentResponseList.[].emojiList.[].count").description("이모지 개수"),
-                                fieldWithPath("commentResponseList.[].emojiList.[].checked").description("유저 클릭 여부 "),
+                                fieldWithPath("commentList.[].commentId").description("댓글 고유 번호"),
+                                fieldWithPath("commentList.[].groupNo").description("댓글 그룹번호"),
+                                fieldWithPath("commentList.[].commentLayer").description("댓글 계층"),
+                                fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
+                                fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
+                                fieldWithPath("commentList.[].content").description("댓글 내용"),
+                                fieldWithPath("commentList.[].createdDate").description("생성일자"),
+                                fieldWithPath("commentList.[].updatedDate").description("수정일자"),
+                                fieldWithPath("commentList.[].deleted").description("삭제여부"),
+                                fieldWithPath("commentList.[].emojiList").description("댓글 이모지 리스트"),
+                                fieldWithPath("commentList.[].emojiList.[].emojiId").description("이모지 ID"),
+                                fieldWithPath("commentList.[].emojiList.[].emojiCount").description("이모지 개수"),
+                                fieldWithPath("commentList.[].emojiList.[].checked").description("유저 클릭 여부 "),
                                 fieldWithPath("pageNum").description("페이지 번호"),
                                 fieldWithPath("totalPage").description("전체 페이지수"),
                                 fieldWithPath("totalCount").description("전체 개수")
@@ -118,16 +124,21 @@ class CommentControllerTest {
         long groupNo = 8;
         int commentLayer = 0;
         int commentOrder = 0;
-        String content = "comment test";
+        String content = "comment save test";
 
-        CommentRequestDto commentRequestDto = new CommentRequestDto(postId, null, groupNo, commentLayer, commentOrder, content);
+        Map<String,Object> request = new HashMap<>();
+        request.put("postId",postId);
+        request.put("groupNo",groupNo);
+        request.put("commentLayer",commentLayer);
+        request.put("commentOrder",commentOrder);
+        request.put("content",content);
 
         ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/comment")
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8.toString())
-                .content(objectMapper.writeValueAsString(commentRequestDto)));
+                .content(objectMapper.writeValueAsString(request)));
 
         actions
                 .andExpect(status().isCreated())
@@ -153,7 +164,7 @@ class CommentControllerTest {
                                 fieldWithPath("isDeleted").description("삭제 여부")
                         )
                 ))
-                .andExpect(jsonPath("$.commentId").value(7L));
+                .andExpect(jsonPath("$.commentId").value(5L));
 
     }
 
@@ -161,14 +172,19 @@ class CommentControllerTest {
     @Test
     void editAPI() throws Exception {
 
-        CommentRequestDto commentRequestDto = new CommentRequestDto(null, 1L, null, null, null, "comment edit");
+        long commentId = 1;
+        String content = "comment edit test";
+
+        Map<String,Object> request = new HashMap<>();
+        request.put("commentId",commentId);
+        request.put("content",content);
 
         ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/comment")
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8.toString())
-                .content(objectMapper.writeValueAsString(commentRequestDto)));
+                .content(objectMapper.writeValueAsString(request)));
 
         actions
                 .andExpect(status().isOk())
@@ -191,22 +207,24 @@ class CommentControllerTest {
                                 fieldWithPath("isDeleted").description("삭제 여부")
                         )
                 ))
-                .andExpect(jsonPath("$.commentId").value(1L));
+                .andExpect(jsonPath("$.commentId").value(commentId));
 
     }
 
     @DisplayName("댓글 삭제 API 테스트")
     @Test
     void deleteAPI() throws Exception {
+        long commentId = 1;
 
-        CommentRequestDto commentRequestDto = new CommentRequestDto(null, 1L, null, null, null, null);
+        Map<String,Object> request = new HashMap<>();
+        request.put("commentId",commentId);
 
         ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/comment")
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8.toString())
-                .content(objectMapper.writeValueAsString(commentRequestDto)));
+                .content(objectMapper.writeValueAsString(request)));
 
         actions
                 .andExpect(status().isOk())
@@ -228,7 +246,8 @@ class CommentControllerTest {
                                 fieldWithPath("isDeleted").description("삭제 여부")
                         )
                 ))
-                .andExpect(jsonPath("$.commentId").value(1L));
+                .andExpect(jsonPath("$.commentId").value(commentId))
+                .andExpect(jsonPath("$.isDeleted").value(true));
 
     }
 }
