@@ -34,7 +34,7 @@ class CommentServiceTest {
     private ModelMapper modelMapper;
 
     @BeforeEach
-    public void setup(){
+    void setup(){
         long memberId = 1;
         member = memberRepository.getById(memberId);
     }

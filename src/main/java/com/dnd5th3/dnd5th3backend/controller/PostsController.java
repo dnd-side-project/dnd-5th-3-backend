@@ -3,6 +3,7 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.*;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.dnd5th3.dnd5th3backend.domain.vo.VoteRatioVo;
 import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
@@ -33,7 +34,7 @@ public class PostsController {
     @GetMapping("/api/v1/posts/{id}")
     public PostResponseDto findPostById(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
         Posts foundPost = postsService.findPostById(id);
-        CalculateRatioDto ratioDto = CalculateRatioDto.calculate(foundPost);
+        VoteRatioVo ratioVo = new VoteRatioVo(foundPost);
         Vote voteResult = voteService.getVoteResult(member, foundPost);
         VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
 
@@ -44,8 +45,8 @@ public class PostsController {
                 .content(foundPost.getContent())
                 .productImageUrl(foundPost.getProductImageUrl())
                 .isVoted(foundPost.getIsVoted())
-                .permitRatio(ratioDto.getPermitRatio())
-                .rejectRatio(ratioDto.getRejectRatio())
+                .permitRatio(ratioVo.getPermitRatio())
+                .rejectRatio(ratioVo.getRejectRatio())
                 .createdDate(foundPost.getCreatedDate())
                 .voteDeadline(foundPost.getVoteDeadline())
                 .currentMemberVoteResult(currentMemberVoteResult)
@@ -69,14 +70,14 @@ public class PostsController {
     public AllResponseDto findPostsList(@RequestParam String sorted, @RequestParam int offset) {
         List<Posts> postsList = postsService.findAllPosts(sorted, offset);
         List<PostsListDto> dtoList = postsList.stream().map( p -> {
-            CalculateRatioDto ratioDto = CalculateRatioDto.calculate(p);
+            VoteRatioVo ratioVo = new VoteRatioVo(p);
             return PostsListDto.builder()
                     .name(p.getMember().getName())
                     .title(p.getTitle())
                     .productImageUrl(p.getProductImageUrl())
                     .isVoted(p.getIsVoted())
-                    .permitRatio(ratioDto.getPermitRatio())
-                    .rejectRatio(ratioDto.getRejectRatio())
+                    .permitRatio(ratioVo.getPermitRatio())
+                    .rejectRatio(ratioVo.getRejectRatio())
                     .createdDate(p.getCreatedDate())
                     .build();
         }).collect(Collectors.toList());
