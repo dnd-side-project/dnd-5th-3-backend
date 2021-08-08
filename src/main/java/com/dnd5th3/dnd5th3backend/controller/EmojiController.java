@@ -18,16 +18,14 @@ public class EmojiController {
     private final EmojiService emojiService;
 
     @GetMapping("/{detail}")
-    public long saveAPI(@PathVariable String detail){
+    public long createAPI(@PathVariable String detail){
         return emojiService.saveEmoji(detail);
     }
 
     @PostMapping
     public ResponseEntity<EmojiResponseDto> saveAPI(@RequestBody EmojiRequestDto emojiRequestDto, @AuthenticationPrincipal Member member){
         CommentEmoji commentEmoji = emojiService.saveCommentEmoji(emojiRequestDto, member);
-        EmojiResponseDto responseDto = EmojiResponseDto.builder()
-                    .commentEmojiId(commentEmoji.getId())
-                    .build();
+        EmojiResponseDto responseDto = EmojiResponseDto.of(commentEmoji);
 
         return ResponseEntity.ok(responseDto);
     }
@@ -35,10 +33,7 @@ public class EmojiController {
     @PutMapping
     public ResponseEntity<EmojiResponseDto> updateAPI(@RequestBody EmojiRequestDto emojiRequestDto, @AuthenticationPrincipal Member member){
         CommentEmoji commentEmoji = emojiService.updateCountCommentEmoji(emojiRequestDto,member);
-        EmojiResponseDto responseDto = EmojiResponseDto.builder()
-                .commentEmojiId(commentEmoji.getId())
-                .commentEmojiCount(commentEmoji.getCommentEmojiCount())
-                .build();
+        EmojiResponseDto responseDto = EmojiResponseDto.of(commentEmoji);
 
         return ResponseEntity.ok(responseDto);
     }
