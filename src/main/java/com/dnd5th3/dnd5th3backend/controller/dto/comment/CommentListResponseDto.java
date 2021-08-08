@@ -2,6 +2,8 @@ package com.dnd5th3.dnd5th3backend.controller.dto.comment;
 
 import lombok.*;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 
@@ -9,7 +11,10 @@ import java.util.List;
 @Getter
 public class CommentListResponseDto {
 
-    List<CommentDto> commentResponseList;
+    private List<CommentDto> commentResponseList;
+    private int pageNum;
+    private int totalPage;
+    private long totalCount;
 
     @Setter
     @Getter
@@ -17,11 +22,13 @@ public class CommentListResponseDto {
     @AllArgsConstructor
     public static class CommentDto{
 
-        private long id;
+        private long commentId;
         private long groupNo;
         private int commentLayer;
         private int commentOrder;
         private String content;
+        private LocalDateTime createdDate;
+        private LocalDateTime updatedDate;
         List<EmojiIDto> emojiList;
     }
 

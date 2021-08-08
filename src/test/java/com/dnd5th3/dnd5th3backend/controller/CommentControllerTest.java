@@ -3,10 +3,8 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
 import com.dnd5th3.dnd5th3backend.controller.dto.comment.CommentRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.repository.CommentRepository;
 import com.dnd5th3.dnd5th3backend.repository.MemberRepository;
 
-import com.dnd5th3.dnd5th3backend.service.CommentService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 
@@ -29,9 +27,6 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
 
@@ -40,6 +35,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
 
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -61,8 +58,7 @@ class CommentControllerTest {
     @Autowired
     private MemberRepository memberRepository;
 
-    @Autowired
-    private CommentService commentService;
+    private Member member;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation){
@@ -70,14 +66,14 @@ class CommentControllerTest {
                 .apply(documentationConfiguration(restDocumentation))
                 .apply(springSecurity(new MockSecurityFilter()))
                 .build();
+        member = memberRepository.findByEmail("test@gmail.com");
     }
 
     @DisplayName("댓글 조회 API 테스트")
     @Test
     void getAPI() throws Exception {
-
-        Member member = memberRepository.findByEmail("test@gmail.com");
-        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/comment/{postId}",1)
+        long postId = 1;
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/comment/{postId}?pageNum=0",postId)
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -86,28 +82,31 @@ class CommentControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("comment/save",
+                .andDo(document("comment/get",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("postId").description("글 번호"),
-                                fieldWithPath("commentId").description("댓글 번호"),
-                                fieldWithPath("groupNo").description("댓글 그룹번호"),
-                                fieldWithPath("commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentOrder").description("댓글 순서"),
-                                fieldWithPath("content").description("댓글 내용")
+                        pathParameters(
+                                parameterWithName("postId").description("게시글 ID")
                         ),
                         responseFields(
-                                fieldWithPath("memberEmail").description("사용자 이메일"),
-                                fieldWithPath("postId").description("글 번호"),
-                                fieldWithPath("commentId").description("댓글 번호"),
-                                fieldWithPath("groupNo").description("댓글 그룹번호"),
-                                fieldWithPath("commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentOrder").description("댓글 순서"),
-                                fieldWithPath("content").description("댓글 내용")
+                                fieldWithPath("commentResponseList.[].commentId").description("댓글 고유 번호"),
+                                fieldWithPath("commentResponseList.[].groupNo").description("댓글 그룹번호"),
+                                fieldWithPath("commentResponseList.[].commentLayer").description("댓글 계층"),
+                                fieldWithPath("commentResponseList.[].commentOrder").description("댓글 순서"),
+                                fieldWithPath("commentResponseList.[].commentOrder").description("댓글 순서"),
+                                fieldWithPath("commentResponseList.[].content").description("댓글 내용"),
+                                fieldWithPath("commentResponseList.[].createdDate").description("생성일자"),
+                                fieldWithPath("commentResponseList.[].updatedDate").description("수정일자"),
+                                fieldWithPath("commentResponseList.[].emojiList").description("이모지 리스트"),
+                                fieldWithPath("commentResponseList.[].emojiList.[].emojiId").description("이모지 ID"),
+                                fieldWithPath("commentResponseList.[].emojiList.[].count").description("이모지 개수"),
+                                fieldWithPath("commentResponseList.[].emojiList.[].checked").description("유저 클릭 여부 "),
+                                fieldWithPath("pageNum").description("페이지 번호"),
+                                fieldWithPath("totalPage").description("전체 페이지수"),
+                                fieldWithPath("totalCount").description("전체 개수")
                         )
                 ))
-                .andExpect(jsonPath("$.commentId").value(1L));
+                .andExpect(jsonPath("$.pageNum").value(0L));
 
     }
 
@@ -115,8 +114,13 @@ class CommentControllerTest {
     @Test
     void saveAPI() throws Exception {
 
-        Member member = memberRepository.findByEmail("test@gmail.com");
-        CommentRequestDto commentRequestDto = new CommentRequestDto(1L, 1L, 1L, 0, 0, "comment test");
+        long postId = 1;
+        long groupNo = 8;
+        int commentLayer = 0;
+        int commentOrder = 0;
+        String content = "comment test";
+
+        CommentRequestDto commentRequestDto = new CommentRequestDto(postId, null, groupNo, commentLayer, commentOrder, content);
 
         ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/comment")
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
@@ -126,30 +130,30 @@ class CommentControllerTest {
                 .content(objectMapper.writeValueAsString(commentRequestDto)));
 
         actions
-                .andExpect(status().isOk())
+                .andExpect(status().isCreated())
                 .andDo(print())
                 .andDo(document("comment/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(
+                        relaxedRequestFields(
                                 fieldWithPath("postId").description("글 번호"),
-                                fieldWithPath("commentId").description("댓글 번호"),
                                 fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentOrder").description("댓글 순서"),
                                 fieldWithPath("content").description("댓글 내용")
                         ),
                         responseFields(
-                                fieldWithPath("memberEmail").description("사용자 이메일"),
-                                fieldWithPath("postId").description("글 번호"),
                                 fieldWithPath("commentId").description("댓글 번호"),
                                 fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentOrder").description("댓글 순서"),
-                                fieldWithPath("content").description("댓글 내용")
+                                fieldWithPath("content").description("댓글 내용"),
+                                fieldWithPath("createdDate").description("생성일자"),
+                                fieldWithPath("updatedDate").description("수정일자"),
+                                fieldWithPath("isDeleted").description("삭제 여부")
                         )
                 ))
-                .andExpect(jsonPath("$.commentId").value(1L));
+                .andExpect(jsonPath("$.commentId").value(7L));
 
     }
 
@@ -157,19 +161,14 @@ class CommentControllerTest {
     @Test
     void editAPI() throws Exception {
 
-        Member member = memberRepository.findByEmail("test@gmail.com");
-        CommentRequestDto commentRequestDto = new CommentRequestDto(1L, 1L, 1L, 0, 0, "comment test");
-        commentService.saveComment(commentRequestDto,member);
-        Map<Object,Object> request = new HashMap<>();
-        request.put("commentId",1L);
-        request.put("content","comment edit");
+        CommentRequestDto commentRequestDto = new CommentRequestDto(null, 1L, null, null, null, "comment edit");
 
         ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/comment")
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8.toString())
-                .content(objectMapper.writeValueAsString(request)));
+                .content(objectMapper.writeValueAsString(commentRequestDto)));
 
         actions
                 .andExpect(status().isOk())
@@ -182,7 +181,14 @@ class CommentControllerTest {
                                 fieldWithPath("content").description("수정할 댓글 내용")
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("commentId").description("댓글 번호")
+                                fieldWithPath("commentId").description("댓글 번호"),
+                                fieldWithPath("groupNo").description("댓글 그룹번호"),
+                                fieldWithPath("commentLayer").description("댓글 계층"),
+                                fieldWithPath("commentOrder").description("댓글 순서"),
+                                fieldWithPath("content").description("댓글 내용"),
+                                fieldWithPath("createdDate").description("생성일자"),
+                                fieldWithPath("updatedDate").description("수정일자"),
+                                fieldWithPath("isDeleted").description("삭제 여부")
                         )
                 ))
                 .andExpect(jsonPath("$.commentId").value(1L));
@@ -193,19 +199,14 @@ class CommentControllerTest {
     @Test
     void deleteAPI() throws Exception {
 
-        Member member = memberRepository.findByEmail("test@gmail.com");
-        CommentRequestDto commentRequestDto = new CommentRequestDto(1L, 1L, 1L, 0, 0, "comment test");
-        commentService.saveComment(commentRequestDto,member);
-
-        Map<Object,Object> request = new HashMap<>();
-        request.put("commentId",1L);
+        CommentRequestDto commentRequestDto = new CommentRequestDto(null, 1L, null, null, null, null);
 
         ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/comment")
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8.toString())
-                .content(objectMapper.writeValueAsString(request)));
+                .content(objectMapper.writeValueAsString(commentRequestDto)));
 
         actions
                 .andExpect(status().isOk())
@@ -217,7 +218,14 @@ class CommentControllerTest {
                                 fieldWithPath("commentId").description("삭제할 댓글 번호")
                         ),
                         relaxedResponseFields(
-                                fieldWithPath("commentId").description("삭제한 댓글 번호")
+                                fieldWithPath("commentId").description("삭제된 댓글 번호"),
+                                fieldWithPath("groupNo").description("댓글 그룹번호"),
+                                fieldWithPath("commentLayer").description("댓글 계층"),
+                                fieldWithPath("commentOrder").description("댓글 순서"),
+                                fieldWithPath("content").description("댓글 내용"),
+                                fieldWithPath("createdDate").description("생성일자"),
+                                fieldWithPath("updatedDate").description("수정일자"),
+                                fieldWithPath("isDeleted").description("삭제 여부")
                         )
                 ))
                 .andExpect(jsonPath("$.commentId").value(1L));

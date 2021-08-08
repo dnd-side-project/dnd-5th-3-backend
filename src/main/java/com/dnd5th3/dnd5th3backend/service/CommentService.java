@@ -11,12 +11,12 @@ import com.dnd5th3.dnd5th3backend.repository.CommentRepository;
 import com.dnd5th3.dnd5th3backend.repository.PostsRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +25,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostsRepository postsRepository;
     private final ModelMapper modelMapper;
+    private static final int PAGE_SIZE = 50;
 
     public Comment saveComment(CommentRequestDto requestDto, Member member){
         Posts posts = postsRepository.findById(requestDto.getPostId()).orElseThrow();
@@ -33,23 +34,25 @@ public class CommentService {
     }
 
     @Transactional
-    public long editComment(CommentRequestDto requestDto) {
+    public Comment editComment(CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(requestDto.getCommentId()).orElseThrow();
         comment.update(requestDto);
-        return comment.getId();
+        return comment;
     }
 
     @Transactional
-    public long deleteComment(CommentRequestDto requestDto) {
+    public Comment deleteComment(CommentRequestDto requestDto) {
         Comment comment = commentRepository.findById(requestDto.getCommentId()).orElseThrow();
         comment.delete();
-        return comment.getId();
+        return comment;
     }
 
     @Transactional
-    public List<CommentListResponseDto.CommentDto> getCommentList(long postId, Member member){
+    public CommentListResponseDto getCommentList(long postId,int pageNum, Member member){
+        PageRequest pageRequest = PageRequest.of(pageNum, PAGE_SIZE);
+        Page<Comment> pagingComment = commentRepository.getAllCommentList(postId,pageRequest);
+        List<Comment> commentList = pagingComment.getContent();
 
-        List<Comment> commentList = commentRepository.fetchAllCommentList(postId);
         List<CommentListResponseDto.CommentDto> commentDtoList = new ArrayList<>();
         for(Comment comment : commentList){
             CommentListResponseDto.CommentDto commentDto = modelMapper.map(comment, CommentListResponseDto.CommentDto.class);
@@ -78,6 +81,11 @@ public class CommentService {
             commentDtoList.add(commentDto);
         }
 
-        return commentDtoList;
+        return CommentListResponseDto.builder()
+                .commentResponseList(commentDtoList)
+                .totalPage(pagingComment.getTotalPages())
+                .totalCount(pagingComment.getTotalElements())
+                .pageNum(pagingComment.getNumber())
+                .build();
     }
 }
