@@ -6,10 +6,7 @@ import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.MethodOrderer;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestMethodOrder;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -35,6 +32,8 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -68,6 +67,7 @@ class EmojiControllerTest {
         member = memberRepository.findByEmail("test@gmail.com");
     }
 
+    @DisplayName("댓글의 이모지 등록 API 테스트")
     @Test
     void saveAPI() throws Exception {
         long commentId = 1;
@@ -103,6 +103,7 @@ class EmojiControllerTest {
                 .andExpect(jsonPath("$.commentEmojiCount").value(1));
     }
 
+    @DisplayName("댓글의 이모지 업데이트 API 테스트")
     @Test
     void updateAPI() throws Exception {
 
