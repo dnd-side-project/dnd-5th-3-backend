@@ -1,0 +1,63 @@
+= Member API Docs
+강성효
+1.0.0, 05/08/2021
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+[[member-save]]
+== POST :: 회원가입
+
+=== HTTP Request
+include::{snippets}/member/save/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/save/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/save/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/save/response-fields.adoc[]
+
+[[member-login]]
+== POST :: 로그인
+
+=== HTTP Request
+include::{snippets}/member/login/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/login/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/login/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/login/response-fields.adoc[]
+
+* HTTP Header에 [Authorization : 엑세스토큰] 형태로 추가
+
+
+[[member-reissue]]
+== PUT :: 엑세스 토큰 재발급
+
+=== HTTP Request
+include::{snippets}/member/reissue/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/reissue/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/reissue/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/reissue/response-fields.adoc[]
+
+
+
+
