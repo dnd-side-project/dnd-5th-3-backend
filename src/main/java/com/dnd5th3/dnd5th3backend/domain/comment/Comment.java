@@ -43,7 +43,7 @@ public class Comment extends BaseTime {
     private List<CommentEmoji> commentEmoji;
 
     public static Comment create(CommentRequestDto requestDto,Member member,Posts posts) {
-        return Comment.builder()
+        Comment comment = Comment.builder()
                 .member(member)
                 .posts(posts)
                 .id(requestDto.getCommentId())
@@ -53,6 +53,9 @@ public class Comment extends BaseTime {
                 .content(requestDto.getContent())
                 .isDeleted(Boolean.FALSE)
                 .build();
+        posts.addComment(comment);
+
+        return comment;
     }
 
     public void update(CommentRequestDto requestDto){
