@@ -474,7 +474,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_response_fields_3">Response Fields</a></li>
 </ul>
 </li>
-<li><a href="#comment-edit">PUT :: 댓글 삭제</a>
+<li><a href="#comment-delete">DELETE :: 댓글 삭제</a>
 <ul class="sectlevel2">
 <li><a href="#_http_request_4">HTTP Request</a></li>
 <li><a href="#_request_fields_3">Request Fields</a></li>
@@ -803,8 +803,8 @@ Content-Length: 247
   "commentOrder" : 0,
   "content" : "comment save test",
   "isDeleted" : false,
-  "createdDate" : "2021-08-08T21:03:34.0127108",
-  "updatedDate" : "2021-08-08T21:03:34.0127108"
+  "createdDate" : "2021-08-11T23:19:55.4332845",
+  "updatedDate" : "2021-08-11T23:19:55.4332845"
 }</code></pre>
 </div>
 </div>
@@ -925,7 +925,7 @@ Host: docs.moomool.com
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 244
+Content-Length: 245
 
 {
   "commentId" : 1,
@@ -935,7 +935,7 @@ Content-Length: 244
   "content" : "comment edit test",
   "isDeleted" : false,
   "createdDate" : "2021-08-06T12:41:15.02505",
-  "updatedDate" : "2021-08-08T21:03:33.858645"
+  "updatedDate" : "2021-08-11T23:19:55.3152566"
 }</code></pre>
 </div>
 </div>
@@ -1002,7 +1002,7 @@ Content-Length: 244
 </div>
 </div>
 <div class="sect1">
-<h2 id="comment-edit"><a class="link" href="#comment-edit">PUT :: 댓글 삭제</a></h2>
+<h2 id="comment-delete"><a class="link" href="#comment-delete">DELETE :: 댓글 삭제</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_http_request_4"><a class="link" href="#_http_request_4">HTTP Request</a></h3>
@@ -1060,7 +1060,7 @@ Content-Length: 244
   "content" : "comment edit test",
   "isDeleted" : true,
   "createdDate" : "2021-08-06T12:41:15.02505",
-  "updatedDate" : "2021-08-08T21:03:33.9542653"
+  "updatedDate" : "2021-08-11T23:19:55.3902734"
 }</code></pre>
 </div>
 </div>
@@ -1130,7 +1130,7 @@ Content-Length: 244
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-08-08 20:00:24 +0900
+Last updated 2021-08-11 23:16:26 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

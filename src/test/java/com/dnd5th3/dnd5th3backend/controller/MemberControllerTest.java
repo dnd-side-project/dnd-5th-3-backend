@@ -1,7 +1,6 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
-import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -32,8 +31,6 @@ import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.docu
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
-import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
-import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -41,9 +38,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
-@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 @ActiveProfiles("h2")
-class EmojiControllerTest {
+class MemberControllerTest {
 
     private MockMvc mvc;
 
@@ -53,32 +49,66 @@ class EmojiControllerTest {
     @Autowired
     private WebApplicationContext context;
 
-    @Autowired
-    private MemberRepository memberRepository;
-
-    private Member member;
-
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation){
         mvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocumentation))
                 .apply(springSecurity(new MockSecurityFilter()))
                 .build();
-        member = memberRepository.findByEmail("test@gmail.com");
     }
 
-    @DisplayName("댓글의 이모지 등록 API 테스트")
+
+    @DisplayName("회원가입 API 테스트")
     @Test
-    void saveAPI() throws Exception {
-        long commentId = 1;
-        long emojiId = 1;
+    void signUpAPI() throws Exception {
+        String email = "moomool@naver.com";
+        String name = "MOOMOOL";
+        String password= "1234";
 
         Map<String,Object> request = new HashMap<>();
-        request.put("commentId",commentId);
-        request.put("emojiId",emojiId);
-        
-        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/emoji")
-                .principal(new UsernamePasswordAuthenticationToken(member,null))
+        request.put("name",name);
+        request.put("password",password);
+        request.put("email",email);
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/member")
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString())
+                .content(objectMapper.writeValueAsString(request)));
+
+        actions
+                .andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(document("member/save",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").description("회원가입 이메일"),
+                                fieldWithPath("name").description("회원가입 닉네임"),
+                                fieldWithPath("password").description("회원가입 비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("memberId").description("회원 ID(고유번호)"),
+                                fieldWithPath("email").description("회원가입 이메일"),
+                                fieldWithPath("name").description("회원가입 닉네임"),
+                                fieldWithPath("memberType").description("회원 유형")
+                        )
+                ))
+                .andExpect(jsonPath("$.email").value(email))
+                .andExpect(jsonPath("$.name").value(name));
+    }
+
+    @DisplayName("AccessToken 재발급 API 테스트")
+    @Test
+    void reissueAPI() throws Exception {
+        String email = "test@naver.com";
+        String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiYzNhOGJlNGQtNjAxYS00YjY0LWE3NWMtYmVhY2U3ZTAzMjExIn0sImV4cCI6MTYyOTY5MDY3NX0.EgqcB0chYYTAx7VDUTqeMC-sV_0veGr7QOrFc4Bo8ig";
+
+        Map<String,Object> request = new HashMap<>();
+        request.put("email",email);
+        request.put("refreshToken",refreshToken);
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/member/token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8.toString())
@@ -87,56 +117,21 @@ class EmojiControllerTest {
         actions
                 .andExpect(status().isOk())
                 .andDo(print())
-                .andDo(document("emoji/save",
+                .andDo(document("member/reissue",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("commentId").description("댓글 ID"),
-                                fieldWithPath("emojiId").description("이모지 ID")
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("refreshToken").description("리프레시 토큰")
                         ),
                         responseFields(
-                                fieldWithPath("commentEmojiId").description("생성된 댓글이모지 ID"),
-                                fieldWithPath("commentEmojiCount").description("댓글이모지 개수")
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("accessToken").description("재발급한 엑세스토큰")
                         )
                 ))
-                .andExpect(jsonPath("$.commentEmojiId").value(6L))
-                .andExpect(jsonPath("$.commentEmojiCount").value(1));
+                .andExpect(jsonPath("$.email").value(email))
+                .andExpect(jsonPath("$.accessToken").exists());
     }
 
-    @DisplayName("댓글의 이모지 업데이트 API 테스트")
-    @Test
-    void updateAPI() throws Exception {
 
-        long commentEmojiId = 3;
-        boolean isChecked = true;
-
-        Map<String,Object> request = new HashMap<>();
-        request.put("commentEmojiId",commentEmojiId);
-        request.put("isChecked",isChecked);
-
-        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/emoji")
-                .principal(new UsernamePasswordAuthenticationToken(member,null))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding(Charsets.UTF_8.toString())
-                .content(objectMapper.writeValueAsString(request)));
-
-        actions
-                .andExpect(status().isOk())
-                .andDo(print())
-                .andDo(document("emoji/update",
-                        getDocumentRequest(),
-                        getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("commentEmojiId").description("댓글 ID"),
-                                fieldWithPath("isChecked").description("체크 여부")
-                        ),
-                        responseFields(
-                                fieldWithPath("commentEmojiId").description("업데이트한 댓글이모지 ID"),
-                                fieldWithPath("commentEmojiCount").description("업데이트된 댓글이모지 개수")
-                        )
-                ))
-                .andExpect(jsonPath("$.commentEmojiId").value(commentEmojiId))
-                .andExpect(jsonPath("$.commentEmojiCount").value(2));
-    }
 }

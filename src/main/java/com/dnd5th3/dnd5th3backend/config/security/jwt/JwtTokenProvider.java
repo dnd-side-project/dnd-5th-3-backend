@@ -41,25 +41,30 @@ public class JwtTokenProvider {
         this.SECRET = secret;
         this.ACCESS_TOKEN_EXPIRED_TIME = accessTokenExpiredTime;
         this.REFRESH_TOKEN_EXPIRED_TIME = refreshTokenExpiredTime;
-        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(secret));
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(this.SECRET));
         this.userDetailsService = userDetailsService;
         this.memberRepository = memberRepository;
         this.jwtParser = Jwts.parserBuilder().setSigningKey(secretKey).build();
     }
 
     private String createToken(Member member,long expiredTime,boolean isRefreshToken){
-        Claims claims = Jwts.claims();
         if(isRefreshToken){
+            Claims claims = Jwts.claims();
             UUID uuid = UUID.randomUUID();
             claims.put("refresh",uuid.toString());
+            return Jwts.builder()
+                    .claim("claim",claims)
+                    .signWith(secretKey,SignatureAlgorithm.HS256)
+                    .setExpiration(new Date(System.currentTimeMillis() + expiredTime * 1000))
+                    .compact();
+        }else {
+
+            return Jwts.builder()
+                    .setSubject(member.getEmail())
+                    .signWith(secretKey,SignatureAlgorithm.HS256)
+                    .setExpiration(new Date(System.currentTimeMillis() + expiredTime * 1000))
+                    .compact();
         }
-        return Jwts.builder()
-                .setSubject(member.getEmail())
-                .signWith(secretKey,SignatureAlgorithm.HS256)
-                .claim("claim",claims)
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + expiredTime))
-                .compact();
     }
 
     public String createRefreshToken(Member member){
@@ -73,10 +78,8 @@ public class JwtTokenProvider {
     }
 
     public void saveRefreshToken(Member member,String refreshToken){
-        Member targetMember = memberRepository.findById(member.getId())
-                .orElseThrow(()->new MemberNotFoundException("save RefreshToken Error"));
+        Member targetMember = memberRepository.findById(member.getId()).orElseThrow();
         targetMember.setRefreshToken(refreshToken);
-        //TODO: Dirty checking 방식으로 수정필요
         memberRepository.save(targetMember);
     }
 
@@ -86,7 +89,7 @@ public class JwtTokenProvider {
             Date now = new Date();
             return  expiredDate.after(now);
         }catch (ExpiredJwtException e){
-            log.error("토큰이 만료되었습니다.");
+            log.error("토큰이 만료되었습니다. - {}",e.getMessage());
         }catch (Exception e){
             log.error("토큰 파싱 오류발생");
             e.printStackTrace();
