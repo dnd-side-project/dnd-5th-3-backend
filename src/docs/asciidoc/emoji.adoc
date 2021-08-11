@@ -26,7 +26,7 @@ include::{snippets}/emoji/save/http-response.adoc[]
 include::{snippets}/emoji/save/response-fields.adoc[]
 
 [[emoji-update]]
-== PUT :: 댓글 수정
+== PUT :: 댓글이모지 개수 업데이트
 
 === HTTP Request
 include::{snippets}/emoji/update/http-request.adoc[]
