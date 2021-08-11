@@ -1,11 +1,12 @@
 package com.dnd5th3.dnd5th3backend.config.security.handler;
 
 import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtTokenProvider;
-import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberResponseDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberTokenResponseDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.Authentication;
@@ -28,6 +29,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     private ObjectMapper objectMapper = new ObjectMapper();
     private final JwtTokenProvider jwtTokenProvider;
     private final MemberRepository memberRepository;
+    private final ModelMapper modelMapper;
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authentication) throws IOException, ServletException {
@@ -49,7 +51,9 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
         String accessToken  = jwtTokenProvider.createAccessToken(member);
         String refreshToken = jwtTokenProvider.createRefreshToken(member);
 
-        MemberResponseDto memberResponseDto = MemberResponseDto.createMemberResponseDto(member, accessToken, refreshToken);
+        MemberTokenResponseDto memberResponseDto = modelMapper.map(member,MemberTokenResponseDto.class);
+        memberResponseDto.setAccessToken(accessToken);
+        memberResponseDto.setRefreshToken(refreshToken);
 
         response.setStatus(HttpStatus.OK.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);

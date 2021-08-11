@@ -12,6 +12,8 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @RequiredArgsConstructor
@@ -38,8 +40,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                     .and()
                         .authorizeRequests()
-                        .antMatchers("/api/v1/member/test2").permitAll()
-                        .antMatchers("/api/v1/member/test").hasRole("USER")
+                        .antMatchers("/api/v1/login").permitAll()
+                        .antMatchers("/api/v1/member/token").permitAll()
+                        .antMatchers("/api/v1/member").permitAll()
                         .antMatchers("/api/v1/posts/**").permitAll()
                         .antMatchers("/docs/**").permitAll()
                         .anyRequest().authenticated()
@@ -68,5 +71,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         customAuthenticationProcessingFilter.setAuthenticationSuccessHandler(customAuthenticationSuccessHandler);
         customAuthenticationProcessingFilter.setAuthenticationFailureHandler(customAuthenticationfailureHandler);
         return customAuthenticationProcessingFilter;
+    }
+
+    @Bean
+    public PasswordEncoder passwordEncoder(){
+        return PasswordEncoderFactories.createDelegatingPasswordEncoder();
     }
 }

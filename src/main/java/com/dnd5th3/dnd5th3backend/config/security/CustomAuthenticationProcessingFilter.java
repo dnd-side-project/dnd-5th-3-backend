@@ -14,14 +14,16 @@ import java.io.IOException;
 public class CustomAuthenticationProcessingFilter extends AbstractAuthenticationProcessingFilter {
 
     private ObjectMapper objectMapper = new ObjectMapper();
+    private static final String LOGIN_URL = "/api/v1/login";
 
     protected CustomAuthenticationProcessingFilter() {
-        super(new AntPathRequestMatcher("/api/member/login"));
+        super(new AntPathRequestMatcher(LOGIN_URL));
     }
 
     @Override
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException, IOException{
         MemberRequestDto memberRequestDto = objectMapper.readValue(request.getReader(), MemberRequestDto.class);
+
         if(memberRequestDto == null){
             throw new IllegalArgumentException();
         }
