@@ -5,6 +5,7 @@ import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vo.VoteRatioVo;
 import com.dnd5th3.dnd5th3backend.exception.PostNotFoundException;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
+import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
 import org.springframework.security.core.parameters.P;
@@ -125,8 +126,8 @@ public class PostsService {
             filterByCommentCount.stream().sorted((p1, p2) -> p2.getComments().size() - p1.getComments().size());
             //게시글이 5개 이상이면 상위 5개 중 랜덤으로 추출
             bestResponsePost = filterByCommentCount.size() >= 5
-                    ? filterByCommentCount.get((int) (Math.random() * 5))
-                    : filterByCommentCount.get((int) (Math.random() * filterByCommentCount.size()));
+                    ? filterByCommentCount.get(RandomNumber.startFromZeroTo(5))
+                    : filterByCommentCount.get(RandomNumber.startFromZeroTo(filterByCommentCount.size()));
         } else if (filterByCommentCount.size() == 1) {
             bestResponsePost = filterByCommentCount.get(0);
         } else {
@@ -141,13 +142,13 @@ public class PostsService {
             }
         });
         //막상막하 투표글
-        Posts neckAndNeckPost = neckAndNeckPostList.size() == 0 ? null : neckAndNeckPostList.get((int) (Math.random() * neckAndNeckPostList.size()));
+        Posts neckAndNeckPost = neckAndNeckPostList.size() == 0 ? null : neckAndNeckPostList.get(RandomNumber.startFromZeroTo(neckAndNeckPostList.size()));
         //불타고 있는글
-        Posts hotPost = top50RankedList.get((int) (Math.random() * 50));
+        Posts hotPost = top50RankedList.get(RandomNumber.startFromZeroTo(50));
         //사랑 듬뿍 받은글
-        Posts belovedPost = top50RankedList.get((int) (Math.random() * 50));
+        Posts belovedPost = top50RankedList.get(RandomNumber.startFromZeroTo(50));
         //무물의 추천글
-        Posts recommendPost = top50RankedList.get((int) (Math.random() * 50));
+        Posts recommendPost = top50RankedList.get(RandomNumber.startFromZeroTo(50));
 
         //값이 있는 데이터만 전달
         if (bestResponsePost != null) {
