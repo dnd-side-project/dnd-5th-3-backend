@@ -55,9 +55,6 @@ public class Posts extends BaseTime {
     private Integer rankCount;
 
     @NotNull
-    private Integer voteCount;
-
-    @NotNull
     private Boolean isDeleted;
 
     @NotNull
@@ -89,7 +86,6 @@ public class Posts extends BaseTime {
     }
 
     public void increaseVoteCount(VoteType result) {
-        this.voteCount += 1;
         if (result.equals(VoteType.PERMIT)) {
             this.permitCount += 1;
         } else if (result.equals(VoteType.REJECT)) {
