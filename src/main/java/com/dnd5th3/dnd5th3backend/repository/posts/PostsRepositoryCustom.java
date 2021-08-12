@@ -10,4 +10,5 @@ public interface PostsRepositoryCustom {
     List<Posts> findPostsOrderByCreatedDate(int offset);
     List<Posts> findPostsOrderByAlreadyDone(int offset);
     List<Posts> findPostsOrderByAlmostDone(int offset);
+    List<Posts> findPostsTop50Ranked();
 }

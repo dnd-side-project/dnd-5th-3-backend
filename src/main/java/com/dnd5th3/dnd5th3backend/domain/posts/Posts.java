@@ -28,9 +28,8 @@ public class Posts extends BaseTime {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    @Builder.Default
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
-    private List<Comment> comments = new ArrayList<>();
+    private List<Comment> comments;
 
     @NotNull
     private String title;

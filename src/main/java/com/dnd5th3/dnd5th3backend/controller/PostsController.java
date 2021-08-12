@@ -13,7 +13,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -69,7 +71,7 @@ public class PostsController {
     @GetMapping("/api/v1/posts")
     public AllResponseDto findPostsList(@RequestParam String sorted, @RequestParam int offset) {
         List<Posts> postsList = postsService.findAllPosts(sorted, offset);
-        List<PostsListDto> dtoList = postsList.stream().map( p -> {
+        List<PostsListDto> dtoList = postsList.stream().map(p -> {
             VoteRatioVo ratioVo = new VoteRatioVo(p);
             return PostsListDto.builder()
                     .name(p.getMember().getName())
@@ -91,5 +93,26 @@ public class PostsController {
         voteService.saveVote(member, posts, requestDto.getResult());
 
         return IdResponseDto.builder().id(posts.getId()).build();
+    }
+
+    @GetMapping("/api/v1/posts/main")
+    public Map<String, MainPostDto> mainPosts() {
+        Map<String, Posts> mainPostsMap = postsService.findMainPosts();
+        Map<String, MainPostDto> resultMap = new HashMap<>();
+        mainPostsMap.forEach((key, value) -> {
+            VoteRatioVo ratioVo = new VoteRatioVo(value);
+            MainPostDto postDto = MainPostDto.builder()
+                    .name(value.getMember().getName())
+                    .title(value.getTitle())
+                    .productImageUrl(value.getProductImageUrl())
+                    .isVoted(value.getIsVoted())
+                    .permitRatio(ratioVo.getPermitRatio())
+                    .rejectRatio(ratioVo.getRejectRatio())
+                    .createdDate(value.getCreatedDate())
+                    .build();
+            resultMap.put(key, postDto);
+        });
+
+        return resultMap;
     }
 }
