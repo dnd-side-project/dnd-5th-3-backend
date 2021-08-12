@@ -111,26 +111,24 @@ public class PostsService {
                 p.makeVotedStatusTrue();
             }
         });
-        //추출한 50개 중 반응(투표수와 댓글수)이 있는 것들만 필터링
-        List<Posts> filterByVoteCountAndCommentCount = new ArrayList<>();
+        //추출한 50개 중 반응(댓글)이 있는 것들만 필터링
+        List<Posts> filterByCommentCount = new ArrayList<>();
         top50RankedList.stream().forEach(p -> {
-            if (p.getVoteCount() != 0 && p.getComments().size() != 0) {
-                filterByVoteCountAndCommentCount.add(p);
+            if (p.getComments().size() != 0) {
+                filterByCommentCount.add(p);
             }
         });
         //최고의 반응글
         Posts bestResponsePost;
-        if (filterByVoteCountAndCommentCount.size() >= 2) {
-            //필터링한 게시글들을 투표수와 댓글수로 정렬
-            filterByVoteCountAndCommentCount.stream()
-                    .sorted((p1, p2) -> p2.getVoteCount() - p1.getVoteCount())
-                    .sorted((p1, p2) -> p2.getComments().size() - p1.getComments().size());
+        if (filterByCommentCount.size() >= 2) {
+            //필터링한 게시글들을 댓글수로 정렬
+            filterByCommentCount.stream().sorted((p1, p2) -> p2.getComments().size() - p1.getComments().size());
             //게시글이 5개 이상이면 상위 5개 중 랜덤으로 추출
-            bestResponsePost = filterByVoteCountAndCommentCount.size() >= 5
-                    ? filterByVoteCountAndCommentCount.get((int) (Math.random() * 5))
-                    : filterByVoteCountAndCommentCount.get((int) (Math.random() * filterByVoteCountAndCommentCount.size()));
-        } else if (filterByVoteCountAndCommentCount.size() == 1) {
-            bestResponsePost = filterByVoteCountAndCommentCount.get(0);
+            bestResponsePost = filterByCommentCount.size() >= 5
+                    ? filterByCommentCount.get((int) (Math.random() * 5))
+                    : filterByCommentCount.get((int) (Math.random() * filterByCommentCount.size()));
+        } else if (filterByCommentCount.size() == 1) {
+            bestResponsePost = filterByCommentCount.get(0);
         } else {
             bestResponsePost = null;
         }
