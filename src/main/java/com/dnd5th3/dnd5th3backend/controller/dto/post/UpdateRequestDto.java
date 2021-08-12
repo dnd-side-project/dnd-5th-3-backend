@@ -8,7 +8,6 @@ import lombok.Getter;
 public class UpdateRequestDto {
 
     private String title;
-    private String productName;
     private String content;
     private String productImageUrl;
 }

@@ -12,7 +12,6 @@ public class PostResponseDto {
 
     private String name;
     private String title;
-    private String productName;
     private String content;
     private String productImageUrl;
     private Boolean isVoted;

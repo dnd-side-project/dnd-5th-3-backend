@@ -51,7 +51,6 @@ class VoteServiceTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)

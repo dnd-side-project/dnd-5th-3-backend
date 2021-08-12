@@ -91,7 +91,6 @@ class PostsControllerTest {
         //given
         SaveRequestDto requestDto = SaveRequestDto.builder()
                 .title("test")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
@@ -99,12 +98,11 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
 
-        given(postsService.savePost(member, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
+        given(postsService.savePost(member, requestDto.getTitle(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
 
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
@@ -124,7 +122,6 @@ class PostsControllerTest {
                         getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("title").description("글 제목"),
-                                fieldWithPath("productName").description("상품 이름"),
                                 fieldWithPath("content").description("글 내용"),
                                 fieldWithPath("productImageUrl").description("상품 이미지")
                         ),
@@ -143,7 +140,6 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("test product")
                 .content("content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -174,7 +170,6 @@ class PostsControllerTest {
                         responseFields(
                                 fieldWithPath("name").description("작성자 이름"),
                                 fieldWithPath("title").description("글 제목"),
-                                fieldWithPath("productName").description("상품 이름"),
                                 fieldWithPath("content").description("글 내용"),
                                 fieldWithPath("productImageUrl").description("상품 이미지"),
                                 fieldWithPath("isVoted").description("투표 종료 여부"),
@@ -187,7 +182,6 @@ class PostsControllerTest {
                 ))
                 .andExpect(jsonPath("$.name").value("name"))
                 .andExpect(jsonPath("$.title").value("test"))
-                .andExpect(jsonPath("$.productName").value("test product"))
                 .andExpect(jsonPath("$.content").value("content"))
                 .andExpect(jsonPath("$.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.isVoted").value(false))
@@ -206,7 +200,6 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("update")
-                .productName("update product")
                 .content("update content")
                 .productImageUrl("update.jpg")
                 .isVoted(false)
@@ -219,12 +212,11 @@ class PostsControllerTest {
         response.setCreatedDate(LocalDateTime.of(2021, 8, 2, 12, 0, 0));
         UpdateRequestDto requestDto = UpdateRequestDto.builder()
                 .title("update")
-                .productName("update product")
                 .content("update content")
                 .productImageUrl("update.jpg")
                 .build();
 
-        given(postsService.updatePost(1L, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
+        given(postsService.updatePost(1L, requestDto.getTitle(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
 
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts/{id}", 1L)
@@ -245,7 +237,6 @@ class PostsControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("title").description("수정할 제목"),
-                                fieldWithPath("productName").description("수정할 상품 이름"),
                                 fieldWithPath("content").description("수정할 내용"),
                                 fieldWithPath("productImageUrl").description("수정할 상품 이미지")
                         ),
@@ -396,7 +387,6 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
@@ -446,7 +436,6 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("hot post")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -460,7 +449,6 @@ class PostsControllerTest {
                 .id(2L)
                 .member(member)
                 .title("beloved post")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -474,7 +462,6 @@ class PostsControllerTest {
                 .id(3L)
                 .member(member)
                 .title("recommend post")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -488,7 +475,6 @@ class PostsControllerTest {
                 .id(4L)
                 .member(member)
                 .title("best response post")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -502,7 +488,6 @@ class PostsControllerTest {
                 .id(5L)
                 .member(member)
                 .title("neck and neck post")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)

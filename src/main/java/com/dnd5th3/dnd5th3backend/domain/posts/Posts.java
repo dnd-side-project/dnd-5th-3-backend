@@ -35,9 +35,6 @@ public class Posts extends BaseTime {
     private String title;
 
     @NotNull
-    private String productName;
-
-    @NotNull
     private String content;
 
     private String productImageUrl;
@@ -60,12 +57,9 @@ public class Posts extends BaseTime {
     @NotNull
     private LocalDateTime voteDeadline;
 
-    public void update(String title, String productName, String content, String productImageUrl) {
+    public void update(String title, String content, String productImageUrl) {
         if (title != null) {
             this.title = title;
-        }
-        if (productName != null) {
-            this.productName = productName;
         }
         if (content != null) {
             this.content = content;
