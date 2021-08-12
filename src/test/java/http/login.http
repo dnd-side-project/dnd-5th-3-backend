@@ -1,13 +1,30 @@
-POST http://localhost:8080/api/member/login
+POST http://localhost:8080/api/v1/login
 Content-Type: application/json
 
 {
-  "email"    : "test@gmail.com",
+  "email"    : "test@naver.com",
+  "password" : "1234"
+}
+###
+
+POST http://localhost:8080/api/v1/member
+Content-Type: application/json
+
+{
+  "email"    : "test@naver.com",
+  "name"     : "test",
   "password" : "1234"
 }
 
 ###
-GET http://localhost:8080/api/v1/member/test
-Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QGdtYWlsLmNvbSIsImNsYWltIjp7fSwiaWF0IjoxNjI2NjA1MjQ0LCJleHAiOjE2MjY2MDU2MDR9.afEW81WZlWmlfhUzkPK4Qa22KcT-tT1zQKgP1h1bCpg
+PUT http://localhost:8080/api/v1/member/token
+Content-Type: application/json
+
+{
+  "email"        : "test@naver.com",
+  "refreshToken" : "1234"
+}
 
 ###
+GET http://localhost:8080/api/v1/emoji/ee
+Authorization: eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ0ZXN0QG5hdmVyLmNvbSIsImV4cCI6MTYyODY4ODgxNH0.76zp8szF2xZJRh0D45f19MeYI00l72q8ISGb7oAYckQ

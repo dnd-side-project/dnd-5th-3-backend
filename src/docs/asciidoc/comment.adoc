@@ -58,8 +58,8 @@ include::{snippets}/comment/edit/http-response.adoc[]
 === Response Fields
 include::{snippets}/comment/edit/response-fields.adoc[]
 
-[[comment-edit]]
-== PUT :: 댓글 삭제
+[[comment-delete]]
+== DELETE :: 댓글 삭제
 
 === HTTP Request
 include::{snippets}/comment/delete/http-request.adoc[]

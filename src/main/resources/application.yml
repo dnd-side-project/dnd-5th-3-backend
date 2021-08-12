@@ -10,6 +10,6 @@ spring:
 
 jwt:
   secret: d2h5LWRpZC15b3UtYnV5LXRoaXMtc2VjcmV0LWtleS13aHktZGlkLXlvdS1idXktdGhpcy1zZWNyZXQta2V5
-  access-token-expired-time: 360000
-  refresh-token-expired-time: 360000
+  access-token-expired-time: 86400
+  refresh-token-expired-time: 1209600
 
