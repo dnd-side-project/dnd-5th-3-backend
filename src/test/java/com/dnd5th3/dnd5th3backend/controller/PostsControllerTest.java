@@ -440,7 +440,7 @@ class PostsControllerTest {
 
     @DisplayName("메인페이지 post 조회 api 테스트")
     @Test
-    public void mainPageApiTest() throws Exception {
+    void mainPageApiTest() throws Exception {
         //given
         Posts hotPost = Posts.builder()
                 .id(1L)
@@ -484,10 +484,40 @@ class PostsControllerTest {
                 .isDeleted(false)
                 .build();
         recommendPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
+        Posts bestResponsePost = Posts.builder()
+                .id(4L)
+                .member(member)
+                .title("best response post")
+                .productName("test product")
+                .content("test content")
+                .productImageUrl("test.jpg")
+                .isVoted(false)
+                .permitCount(80)
+                .rejectCount(80)
+                .rankCount(120)
+                .isDeleted(false)
+                .build();
+        bestResponsePost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
+        Posts neckAndNeckPost = Posts.builder()
+                .id(5L)
+                .member(member)
+                .title("neck and neck post")
+                .productName("test product")
+                .content("test content")
+                .productImageUrl("test.jpg")
+                .isVoted(false)
+                .permitCount(80)
+                .rejectCount(80)
+                .rankCount(100)
+                .isDeleted(false)
+                .build();
+        neckAndNeckPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Map<String, Posts> mainPostsMap = new HashMap<>();
         mainPostsMap.put("hotPost", hotPost);
         mainPostsMap.put("belovedPost", belovedPost);
         mainPostsMap.put("recommendPost", recommendPost);
+        mainPostsMap.put("bestResponsePost", bestResponsePost);
+        mainPostsMap.put("neckAndNeckPost", neckAndNeckPost);
 
         given(postsService.findMainPosts()).willReturn(mainPostsMap);
 
@@ -521,7 +551,21 @@ class PostsControllerTest {
                                 fieldWithPath("recommendPost.isVoted").description("무물의 추천글 투표 종료 여부"),
                                 fieldWithPath("recommendPost.permitRatio").description("무물의 추천글 찬성 비율"),
                                 fieldWithPath("recommendPost.rejectRatio").description("무물의 추천글 반대 비율"),
-                                fieldWithPath("recommendPost.createdDate").description("무물의 추천글 작성된 시간")
+                                fieldWithPath("recommendPost.createdDate").description("무물의 추천글 작성된 시간"),
+                                fieldWithPath("bestResponsePost.name").description("최고의 반응글 작성자 이름"),
+                                fieldWithPath("bestResponsePost.title").description("최고의 반응글 제목"),
+                                fieldWithPath("bestResponsePost.productImageUrl").description("최고의 반응글 상품 이미지"),
+                                fieldWithPath("bestResponsePost.isVoted").description("최고의 반응글 투표 종료 여부"),
+                                fieldWithPath("bestResponsePost.permitRatio").description("최고의 반응글 찬성 비율"),
+                                fieldWithPath("bestResponsePost.rejectRatio").description("최고의 반응글 반대 비율"),
+                                fieldWithPath("bestResponsePost.createdDate").description("최고의 반응글 작성된 시간"),
+                                fieldWithPath("neckAndNeckPost.name").description("막상막하 투표글 작성자 이름"),
+                                fieldWithPath("neckAndNeckPost.title").description("막상막하 투표글 제목"),
+                                fieldWithPath("neckAndNeckPost.productImageUrl").description("막상막하 투표글 상품 이미지"),
+                                fieldWithPath("neckAndNeckPost.isVoted").description("막상막하 투표글 투표 종료 여부"),
+                                fieldWithPath("neckAndNeckPost.permitRatio").description("막상막하 투표글 찬성 비율"),
+                                fieldWithPath("neckAndNeckPost.rejectRatio").description("막상막하 투표글 반대 비율"),
+                                fieldWithPath("neckAndNeckPost.createdDate").description("막상막하 투표글 작성된 시간")
                                 )
                 ))
                 .andExpect(jsonPath("$.hotPost.name").value("name"))
@@ -544,6 +588,20 @@ class PostsControllerTest {
                 .andExpect(jsonPath("$.recommendPost.isVoted").value(false))
                 .andExpect(jsonPath("$.recommendPost.permitRatio").value(0))
                 .andExpect(jsonPath("$.recommendPost.rejectRatio").value(0))
-                .andExpect(jsonPath("$.recommendPost.createdDate").value("2021-08-12T12:00:00"));
+                .andExpect(jsonPath("$.recommendPost.createdDate").value("2021-08-12T12:00:00"))
+                .andExpect(jsonPath("$.bestResponsePost.name").value("name"))
+                .andExpect(jsonPath("$.bestResponsePost.title").value("best response post"))
+                .andExpect(jsonPath("$.bestResponsePost.productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.bestResponsePost.isVoted").value(false))
+                .andExpect(jsonPath("$.bestResponsePost.permitRatio").value(50))
+                .andExpect(jsonPath("$.bestResponsePost.rejectRatio").value(50))
+                .andExpect(jsonPath("$.bestResponsePost.createdDate").value("2021-08-12T12:00:00"))
+                .andExpect(jsonPath("$.neckAndNeckPost.name").value("name"))
+                .andExpect(jsonPath("$.neckAndNeckPost.title").value("neck and neck post"))
+                .andExpect(jsonPath("$.neckAndNeckPost.productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.neckAndNeckPost.isVoted").value(false))
+                .andExpect(jsonPath("$.neckAndNeckPost.permitRatio").value(50))
+                .andExpect(jsonPath("$.neckAndNeckPost.rejectRatio").value(50))
+                .andExpect(jsonPath("$.neckAndNeckPost.createdDate").value("2021-08-12T12:00:00"));
     }
 }

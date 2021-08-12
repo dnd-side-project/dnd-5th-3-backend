@@ -112,3 +112,15 @@ include::{snippets}/posts/vote/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/posts/vote/response-fields.adoc[]
+
+[[posts-main]]
+== GET :: 메인페이지 게시글 조회
+
+=== HTTP Request
+include::{snippets}/posts/main/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/posts/main/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/posts/main/response-fields.adoc[]
