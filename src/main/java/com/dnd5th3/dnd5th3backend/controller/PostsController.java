@@ -54,7 +54,7 @@ public class PostsController {
                 .build();
     }
 
-    @PostMapping("/api/v1/posts/{id}")
+    @PutMapping("/api/v1/posts/{id}")
     public IdResponseDto updatePost(@PathVariable(name = "id") Long id, @RequestBody UpdateRequestDto updateRequestDto) {
         Posts updatedPost = postsService.updatePost(id, updateRequestDto.getTitle(), updateRequestDto.getContent(), updateRequestDto.getProductImageUrl());
         return IdResponseDto.builder().id(updatedPost.getId()).build();

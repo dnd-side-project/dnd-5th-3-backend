@@ -41,7 +41,7 @@ include::{snippets}/posts/getById/http-response.adoc[]
 include::{snippets}/posts/getById/response-fields.adoc[]
 
 [[posts-update]]
-== POST :: 게시글 수정
+== PUT :: 게시글 수정
 
 === HTTP Request
 include::{snippets}/posts/update/http-request.adoc[]
@@ -95,6 +95,15 @@ include::{snippets}/posts/findAll/createdDate/http-response.adoc[]
 === Response Fields
 include::{snippets}/posts/findAll/createdDate/response-fields.adoc[]
 
+[[posts-main]]
+== GET :: 메인페이지 게시글 조회
+
+=== HTTP Request
+include::{snippets}/posts/main/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/posts/main/http-response.adoc[]
+
 [[posts-vote]]
 == POST :: 게시글 투표
 
@@ -112,15 +121,3 @@ include::{snippets}/posts/vote/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/posts/vote/response-fields.adoc[]
-
-[[posts-main]]
-== GET :: 메인페이지 게시글 조회
-
-=== HTTP Request
-include::{snippets}/posts/main/http-request.adoc[]
-
-=== HTTP Response
-include::{snippets}/posts/main/http-response.adoc[]
-
-=== Response Fields
-include::{snippets}/posts/main/response-fields.adoc[]
