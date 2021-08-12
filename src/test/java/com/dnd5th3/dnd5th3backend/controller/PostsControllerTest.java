@@ -91,7 +91,6 @@ class PostsControllerTest {
         //given
         SaveRequestDto requestDto = SaveRequestDto.builder()
                 .title("test")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
@@ -99,12 +98,11 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
 
-        given(postsService.savePost(member, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
+        given(postsService.savePost(member, requestDto.getTitle(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
 
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
@@ -124,7 +122,6 @@ class PostsControllerTest {
                         getDocumentResponse(),
                         requestFields(
                                 fieldWithPath("title").description("글 제목"),
-                                fieldWithPath("productName").description("상품 이름"),
                                 fieldWithPath("content").description("글 내용"),
                                 fieldWithPath("productImageUrl").description("상품 이미지")
                         ),
@@ -143,7 +140,6 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("test product")
                 .content("content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -174,7 +170,6 @@ class PostsControllerTest {
                         responseFields(
                                 fieldWithPath("name").description("작성자 이름"),
                                 fieldWithPath("title").description("글 제목"),
-                                fieldWithPath("productName").description("상품 이름"),
                                 fieldWithPath("content").description("글 내용"),
                                 fieldWithPath("productImageUrl").description("상품 이미지"),
                                 fieldWithPath("isVoted").description("투표 종료 여부"),
@@ -187,7 +182,6 @@ class PostsControllerTest {
                 ))
                 .andExpect(jsonPath("$.name").value("name"))
                 .andExpect(jsonPath("$.title").value("test"))
-                .andExpect(jsonPath("$.productName").value("test product"))
                 .andExpect(jsonPath("$.content").value("content"))
                 .andExpect(jsonPath("$.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.isVoted").value(false))
@@ -206,7 +200,6 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("update")
-                .productName("update product")
                 .content("update content")
                 .productImageUrl("update.jpg")
                 .isVoted(false)
@@ -219,15 +212,14 @@ class PostsControllerTest {
         response.setCreatedDate(LocalDateTime.of(2021, 8, 2, 12, 0, 0));
         UpdateRequestDto requestDto = UpdateRequestDto.builder()
                 .title("update")
-                .productName("update product")
                 .content("update content")
                 .productImageUrl("update.jpg")
                 .build();
 
-        given(postsService.updatePost(1L, requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
+        given(postsService.updatePost(1L, requestDto.getTitle(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
 
         //when
-        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts/{id}", 1L)
+        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/posts/{id}", 1L)
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
@@ -245,7 +237,6 @@ class PostsControllerTest {
                         ),
                         requestFields(
                                 fieldWithPath("title").description("수정할 제목"),
-                                fieldWithPath("productName").description("수정할 상품 이름"),
                                 fieldWithPath("content").description("수정할 내용"),
                                 fieldWithPath("productImageUrl").description("수정할 상품 이미지")
                         ),
@@ -396,7 +387,6 @@ class PostsControllerTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("test product")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .build();
@@ -445,8 +435,7 @@ class PostsControllerTest {
         Posts hotPost = Posts.builder()
                 .id(1L)
                 .member(member)
-                .title("hot post")
-                .productName("test product")
+                .title("불타고 있는 글")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -459,8 +448,7 @@ class PostsControllerTest {
         Posts belovedPost = Posts.builder()
                 .id(2L)
                 .member(member)
-                .title("beloved post")
-                .productName("test product")
+                .title("사랑 듬뿍 받은 글")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -473,8 +461,7 @@ class PostsControllerTest {
         Posts recommendPost = Posts.builder()
                 .id(3L)
                 .member(member)
-                .title("recommend post")
-                .productName("test product")
+                .title("무물의 추천글")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -487,8 +474,7 @@ class PostsControllerTest {
         Posts bestResponsePost = Posts.builder()
                 .id(4L)
                 .member(member)
-                .title("best response post")
-                .productName("test product")
+                .title("최고의 반응글")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -501,8 +487,7 @@ class PostsControllerTest {
         Posts neckAndNeckPost = Posts.builder()
                 .id(5L)
                 .member(member)
-                .title("neck and neck post")
-                .productName("test product")
+                .title("막상막하 투표글")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -569,35 +554,35 @@ class PostsControllerTest {
                                 )
                 ))
                 .andExpect(jsonPath("$.hotPost.name").value("name"))
-                .andExpect(jsonPath("$.hotPost.title").value("hot post"))
+                .andExpect(jsonPath("$.hotPost.title").value("불타고 있는 글"))
                 .andExpect(jsonPath("$.hotPost.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.hotPost.isVoted").value(false))
                 .andExpect(jsonPath("$.hotPost.permitRatio").value(50))
                 .andExpect(jsonPath("$.hotPost.rejectRatio").value(50))
                 .andExpect(jsonPath("$.hotPost.createdDate").value("2021-08-12T12:00:00"))
                 .andExpect(jsonPath("$.belovedPost.name").value("name"))
-                .andExpect(jsonPath("$.belovedPost.title").value("beloved post"))
+                .andExpect(jsonPath("$.belovedPost.title").value("사랑 듬뿍 받은 글"))
                 .andExpect(jsonPath("$.belovedPost.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.belovedPost.isVoted").value(false))
                 .andExpect(jsonPath("$.belovedPost.permitRatio").value(50))
                 .andExpect(jsonPath("$.belovedPost.rejectRatio").value(50))
                 .andExpect(jsonPath("$.belovedPost.createdDate").value("2021-08-12T12:00:00"))
                 .andExpect(jsonPath("$.recommendPost.name").value("name"))
-                .andExpect(jsonPath("$.recommendPost.title").value("recommend post"))
+                .andExpect(jsonPath("$.recommendPost.title").value("무물의 추천글"))
                 .andExpect(jsonPath("$.recommendPost.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.recommendPost.isVoted").value(false))
                 .andExpect(jsonPath("$.recommendPost.permitRatio").value(0))
                 .andExpect(jsonPath("$.recommendPost.rejectRatio").value(0))
                 .andExpect(jsonPath("$.recommendPost.createdDate").value("2021-08-12T12:00:00"))
                 .andExpect(jsonPath("$.bestResponsePost.name").value("name"))
-                .andExpect(jsonPath("$.bestResponsePost.title").value("best response post"))
+                .andExpect(jsonPath("$.bestResponsePost.title").value("최고의 반응글"))
                 .andExpect(jsonPath("$.bestResponsePost.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.bestResponsePost.isVoted").value(false))
                 .andExpect(jsonPath("$.bestResponsePost.permitRatio").value(50))
                 .andExpect(jsonPath("$.bestResponsePost.rejectRatio").value(50))
                 .andExpect(jsonPath("$.bestResponsePost.createdDate").value("2021-08-12T12:00:00"))
                 .andExpect(jsonPath("$.neckAndNeckPost.name").value("name"))
-                .andExpect(jsonPath("$.neckAndNeckPost.title").value("neck and neck post"))
+                .andExpect(jsonPath("$.neckAndNeckPost.title").value("막상막하 투표글"))
                 .andExpect(jsonPath("$.neckAndNeckPost.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.neckAndNeckPost.isVoted").value(false))
                 .andExpect(jsonPath("$.neckAndNeckPost.permitRatio").value(50))

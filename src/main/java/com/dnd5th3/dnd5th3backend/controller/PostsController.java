@@ -28,7 +28,7 @@ public class PostsController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/posts")
     public IdResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto, @AuthenticationPrincipal Member member) {
-        Posts savedPosts = postsService.savePost(member, postSaveRequestDto.getTitle(), postSaveRequestDto.getProductName(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
+        Posts savedPosts = postsService.savePost(member, postSaveRequestDto.getTitle(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
 
         return IdResponseDto.builder().id(savedPosts.getId()).build();
     }
@@ -43,7 +43,6 @@ public class PostsController {
         return PostResponseDto.builder()
                 .name(foundPost.getMember().getName())
                 .title(foundPost.getTitle())
-                .productName(foundPost.getProductName())
                 .content(foundPost.getContent())
                 .productImageUrl(foundPost.getProductImageUrl())
                 .isVoted(foundPost.getIsVoted())
@@ -55,9 +54,9 @@ public class PostsController {
                 .build();
     }
 
-    @PostMapping("/api/v1/posts/{id}")
+    @PutMapping("/api/v1/posts/{id}")
     public IdResponseDto updatePost(@PathVariable(name = "id") Long id, @RequestBody UpdateRequestDto updateRequestDto) {
-        Posts updatedPost = postsService.updatePost(id, updateRequestDto.getTitle(), updateRequestDto.getProductName(), updateRequestDto.getContent(), updateRequestDto.getProductImageUrl());
+        Posts updatedPost = postsService.updatePost(id, updateRequestDto.getTitle(), updateRequestDto.getContent(), updateRequestDto.getProductImageUrl());
         return IdResponseDto.builder().id(updatedPost.getId()).build();
     }
 

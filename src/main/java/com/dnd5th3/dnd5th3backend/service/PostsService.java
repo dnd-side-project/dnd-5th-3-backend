@@ -23,18 +23,16 @@ public class PostsService {
 
     private final PostsRepository postsRepository;
 
-    public Posts savePost(Member member, String title, String productName, String content, String productImageUrl) {
+    public Posts savePost(Member member, String title, String content, String productImageUrl) {
         Posts newPosts = Posts.builder()
                 .member(member)
                 .title(title)
-                .productName(productName)
                 .content(content)
                 .productImageUrl(productImageUrl)
                 .isVoted(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(0)
-                .voteCount(0)
                 .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
@@ -55,11 +53,11 @@ public class PostsService {
         return foundPost;
     }
 
-    public Posts updatePost(Long id, String title, String productName, String content, String productImageUrl) {
+    public Posts updatePost(Long id, String title, String content, String productImageUrl) {
         Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
         //프록시 객체 초기화
         Hibernate.initialize(foundPost.getMember());
-        foundPost.update(title, productName, content, productImageUrl);
+        foundPost.update(title, content, productImageUrl);
 
         return foundPost;
     }

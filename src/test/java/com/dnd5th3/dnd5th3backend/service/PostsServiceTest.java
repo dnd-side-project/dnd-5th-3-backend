@@ -41,7 +41,6 @@ class PostsServiceTest {
                 .id(1L)
                 .member(member)
                 .title("test")
-                .productName("testProduct")
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
@@ -60,7 +59,7 @@ class PostsServiceTest {
         when(postsRepository.save(any(Posts.class))).thenReturn(post);
 
         //when
-        Posts savedPosts = postsService.savePost(post.getMember(), post.getTitle(), post.getProductName(), post.getContent(), post.getProductImageUrl());
+        Posts savedPosts = postsService.savePost(post.getMember(), post.getTitle(), post.getContent(), post.getProductImageUrl());
 
         //then
         Assertions.assertEquals(savedPosts.getId(), post.getId());
@@ -86,11 +85,11 @@ class PostsServiceTest {
     @Test
     void updatePostTest() throws Exception {
         //given
-        UpdateRequestDto requestDto = UpdateRequestDto.builder().title("update").productName("update product").content("update contest").productImageUrl("update.jpg").build();
+        UpdateRequestDto requestDto = UpdateRequestDto.builder().title("update").content("update contest").productImageUrl("update.jpg").build();
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
         //when
-        Posts updatedPost = postsService.updatePost(post.getId(), requestDto.getTitle(), requestDto.getProductName(), requestDto.getContent(), requestDto.getProductImageUrl());
+        Posts updatedPost = postsService.updatePost(post.getId(), requestDto.getTitle(), requestDto.getContent(), requestDto.getProductImageUrl());
 
         //then
         Assertions.assertEquals(updatedPost.getTitle(), requestDto.getTitle());
@@ -120,7 +119,6 @@ class PostsServiceTest {
                 .id(1L)
                 .member(member)
                 .title("test1")
-                .productName("testProduct1")
                 .content("test content1")
                 .productImageUrl("test1.jpg")
                 .isVoted(false)
@@ -134,7 +132,6 @@ class PostsServiceTest {
                 .id(2L)
                 .member(member)
                 .title("test2")
-                .productName("testProduct2")
                 .content("test content2")
                 .productImageUrl("test2.jpg")
                 .isVoted(false)
@@ -157,7 +154,6 @@ class PostsServiceTest {
                 .id(3L)
                 .member(member)
                 .title("test3")
-                .productName("testProduct3")
                 .content("test content3")
                 .productImageUrl("test3.jpg")
                 .isVoted(true)
@@ -171,7 +167,6 @@ class PostsServiceTest {
                 .id(4L)
                 .member(member)
                 .title("test4")
-                .productName("testProduct4")
                 .content("test content4")
                 .productImageUrl("test4.jpg")
                 .isVoted(true)

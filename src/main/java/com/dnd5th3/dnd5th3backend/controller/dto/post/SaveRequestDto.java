@@ -8,7 +8,6 @@ import lombok.Getter;
 public class SaveRequestDto {
 
     private String title;
-    private String productName;
     private String content;
     private String productImageUrl;
 }

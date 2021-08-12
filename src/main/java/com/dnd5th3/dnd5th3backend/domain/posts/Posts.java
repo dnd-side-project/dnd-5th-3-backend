@@ -35,9 +35,6 @@ public class Posts extends BaseTime {
     private String title;
 
     @NotNull
-    private String productName;
-
-    @NotNull
     private String content;
 
     private String productImageUrl;
@@ -55,20 +52,14 @@ public class Posts extends BaseTime {
     private Integer rankCount;
 
     @NotNull
-    private Integer voteCount;
-
-    @NotNull
     private Boolean isDeleted;
 
     @NotNull
     private LocalDateTime voteDeadline;
 
-    public void update(String title, String productName, String content, String productImageUrl) {
+    public void update(String title, String content, String productImageUrl) {
         if (title != null) {
             this.title = title;
-        }
-        if (productName != null) {
-            this.productName = productName;
         }
         if (content != null) {
             this.content = content;
@@ -89,7 +80,6 @@ public class Posts extends BaseTime {
     }
 
     public void increaseVoteCount(VoteType result) {
-        this.voteCount += 1;
         if (result.equals(VoteType.PERMIT)) {
             this.permitCount += 1;
         } else if (result.equals(VoteType.REJECT)) {
