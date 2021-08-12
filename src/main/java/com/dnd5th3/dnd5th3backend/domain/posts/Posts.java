@@ -1,5 +1,6 @@
 package com.dnd5th3.dnd5th3backend.domain.posts;
 
+import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
@@ -8,6 +9,8 @@ import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -24,6 +27,9 @@ public class Posts extends BaseTime {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
+
+    @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
+    private List<Comment> comments;
 
     @NotNull
     private String title;
@@ -47,6 +53,9 @@ public class Posts extends BaseTime {
 
     @NotNull
     private Integer rankCount;
+
+    @NotNull
+    private Integer voteCount;
 
     @NotNull
     private Boolean isDeleted;
@@ -80,10 +89,15 @@ public class Posts extends BaseTime {
     }
 
     public void increaseVoteCount(VoteType result) {
+        this.voteCount += 1;
         if (result.equals(VoteType.PERMIT)) {
             this.permitCount += 1;
         } else if (result.equals(VoteType.REJECT)) {
             this.rejectCount += 1;
         }
+    }
+
+    public void addComment(Comment comment) {
+        this.comments.add(comment);
     }
 }

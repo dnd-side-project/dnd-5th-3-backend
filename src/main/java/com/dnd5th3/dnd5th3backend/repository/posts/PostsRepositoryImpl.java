@@ -1,6 +1,7 @@
 package com.dnd5th3.dnd5th3backend.repository.posts;
 
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.querydsl.core.types.EntityPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -63,4 +64,15 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
                 .fetch();
     }
 
+    @Override
+    public List<Posts> findPostsTop50Ranked() {
+        return query
+                .select(posts)
+                .from(posts)
+                .where(posts.isVoted.eq(false))
+                .orderBy(posts.rankCount.desc())
+                .offset(0)
+                .limit(50)
+                .fetch();
+    }
 }

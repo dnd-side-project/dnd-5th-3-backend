@@ -27,6 +27,7 @@ public class CommentService {
     private final ModelMapper modelMapper;
     private static final int PAGE_SIZE = 50;
 
+    @Transactional
     public Comment saveComment(CommentRequestDto requestDto, Member member){
         Posts posts = postsRepository.findById(requestDto.getPostId()).orElseThrow();
         Comment comment = Comment.create(requestDto, member, posts);
