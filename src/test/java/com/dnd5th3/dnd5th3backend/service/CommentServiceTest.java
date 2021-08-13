@@ -72,9 +72,17 @@ class CommentServiceTest {
     @DisplayName("댓글 목록 조회 테스트")
     @Test
     void getCommentList() {
-        long expectedTotalCount = 4;
+        long expectedTotalCount = 3;
         CommentListResponseDto commentListResponseDto = commentService.getCommentList(1,0,member);
         assertEquals(expectedTotalCount,commentListResponseDto.getTotalCount(),"총 댓글 개수 확인");
     }
-    
+
+    @DisplayName("댓글 상세 조회(+대댓글) 테스트")
+    @Test
+    void getDetailComment() {
+        long commentId  = 3;
+        long expectedTotalCount = 3;
+        CommentListResponseDto detailComment = commentService.getDetailComment(commentId);
+        assertEquals(expectedTotalCount,detailComment.getCommentList().size(),"댓글 상세 개수 확인");
+    }
 }

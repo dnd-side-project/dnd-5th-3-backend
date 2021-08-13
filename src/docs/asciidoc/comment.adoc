@@ -28,6 +28,26 @@ include::{snippets}/comment/get/http-response.adoc[]
 === Response Fields
 include::{snippets}/comment/get/response-fields.adoc[]
 
+- 페이지를 기준으로 최신순이 최하단에 위치하도록 정렬됨
+
+[[comment-detail]]
+== GET :: 댓글 상세
+
+=== HTTP Request
+include::{snippets}/comment/detail/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/comment/detail/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/detail/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/detail/response-fields.adoc[]
+
+- layer는 댓글 분류를 나타냄 (0:상단 댓글, 1: 대댓글)
+
+
 [[comment-save]]
 == POST :: 댓글 등록
 
