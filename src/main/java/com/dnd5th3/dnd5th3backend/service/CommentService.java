@@ -30,7 +30,7 @@ public class CommentService {
     private final PostsRepository postsRepository;
     private final ModelMapper modelMapper;
     private final VoteRepository voteRepository;
-    private static final int LOWER_COMMENT =1;
+    private static final int LOWER_COMMENT = 1;
     private static final int PAGE_SIZE = 50;
 
     @Transactional
@@ -75,32 +75,15 @@ public class CommentService {
             commentDto.setEmail(writer.getEmail());
             commentDto.setReplyCount(commentRepository.countByGroupNoAndCommentLayer(comment.getGroupNo(),LOWER_COMMENT));
 
-            if(votedMemberMap.containsKey(writer)){
-                Vote vote = votedMemberMap.get(writer);
-                commentDto.setVoteType(vote.getResult());
-            }else {
-                commentDto.setVoteType(VoteType.NO_RESULT);
-            }
+            setVoteType(votedMemberMap, writer, commentDto);
 
             List<CommentListResponseDto.EmojiIDto> emojiIDtoList = new ArrayList<>();
 
             for(CommentEmoji commentEmoji1 : comment.getCommentEmoji()){
-
                 CommentListResponseDto.EmojiIDto emojiIDto = new CommentListResponseDto.EmojiIDto();
                 emojiIDto.setEmojiId(commentEmoji1.getEmoji().getId());
                 emojiIDto.setEmojiCount(commentEmoji1.getCommentEmojiCount());
-                List<CommentEmojiMember> commentEmojiMembers = commentEmoji1.getCommentEmojiMembers();
-
-                boolean isChecked = false;
-                if(commentEmojiMembers != null){
-                    for(CommentEmojiMember emojiMember : commentEmojiMembers){
-                        if(Objects.equals(emojiMember.getMember().getId(), member.getId())){
-                            isChecked = true;
-                            break;
-                        }
-                    }
-                }
-                emojiIDto.setChecked(isChecked);
+                setIsCheckedEmoji(member, commentEmoji1, emojiIDto);
                 emojiIDtoList.add(emojiIDto);
             }
 
@@ -114,5 +97,23 @@ public class CommentService {
                 .totalCount(pagingComment.getTotalElements())
                 .pageNum(pagingComment.getNumber())
                 .build();
+    }
+
+    private void setIsCheckedEmoji(Member member, CommentEmoji commentEmoji1, CommentListResponseDto.EmojiIDto emojiIDto) {
+
+        List<CommentEmojiMember> commentEmojiMemberList = commentEmoji1.getCommentEmojiMembers();
+        Set<Long> commentEmojiMemberSet = commentEmojiMemberList.stream()
+                .map(commentEmojiMember -> commentEmojiMember.getMember().getId())
+                .collect(Collectors.toSet());
+        emojiIDto.setChecked(commentEmojiMemberSet.contains(member.getId()));
+    }
+
+    private void setVoteType(Map<Member, Vote> votedMemberMap, Member writer, CommentListResponseDto.CommentDto commentDto) {
+        if(votedMemberMap.containsKey(writer)){
+            Vote vote = votedMemberMap.get(writer);
+            commentDto.setVoteType(vote.getResult());
+        }else {
+            commentDto.setVoteType(VoteType.NO_RESULT);
+        }
     }
 }
