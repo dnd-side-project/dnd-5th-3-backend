@@ -73,9 +73,9 @@ class CommentControllerTest {
     @DisplayName("댓글 조회 API 테스트")
     @Order(1)
     @Test
-    void getAPI() throws Exception {
+    void getAllAPI() throws Exception {
         long postId = 1;
-        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/comment/{postId}?pageNum=0",postId)
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/comment/{postId}/posts?pageNum=0",postId)
                 .principal(new UsernamePasswordAuthenticationToken(member,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
@@ -101,7 +101,6 @@ class CommentControllerTest {
                                 fieldWithPath("commentList.[].groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentList.[].commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
-                                fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
                                 fieldWithPath("commentList.[].content").description("댓글 내용"),
                                 fieldWithPath("commentList.[].voteType").description("투표 상태"),
                                 fieldWithPath("commentList.[].createdDate").description("생성일자"),
@@ -117,7 +116,47 @@ class CommentControllerTest {
                                 fieldWithPath("totalCount").description("전체 개수")
                         )
                 ))
-                .andExpect(jsonPath("$.pageNum").value(0L));
+                .andExpect(jsonPath("$.totalCount").value(3L));
+
+    }
+
+    @DisplayName("댓글 상세조회 API 테스트")
+    @Order(2)
+    @Test
+    void getDetailAPI() throws Exception {
+        long commentId =3;
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/comment/{commentId}",commentId)
+                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString()));
+
+        actions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("comment/detail",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("commentId").description("글 ID")
+                        ),
+                        relaxedResponseFields(
+                                fieldWithPath("commentList.[].commentId").description("댓글 ID"),
+                                fieldWithPath("commentList.[].memberId").description("회원 ID"),
+                                fieldWithPath("commentList.[].email").description("회원 이메일"),
+                                fieldWithPath("commentList.[].writerName").description("작성자 닉네임"),
+                                fieldWithPath("commentList.[].groupNo").description("댓글 그룹번호"),
+                                fieldWithPath("commentList.[].commentLayer").description("댓글 계층"),
+                                fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
+                                fieldWithPath("commentList.[].content").description("댓글 내용"),
+                                fieldWithPath("commentList.[].voteType").description("투표 상태"),
+                                fieldWithPath("commentList.[].createdDate").description("생성일자"),
+                                fieldWithPath("commentList.[].updatedDate").description("수정일자"),
+                                fieldWithPath("commentList.[].deleted").description("삭제여부"),
+                                fieldWithPath("totalCount").description("댓글 전체 개수(상단 포함)")
+                        )
+                ))
+                .andExpect(jsonPath("$.totalCount").value(3L));
 
     }
 

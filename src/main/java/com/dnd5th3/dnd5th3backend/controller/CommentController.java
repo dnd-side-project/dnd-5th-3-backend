@@ -44,10 +44,16 @@ public class CommentController {
         return ResponseEntity.ok(commentResponseDto);
     }
 
-    @GetMapping("/{postId}")
-    public ResponseEntity<CommentListResponseDto> getAPI(@PathVariable Long postId, @RequestParam("pageNum") Integer pageNum, @AuthenticationPrincipal Member member){
+    @GetMapping("/{postId}/posts")
+    public ResponseEntity<CommentListResponseDto> getListAPI(@PathVariable Long postId, @RequestParam("pageNum") Integer pageNum, @AuthenticationPrincipal Member member){
         CommentListResponseDto commentListResponseDto = commentService.getCommentList(postId,pageNum,member);
         return ResponseEntity.ok(commentListResponseDto);
+    }
+
+    @GetMapping("/{commentId}")
+    public ResponseEntity<CommentListResponseDto> getDetailAPI(@PathVariable Long commentId){
+        CommentListResponseDto detailComment = commentService.getDetailComment(commentId);
+        return ResponseEntity.ok(detailComment);
     }
 
 }

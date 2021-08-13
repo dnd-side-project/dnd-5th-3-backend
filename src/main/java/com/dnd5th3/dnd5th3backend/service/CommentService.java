@@ -55,27 +55,38 @@ public class CommentService {
     }
 
     @Transactional
+    public CommentListResponseDto getDetailComment(long commentId){
+        Comment requestComment = commentRepository.findById(commentId).orElseThrow();
+        List<Comment> commentList = commentRepository.getCommentGroup(requestComment.getPosts().getId(), requestComment.getGroupNo());
+        List<CommentListResponseDto.CommentDto> commentDtoList = new ArrayList<>();
+
+        List<Vote> voteList = voteRepository.getAllByPostId(requestComment.getPosts().getId());
+        Map<Member, Vote> votedMemberMap = voteList.stream().collect(Collectors.toMap(Vote::getMember, vote -> vote));
+
+        for (Comment comment : commentList){
+            CommentListResponseDto.CommentDto commentDto = convertCommentDto(votedMemberMap, comment);
+            commentDtoList.add(commentDto);
+        }
+
+        return CommentListResponseDto.builder()
+                .commentList(commentDtoList)
+                .totalCount(commentDtoList.size())
+                .build();
+    }
+
+    @Transactional
     public CommentListResponseDto getCommentList(long postId,int pageNum, Member member){
         PageRequest pageRequest = PageRequest.of(pageNum, PAGE_SIZE);
         Page<Comment> pagingComment = commentRepository.getAllCommentList(postId,pageRequest);
-        List<Vote> voteList = voteRepository.getAllByPostId(postId);
-
-        Map<Member, Vote> votedMemberMap = voteList.stream()
-                .collect(Collectors.toMap(Vote::getMember, vote -> vote));
-
         List<Comment> commentList = pagingComment.getContent();
         List<CommentListResponseDto.CommentDto> commentDtoList = new ArrayList<>();
 
+        List<Vote> voteList = voteRepository.getAllByPostId(postId);
+        Map<Member, Vote> votedMemberMap = voteList.stream().collect(Collectors.toMap(Vote::getMember, vote -> vote));
+
         for(Comment comment : commentList){
-            Member writer = comment.getMember();
-
-            CommentListResponseDto.CommentDto commentDto = modelMapper.map(comment, CommentListResponseDto.CommentDto.class);
-            commentDto.setMemberId(writer.getId());
-            commentDto.setWriterName(writer.getName());
-            commentDto.setEmail(writer.getEmail());
+            CommentListResponseDto.CommentDto commentDto =  convertCommentDto(votedMemberMap,comment);
             commentDto.setReplyCount(commentRepository.countByGroupNoAndCommentLayer(comment.getGroupNo(),LOWER_COMMENT));
-
-            setVoteType(votedMemberMap, writer, commentDto);
 
             List<CommentListResponseDto.EmojiIDto> emojiIDtoList = new ArrayList<>();
 
@@ -90,13 +101,30 @@ public class CommentService {
             commentDto.setEmojiList(emojiIDtoList);
             commentDtoList.add(commentDto);
         }
-
+        commentDtoList.sort(Comparator.comparing(CommentListResponseDto.CommentDto::getCommentId));
         return CommentListResponseDto.builder()
                 .commentList(commentDtoList)
                 .totalPage(pagingComment.getTotalPages())
                 .totalCount(pagingComment.getTotalElements())
                 .pageNum(pagingComment.getNumber())
                 .build();
+    }
+
+    private CommentListResponseDto.CommentDto convertCommentDto(Map<Member, Vote> votedMemberMap, Comment comment) {
+        CommentListResponseDto.CommentDto commentDto = modelMapper.map(comment, CommentListResponseDto.CommentDto.class);
+        Member writer = comment.getMember();
+        commentDto.setMemberId(writer.getId());
+        commentDto.setWriterName(writer.getName());
+        commentDto.setEmail(writer.getEmail());
+
+        if(votedMemberMap.containsKey(writer)){
+            Vote vote = votedMemberMap.get(writer);
+            commentDto.setVoteType(vote.getResult());
+        }else {
+            commentDto.setVoteType(VoteType.NO_RESULT);
+        }
+
+        return commentDto;
     }
 
     private void setIsCheckedEmoji(Member member, CommentEmoji commentEmoji1, CommentListResponseDto.EmojiIDto emojiIDto) {
@@ -108,12 +136,4 @@ public class CommentService {
         emojiIDto.setChecked(commentEmojiMemberSet.contains(member.getId()));
     }
 
-    private void setVoteType(Map<Member, Vote> votedMemberMap, Member writer, CommentListResponseDto.CommentDto commentDto) {
-        if(votedMemberMap.containsKey(writer)){
-            Vote vote = votedMemberMap.get(writer);
-            commentDto.setVoteType(vote.getResult());
-        }else {
-            commentDto.setVoteType(VoteType.NO_RESULT);
-        }
-    }
 }
