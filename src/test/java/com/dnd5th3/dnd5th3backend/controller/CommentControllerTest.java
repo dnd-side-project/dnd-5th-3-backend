@@ -95,13 +95,18 @@ class CommentControllerTest {
                         ),
                         responseFields(
                                 fieldWithPath("commentList.[].commentId").description("댓글 ID"),
+                                fieldWithPath("commentList.[].memberId").description("회원 ID"),
+                                fieldWithPath("commentList.[].email").description("회원 이메일"),
+                                fieldWithPath("commentList.[].writerName").description("작성자 닉네임"),
                                 fieldWithPath("commentList.[].groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentList.[].commentLayer").description("댓글 계층"),
                                 fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
                                 fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
                                 fieldWithPath("commentList.[].content").description("댓글 내용"),
+                                fieldWithPath("commentList.[].voteType").description("투표 상태"),
                                 fieldWithPath("commentList.[].createdDate").description("생성일자"),
                                 fieldWithPath("commentList.[].updatedDate").description("수정일자"),
+                                fieldWithPath("commentList.[].replyCount").description("대댓글 개수"),
                                 fieldWithPath("commentList.[].deleted").description("삭제여부"),
                                 fieldWithPath("commentList.[].emojiList").description("댓글 이모지 리스트"),
                                 fieldWithPath("commentList.[].emojiList.[].emojiId").description("이모지 ID"),
@@ -164,7 +169,7 @@ class CommentControllerTest {
                                 fieldWithPath("isDeleted").description("삭제 여부")
                         )
                 ))
-                .andExpect(jsonPath("$.commentId").value(5L));
+                .andExpect(jsonPath("$.commentId").value(6L));
 
     }
 

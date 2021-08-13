@@ -72,7 +72,7 @@ class CommentServiceTest {
     @DisplayName("댓글 목록 조회 테스트")
     @Test
     void getCommentList() {
-        long expectedTotalCount = 4;
+        long expectedTotalCount = 3;
         CommentListResponseDto commentListResponseDto = commentService.getCommentList(1,0,member);
         assertEquals(expectedTotalCount,commentListResponseDto.getTotalCount(),"총 댓글 개수 확인");
     }

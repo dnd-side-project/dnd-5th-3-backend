@@ -7,8 +7,11 @@ import com.dnd5th3.dnd5th3backend.domain.comment.CommentEmoji;
 import com.dnd5th3.dnd5th3backend.domain.comment.CommentEmojiMember;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
+import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.repository.comment.CommentRepository;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
+import com.dnd5th3.dnd5th3backend.repository.vote.VoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.data.domain.Page;
@@ -17,6 +20,7 @@ import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -25,6 +29,8 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final PostsRepository postsRepository;
     private final ModelMapper modelMapper;
+    private final VoteRepository voteRepository;
+    private static final int LOWER_COMMENT =1;
     private static final int PAGE_SIZE = 50;
 
     @Transactional
@@ -52,11 +58,30 @@ public class CommentService {
     public CommentListResponseDto getCommentList(long postId,int pageNum, Member member){
         PageRequest pageRequest = PageRequest.of(pageNum, PAGE_SIZE);
         Page<Comment> pagingComment = commentRepository.getAllCommentList(postId,pageRequest);
-        List<Comment> commentList = pagingComment.getContent();
+        List<Vote> voteList = voteRepository.getAllByPostId(postId);
 
+        Map<Member, Vote> votedMemberMap = voteList.stream()
+                .collect(Collectors.toMap(Vote::getMember, vote -> vote));
+
+        List<Comment> commentList = pagingComment.getContent();
         List<CommentListResponseDto.CommentDto> commentDtoList = new ArrayList<>();
+
         for(Comment comment : commentList){
+            Member writer = comment.getMember();
+
             CommentListResponseDto.CommentDto commentDto = modelMapper.map(comment, CommentListResponseDto.CommentDto.class);
+            commentDto.setMemberId(writer.getId());
+            commentDto.setWriterName(writer.getName());
+            commentDto.setEmail(writer.getEmail());
+            commentDto.setReplyCount(commentRepository.countByGroupNoAndCommentLayer(comment.getGroupNo(),LOWER_COMMENT));
+
+            if(votedMemberMap.containsKey(writer)){
+                Vote vote = votedMemberMap.get(writer);
+                commentDto.setVoteType(vote.getResult());
+            }else {
+                commentDto.setVoteType(VoteType.NO_RESULT);
+            }
+
             List<CommentListResponseDto.EmojiIDto> emojiIDtoList = new ArrayList<>();
 
             for(CommentEmoji commentEmoji1 : comment.getCommentEmoji()){
@@ -78,6 +103,7 @@ public class CommentService {
                 emojiIDto.setChecked(isChecked);
                 emojiIDtoList.add(emojiIDto);
             }
+
             commentDto.setEmojiList(emojiIDtoList);
             commentDtoList.add(commentDto);
         }
