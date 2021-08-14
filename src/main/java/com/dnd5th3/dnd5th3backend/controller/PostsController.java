@@ -8,11 +8,14 @@ import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import com.dnd5th3.dnd5th3backend.service.VoteService;
+import com.dnd5th3.dnd5th3backend.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +27,7 @@ public class PostsController {
 
     private final PostsService postsService;
     private final VoteService voteService;
+    private final S3Uploader s3Uploader;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/posts")
@@ -113,5 +117,10 @@ public class PostsController {
         });
 
         return resultMap;
+    }
+
+    @PostMapping("/api/v1/posts/upload")
+    public String uploadFile(@RequestPart(value = "image") MultipartFile image) throws IOException {
+        return s3Uploader.upload(image, "static");
     }
 }
