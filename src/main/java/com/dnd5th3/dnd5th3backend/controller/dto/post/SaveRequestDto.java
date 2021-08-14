@@ -9,5 +9,4 @@ public class SaveRequestDto {
 
     private String title;
     private String content;
-    private String productImageUrl;
 }

@@ -92,7 +92,6 @@ class PostsControllerTest {
         SaveRequestDto requestDto = SaveRequestDto.builder()
                 .title("test")
                 .content("test content")
-                .productImageUrl("test.jpg")
                 .build();
         Posts response = Posts.builder()
                 .id(1L)
@@ -102,7 +101,7 @@ class PostsControllerTest {
                 .productImageUrl("test.jpg")
                 .build();
 
-        given(postsService.savePost(member, requestDto.getTitle(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
+        given(postsService.savePost(member, requestDto.getTitle(), requestDto.getContent(), "test.jpg")).willReturn(response);
 
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")

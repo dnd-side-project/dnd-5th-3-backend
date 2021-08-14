@@ -31,8 +31,12 @@ public class PostsController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/posts")
-    public IdResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto, @AuthenticationPrincipal Member member) {
-        Posts savedPosts = postsService.savePost(member, postSaveRequestDto.getTitle(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
+    public IdResponseDto savePost(@RequestPart String title,
+                                  @RequestPart String content,
+                                  @RequestPart MultipartFile image,
+                                  @AuthenticationPrincipal Member member) throws IOException{
+        String productImageUrl = s3Uploader.upload(image, "static");
+        Posts savedPosts = postsService.savePost(member, title, content, productImageUrl);
 
         return IdResponseDto.builder().id(savedPosts.getId()).build();
     }
@@ -59,8 +63,13 @@ public class PostsController {
     }
 
     @PutMapping("/api/v1/posts/{id}")
-    public IdResponseDto updatePost(@PathVariable(name = "id") Long id, @RequestBody UpdateRequestDto updateRequestDto) {
-        Posts updatedPost = postsService.updatePost(id, updateRequestDto.getTitle(), updateRequestDto.getContent(), updateRequestDto.getProductImageUrl());
+    public IdResponseDto updatePost(@PathVariable(name = "id") Long id,
+                                    @RequestPart String title,
+                                    @RequestPart String content,
+                                    @RequestPart MultipartFile image
+                                    ) throws IOException {
+        String productImageUrl = s3Uploader.upload(image, "static");
+        Posts updatedPost = postsService.updatePost(id, title, content, productImageUrl);
         return IdResponseDto.builder().id(updatedPost.getId()).build();
     }
 
@@ -119,8 +128,4 @@ public class PostsController {
         return resultMap;
     }
 
-    @PostMapping("/api/v1/posts/upload")
-    public String uploadFile(@RequestPart(value = "image") MultipartFile image) throws IOException {
-        return s3Uploader.upload(image, "static");
-    }
 }
