@@ -9,6 +9,7 @@ import java.time.LocalDateTime;
 @Getter
 public class MainPostDto {
 
+    private Long id;
     private String name;
     private String title;
     private String productImageUrl;
@@ -16,4 +17,5 @@ public class MainPostDto {
     private Long permitRatio;
     private Long rejectRatio;
     private LocalDateTime createdDate;
+    private LocalDateTime voteDeadline;
 }

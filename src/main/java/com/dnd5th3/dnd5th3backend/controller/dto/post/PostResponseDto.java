@@ -15,8 +15,8 @@ public class PostResponseDto {
     private String content;
     private String productImageUrl;
     private Boolean isVoted;
-    private Long permitRatio;
-    private Long rejectRatio;
+    private Integer permitCount;
+    private Integer rejectCount;
     private LocalDateTime createdDate;
     private LocalDateTime voteDeadline;
     private VoteType currentMemberVoteResult;

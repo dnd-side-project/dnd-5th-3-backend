@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,7 +37,6 @@ public class PostsController {
     @GetMapping("/api/v1/posts/{id}")
     public PostResponseDto findPostById(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
         Posts foundPost = postsService.findPostById(id);
-        VoteRatioVo ratioVo = new VoteRatioVo(foundPost);
         Vote voteResult = voteService.getVoteResult(member, foundPost);
         VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
 
@@ -46,8 +46,8 @@ public class PostsController {
                 .content(foundPost.getContent())
                 .productImageUrl(foundPost.getProductImageUrl())
                 .isVoted(foundPost.getIsVoted())
-                .permitRatio(ratioVo.getPermitRatio())
-                .rejectRatio(ratioVo.getRejectRatio())
+                .permitCount(foundPost.getPermitCount())
+                .rejectCount(foundPost.getRejectCount())
                 .createdDate(foundPost.getCreatedDate())
                 .voteDeadline(foundPost.getVoteDeadline())
                 .currentMemberVoteResult(currentMemberVoteResult)
@@ -68,11 +68,12 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts")
-    public AllResponseDto findPostsList(@RequestParam String sorted, @RequestParam int offset) {
-        List<Posts> postsList = postsService.findAllPosts(sorted, offset);
+    public AllResponseDto findPostsList(@RequestParam String sorted) {
+        List<Posts> postsList = postsService.findAllPosts(sorted);
         List<PostsListDto> dtoList = postsList.stream().map(p -> {
             VoteRatioVo ratioVo = new VoteRatioVo(p);
             return PostsListDto.builder()
+                    .id(p.getId())
                     .name(p.getMember().getName())
                     .title(p.getTitle())
                     .productImageUrl(p.getProductImageUrl())
@@ -80,6 +81,7 @@ public class PostsController {
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
                     .createdDate(p.getCreatedDate())
+                    .voteDeadline(p.getVoteDeadline())
                     .build();
         }).collect(Collectors.toList());
 
@@ -95,12 +97,14 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts/main")
-    public Map<String, MainPostDto> mainPosts() {
+    public List<Map.Entry<String, MainPostDto>> mainPosts() {
         Map<String, Posts> mainPostsMap = postsService.findMainPosts();
         Map<String, MainPostDto> resultMap = new HashMap<>();
+        List<Map.Entry<String, MainPostDto>> resultList = new ArrayList<>();
         mainPostsMap.forEach((key, value) -> {
             VoteRatioVo ratioVo = new VoteRatioVo(value);
             MainPostDto postDto = MainPostDto.builder()
+                    .id(value.getId())
                     .name(value.getMember().getName())
                     .title(value.getTitle())
                     .productImageUrl(value.getProductImageUrl())
@@ -108,10 +112,15 @@ public class PostsController {
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
                     .createdDate(value.getCreatedDate())
+                    .voteDeadline(value.getVoteDeadline())
                     .build();
             resultMap.put(key, postDto);
         });
 
-        return resultMap;
+        for (Map.Entry<String, MainPostDto> resultMapEntry : resultMap.entrySet()) {
+            resultList.add(resultMapEntry);
+        }
+
+        return resultList;
     }
 }
