@@ -8,7 +8,10 @@ cache:
   directories:
   - "$HOME/.m2/repository"
   - "$HOME/.gradle"
-script: "./gradlew clean build"
+script:
+  - "./gradlew clean build"
+  - export AWS_ACCESS_KEY=$AWS_ACCESS_KEY
+  - export AWS_SECRET_KEY=$AWS_SECRET_KEY
 before_deploy:
 - mkdir -p before-deploy
 - cp scripts/*.sh before-deploy/
