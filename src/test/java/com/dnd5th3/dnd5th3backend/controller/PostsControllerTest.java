@@ -283,6 +283,7 @@ class PostsControllerTest {
                 .rankCount(15)
                 .permitCount(10)
                 .rejectCount(25)
+                .voteDeadline(LocalDateTime.of(2021, 8, 5, 12, 0, 0))
                 .build();
         posts1.setCreatedDate(LocalDateTime.of(2021, 8, 4, 12, 0, 0));
         Posts posts2 = Posts.builder()
@@ -294,6 +295,7 @@ class PostsControllerTest {
                 .rankCount(10)
                 .permitCount(30)
                 .rejectCount(10)
+                .voteDeadline(LocalDateTime.of(2021, 8, 5, 15, 0, 0))
                 .build();
         posts2.setCreatedDate(LocalDateTime.of(2021, 8, 4, 15, 0, 0));
 
@@ -301,13 +303,13 @@ class PostsControllerTest {
         orderByCreatedDateList.add(posts2);
         orderByCreatedDateList.add(posts1);
 
-        given(postsService.findAllPosts("created-date", 0)).willReturn(orderByCreatedDateList);
+        given(postsService.findAllPosts("created-date")).willReturn(orderByCreatedDateList);
 
         //when
-        ResultActions rankCountResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=rank-count&offset=0"));
-        ResultActions createdDateResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=created-date&offset=0"));
-        ResultActions alreadyDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=already-done&offset=0"));
-        ResultActions almostDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=almost-done&offset=0"));
+        ResultActions rankCountResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=rank-count"));
+        ResultActions createdDateResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=created-date"));
+        ResultActions alreadyDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=already-done"));
+        ResultActions almostDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=almost-done"));
 
         //then
         rankCountResult
@@ -315,8 +317,7 @@ class PostsControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("sorted").description("정렬 방법"),
-                                parameterWithName("offset").description("오프셋")
+                                parameterWithName("sorted").description("정렬 방법")
                         )
                 ))
                 .andExpect(status().isOk());
@@ -326,20 +327,22 @@ class PostsControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("sorted").description("정렬 방법"),
-                                parameterWithName("offset").description("오프셋")
+                                parameterWithName("sorted").description("정렬 방법")
                         ),
                         responseFields(
+                                fieldWithPath("posts.[].id").description("글 아이디"),
                                 fieldWithPath("posts.[].name").description("작성자 이름"),
                                 fieldWithPath("posts.[].title").description("글 제목"),
                                 fieldWithPath("posts.[].productImageUrl").description("상품 이미지"),
                                 fieldWithPath("posts.[].isVoted").description("투표 종료 여부"),
                                 fieldWithPath("posts.[].permitRatio").description("찬성 투표 비율"),
                                 fieldWithPath("posts.[].rejectRatio").description("반대 투표 비율"),
-                                fieldWithPath("posts.[].createdDate").description("작성된 시간")
+                                fieldWithPath("posts.[].createdDate").description("작성된 시간"),
+                                fieldWithPath("posts.[].voteDeadline").description("투표 종료 시간")
                         )
                 ))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.posts[0].id").value(2L))
                 .andExpect(jsonPath("$.posts[0].name").value("name"))
                 .andExpect(jsonPath("$.posts[0].title").value("test2"))
                 .andExpect(jsonPath("$.posts[0].productImageUrl").value("test2.jpg"))
@@ -347,21 +350,23 @@ class PostsControllerTest {
                 .andExpect(jsonPath("$.posts[0].permitRatio").value(75L))
                 .andExpect(jsonPath("$.posts[0].rejectRatio").value(25L))
                 .andExpect(jsonPath("$.posts[0].createdDate").value("2021-08-04T15:00:00"))
+                .andExpect(jsonPath("$.posts[0].voteDeadline").value("2021-08-05T15:00:00"))
+                .andExpect(jsonPath("$.posts[1].id").value(1L))
                 .andExpect(jsonPath("$.posts[1].name").value("name"))
                 .andExpect(jsonPath("$.posts[1].title").value("test1"))
                 .andExpect(jsonPath("$.posts[1].productImageUrl").value("test1.jpg"))
                 .andExpect(jsonPath("$.posts[1].isVoted").value(false))
                 .andExpect(jsonPath("$.posts[1].permitRatio").value(29L))
                 .andExpect(jsonPath("$.posts[1].rejectRatio").value(71L))
-                .andExpect(jsonPath("$.posts[1].createdDate").value("2021-08-04T12:00:00"));
+                .andExpect(jsonPath("$.posts[1].createdDate").value("2021-08-04T12:00:00"))
+                .andExpect(jsonPath("$.posts[1].voteDeadline").value("2021-08-05T12:00:00"));
 
         alreadyDoneResult
                 .andDo(document("posts/findAll/alreadyDone",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("sorted").description("정렬 방법"),
-                                parameterWithName("offset").description("오프셋")
+                                parameterWithName("sorted").description("정렬 방법")
                         )
                 ))
                 .andExpect(status().isOk());
@@ -371,8 +376,7 @@ class PostsControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("sorted").description("정렬 방법"),
-                                parameterWithName("offset").description("오프셋")
+                                parameterWithName("sorted").description("정렬 방법")
                         )
                 ))
                 .andExpect(status().isOk());

@@ -69,11 +69,12 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts")
-    public AllResponseDto findPostsList(@RequestParam String sorted, @RequestParam int offset) {
-        List<Posts> postsList = postsService.findAllPosts(sorted, offset);
+    public AllResponseDto findPostsList(@RequestParam String sorted) {
+        List<Posts> postsList = postsService.findAllPosts(sorted);
         List<PostsListDto> dtoList = postsList.stream().map(p -> {
             VoteRatioVo ratioVo = new VoteRatioVo(p);
             return PostsListDto.builder()
+                    .id(p.getId())
                     .name(p.getMember().getName())
                     .title(p.getTitle())
                     .productImageUrl(p.getProductImageUrl())
@@ -81,6 +82,7 @@ public class PostsController {
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
                     .createdDate(p.getCreatedDate())
+                    .voteDeadline(p.getVoteDeadline())
                     .build();
         }).collect(Collectors.toList());
 
