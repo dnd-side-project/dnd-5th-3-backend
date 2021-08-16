@@ -33,9 +33,9 @@ public class PostsController {
     @PostMapping("/api/v1/posts")
     public IdResponseDto savePost(@RequestPart String title,
                                   @RequestPart String content,
-                                  @RequestPart MultipartFile image,
+                                  @RequestPart MultipartFile file,
                                   @AuthenticationPrincipal Member member) throws IOException{
-        String productImageUrl = s3Uploader.upload(image, "static");
+        String productImageUrl = s3Uploader.upload(file, "static");
         Posts savedPosts = postsService.savePost(member, title, content, productImageUrl);
 
         return IdResponseDto.builder().id(savedPosts.getId()).build();
@@ -62,13 +62,13 @@ public class PostsController {
                 .build();
     }
 
-    @PutMapping("/api/v1/posts/{id}")
+    @PostMapping("/api/v1/posts/{id}")
     public IdResponseDto updatePost(@PathVariable(name = "id") Long id,
                                     @RequestPart String title,
                                     @RequestPart String content,
-                                    @RequestPart MultipartFile image
+                                    @RequestPart MultipartFile file
                                     ) throws IOException {
-        String productImageUrl = s3Uploader.upload(image, "static");
+        String productImageUrl = s3Uploader.upload(file, "static");
         Posts updatedPost = postsService.updatePost(id, title, content, productImageUrl);
         return IdResponseDto.builder().id(updatedPost.getId()).build();
     }
