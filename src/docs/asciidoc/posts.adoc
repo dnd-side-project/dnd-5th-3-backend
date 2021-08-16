@@ -41,7 +41,7 @@ include::{snippets}/posts/getById/http-response.adoc[]
 include::{snippets}/posts/getById/response-fields.adoc[]
 
 [[posts-update]]
-== PUT :: 게시글 수정
+== POST :: 게시글 수정
 
 === HTTP Request
 include::{snippets}/posts/update/http-request.adoc[]
