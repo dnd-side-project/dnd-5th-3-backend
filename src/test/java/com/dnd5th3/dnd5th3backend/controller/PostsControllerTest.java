@@ -1,8 +1,6 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
-import com.dnd5th3.dnd5th3backend.controller.dto.post.SaveRequestDto;
-import com.dnd5th3.dnd5th3backend.controller.dto.post.UpdateRequestDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.VoteRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
@@ -11,6 +9,7 @@ import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import com.dnd5th3.dnd5th3backend.service.VoteService;
+import com.dnd5th3.dnd5th3backend.utils.S3Uploader;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,6 +21,8 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
+import org.springframework.mock.web.MockMultipartFile;
+import org.springframework.mock.web.MockPart;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
@@ -33,21 +34,23 @@ import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static com.dnd5th3.dnd5th3backend.domain.posts.QPosts.posts;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.mock;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.multipart;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
@@ -57,6 +60,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @ExtendWith({SpringExtension.class, RestDocumentationExtension.class})
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.MOCK)
 @AutoConfigureMockMvc
+@ActiveProfiles("local")
 class PostsControllerTest {
 
     @Autowired
@@ -67,6 +71,8 @@ class PostsControllerTest {
     private PostsService postsService;
     @MockBean
     private VoteService voteService;
+    @MockBean
+    private S3Uploader s3Uploader;
     @Autowired
     private ObjectMapper objectMapper;
 
@@ -89,40 +95,40 @@ class PostsControllerTest {
     @Test
     void savePostApiTest() throws Exception {
         //given
-        SaveRequestDto requestDto = SaveRequestDto.builder()
-                .title("test")
-                .content("test content")
-                .build();
+        String title = "test";
+        String content = "content";
+        String productImageUrl = "test.jpg";
+        MockMultipartFile image = new MockMultipartFile("file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "test.jpg".getBytes());
         Posts response = Posts.builder()
                 .id(1L)
                 .member(member)
                 .title("test")
-                .content("test content")
+                .content("content")
                 .productImageUrl("test.jpg")
                 .build();
-
-        given(postsService.savePost(member, requestDto.getTitle(), requestDto.getContent(), "test.jpg")).willReturn(response);
+        given(s3Uploader.upload(image, "static")).willReturn(productImageUrl);
+        given(postsService.savePost(member, title, content, productImageUrl)).willReturn(response);
 
         //when
-        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts")
+        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.fileUpload("/api/v1/posts")
+                .file(image)
+                .part(new MockPart("title", "test".getBytes(StandardCharsets.UTF_8)))
+                .part(new MockPart("content", "content".getBytes(StandardCharsets.UTF_8)))
                 .principal(new UsernamePasswordAuthenticationToken(member, null))
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(objectMapper.writeValueAsString(requestDto))
+                .contentType(MediaType.MULTIPART_MIXED)
         );
 
         //then
         result
-                .andExpect(status().isCreated())
                 .andDo(print())
+                .andExpect(status().isCreated())
                 .andDo(document("posts/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
-                        requestFields(
-                                fieldWithPath("title").description("글 제목"),
-                                fieldWithPath("content").description("글 내용"),
-                                fieldWithPath("productImageUrl").description("상품 이미지")
+                        requestParts(
+                                partWithName("title").description("글 제목"),
+                                partWithName("content").description("글 내용"),
+                                partWithName("file").description("상품 이미지")
                         ),
                         responseFields(
                                 fieldWithPath("id").description("생성된 게시글 id").type(Long.class)
@@ -209,20 +215,20 @@ class PostsControllerTest {
                 .voteDeadline(LocalDateTime.of(2021, 8, 3, 12, 0, 0))
                 .build();
         response.setCreatedDate(LocalDateTime.of(2021, 8, 2, 12, 0, 0));
-        UpdateRequestDto requestDto = UpdateRequestDto.builder()
-                .title("update")
-                .content("update content")
-                .productImageUrl("update.jpg")
-                .build();
+        String title = "update";
+        String content = "update content";
+        String productImageUrl = "update.jpg";
+        MockMultipartFile image = new MockMultipartFile("file", "test.jpg", MediaType.IMAGE_JPEG_VALUE, "test.jpg".getBytes());
 
-        given(postsService.updatePost(1L, requestDto.getTitle(), requestDto.getContent(), requestDto.getProductImageUrl())).willReturn(response);
+        given(s3Uploader.upload(image, "static")).willReturn(productImageUrl);
+        given(postsService.updatePost(1L, title, content, productImageUrl)).willReturn(response);
 
         //when
-        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/posts/{id}", 1L)
-                .contentType(MediaType.APPLICATION_JSON)
-                .accept(MediaType.APPLICATION_JSON)
-                .characterEncoding("UTF-8")
-                .content(objectMapper.writeValueAsString(requestDto))
+        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.fileUpload("/api/v1/posts/{id}", 1L)
+                .file(image)
+                .part(new MockPart("title", "update".getBytes(StandardCharsets.UTF_8)))
+                .part(new MockPart("content", "update content".getBytes(StandardCharsets.UTF_8)))
+                .contentType(MediaType.MULTIPART_MIXED)
         );
 
         //then
@@ -234,10 +240,10 @@ class PostsControllerTest {
                         pathParameters(
                                 parameterWithName("id").description("게시글 id")
                         ),
-                        requestFields(
-                                fieldWithPath("title").description("수정할 제목"),
-                                fieldWithPath("content").description("수정할 내용"),
-                                fieldWithPath("productImageUrl").description("수정할 상품 이미지")
+                        requestParts(
+                                partWithName("title").description("수정할 제목"),
+                                partWithName("content").description("수정할 내용"),
+                                partWithName("file").description("수정할 상품 이미지")
                         ),
                         responseFields(
                                 fieldWithPath("id").description("수정한 게시글 id").type(Long.class)
@@ -588,4 +594,5 @@ class PostsControllerTest {
                 .andExpect(jsonPath("$.neckAndNeckPost.rejectRatio").value(50))
                 .andExpect(jsonPath("$.neckAndNeckPost.createdDate").value("2021-08-12T12:00:00"));
     }
+
 }

@@ -1,6 +1,5 @@
 package com.dnd5th3.dnd5th3backend.service;
 
-import com.dnd5th3.dnd5th3backend.controller.dto.post.UpdateRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
@@ -85,16 +84,18 @@ class PostsServiceTest {
     @Test
     void updatePostTest() throws Exception {
         //given
-        UpdateRequestDto requestDto = UpdateRequestDto.builder().title("update").content("update contest").productImageUrl("update.jpg").build();
+        String title = "update";
+        String content = "update content";
+        String productImageUrl = "update.jpg";
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
         //when
-        Posts updatedPost = postsService.updatePost(post.getId(), requestDto.getTitle(), requestDto.getContent(), requestDto.getProductImageUrl());
+        Posts updatedPost = postsService.updatePost(post.getId(), title, content, productImageUrl);
 
         //then
-        Assertions.assertEquals(updatedPost.getTitle(), requestDto.getTitle());
-        Assertions.assertEquals(updatedPost.getContent(), requestDto.getContent());
-        Assertions.assertEquals(updatedPost.getProductImageUrl(), requestDto.getProductImageUrl());
+        Assertions.assertEquals(updatedPost.getTitle(), title);
+        Assertions.assertEquals(updatedPost.getContent(), content);
+        Assertions.assertEquals(updatedPost.getProductImageUrl(), productImageUrl);
     }
 
     @DisplayName("post 삭제 테스트")
