@@ -1,54 +1,54 @@
 language: java
 jdk:
-  - openjdk11
+- openjdk11
 branches:
   only:
-    - develop
+  - develop
 cache:
   directories:
-    - '$HOME/.m2/repository'
-    - '$HOME/.gradle'
+  - "$HOME/.m2/repository"
+  - "$HOME/.gradle"
 script: "./gradlew clean build"
-
 before_deploy:
-  - mkdir -p before-deploy
-  - cp scripts/*.sh before-deploy/
-  - cp Dockerfile before-deploy/
-  - cp appspec.yml before-deploy/
-  - cp build/libs/*.jar before-deploy/
-  - cd before-deploy && zip -r before-deploy *
-  - cd ../ && mkdir -p deploy
-  - mv before-deploy/before-deploy.zip deploy/springboot.zip
-
+- mkdir -p before-deploy
+- cp scripts/*.sh before-deploy/
+- cp Dockerfile before-deploy/
+- cp appspec.yml before-deploy/
+- cp build/libs/*.jar before-deploy/
+- cd before-deploy && zip -r before-deploy *
+- cd ../ && mkdir -p deploy
+- mv before-deploy/before-deploy.zip deploy/springboot.zip
 deploy:
-  - provider: s3
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
-    bucket: dnd5th3
-    region: ap-northeast-2
-    skip_cleanup: true
-    acl: private
-    local_dir: deploy
-    wait-until-deployed: true
-    on:
-      repo: dnd-side-project/dnd-5th-3-backend
-      branch: develop
-
-  - provider: codedeploy
-    access_key_id: $AWS_ACCESS_KEY
-    secret_access_key: $AWS_SECRET_KEY
-    bucket: dnd5th3
-    key: springboot.zip
-    bundle_type: zip
-    application: dnd5th3
-    deployment_group: dnd5th3-group
-    region: ap-northeast-2
-    wait-until-deployed: true
-    on:
-      repo: dnd-side-project/dnd-5th-3-backend
-      branch: develop
-
+- provider: s3
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
+  bucket: dnd5th3
+  region: ap-northeast-2
+  skip_cleanup: true
+  acl: private
+  local_dir: deploy
+  wait-until-deployed: true
+  on:
+    repo: dnd-side-project/dnd-5th-3-backend
+    branch: develop
+- provider: codedeploy
+  access_key_id: "$AWS_ACCESS_KEY"
+  secret_access_key: "$AWS_SECRET_KEY"
+  bucket: dnd5th3
+  key: springboot.zip
+  bundle_type: zip
+  application: dnd5th3
+  deployment_group: dnd5th3-group
+  region: ap-northeast-2
+  wait-until-deployed: true
+  on:
+    repo: dnd-side-project/dnd-5th-3-backend
+    branch: develop
 notifications:
   email:
     recipients:
-      - snsxhdz@naver.com
+    - snsxhdz@naver.com
+env:
+  global:
+  - secure: VEe/fT0SY/xgktU0tz6ABlVkrhLRO8FuulZzW2etPfm8UPTNDbeYCiHHsS4tKL2bP9ng889p4WexC7fLGA+lz3ntcfKCfKBHz+wRS4l/FMyM4pNXDXBKgfwofM2w2ual/ERG0FT8DBGtVXqq8QGiHcmcdJ27n80PBUBrE+J6A+sxe7TYkL21I6KvPVF7Vf5yA1FwkCZQV2StSWqC9j5r3fw1F6EJnd26ccPXLeqSuG7OBQCvilNOZdZbFziWAjTlpnMWz6wvZKDWZYf7GvVbhIF8eMY8aSUCwZg7cYubU1Pfm7MQW6wRdCBgbK1VKr2Rfvw/7VH/AocS69bUcM14n1DDAxzqsj/9+JPAkGJgVrBQt/zWsM7idqpOjvweoIYiEYQYw//oMcXM0tyXpuik3j4BikFx+iZzSRc8Cex8FrCKeJlnothja5OTiv2YkgKg2KigUhzOX8yyEu10puR7T8IhxDjh7l9mR1Kz8dHXEzjeGWBOnU1UOkFo4XhZAESyB5z40iq9czQUiGJhw/u/vLqKJzzMoc/rDtOI8zTrYtBQHEdDHY/BqkK385AnoBvVBwUOBrt6w7hiiL8iMvSiDRz+dz6UTUfSYaxrJCb5/qocgi2Jt2GMwkpL8Pn2oG2JnZgmQj/kWLrNOCf0DP10aDXmwccsoijZ0bTojsZ6EBI=
+  - secure: Y5xrNa5i/OuI4RoE04fVmndWYH4XEp5taytr48V6aLNdUOa5t7zlQCH9g61eCQsTdG7+K8SaqK5UaSiiIsYcdpLLmy+JnKg+bf0Et4WD/3Z0Kgb4tnlxwSVv6RgMK1CGHdrejl7furrVv3m10ICuQ3F+663L+NAnPMGsOi2cvw+tMPKL36XiXvofEP4YhxG4auSy8SciTq/aGQTRV1WorR3yZU5FwbI1XSU31lgOxG8+pGrqlIE9flGdkYbz1t5ZXL199N0FiGgraLr4voH7Pgmh7o18lptCHTZJ368p57sIVLog39i34LZ8wRwmAdhNxYnou9rBF5Fkd8HrdkIdFWnO0IfkU+XOP9EJqnvVlE91S4TmCT/xgxGZ0qXd/Hpl4j302TXYDwBzcC57LV5Q9aa+Hg9+X0bMCj/gQeCPS3FavH2hZpwUCP1wRXc1JGNcUl4gSHULvErS4Gg8+iVzL93+HSvbVc3JQsQF1dnWzYFI2yIrBHq29XvkYHH5HXdzlQXK4eO60NChqKAxAJzuU/7H615vKiD8EPoZnBDa+xGYE+ehGf8RSufSnzuqQfpYXSTkEKEWDVweZjrHxFCj3Rry6U++2ob2GfhT2n5vTa/+Na9UDd0KN9yX+VHFIMOHkd0F92v2jA4vZh79bbrEzpYXEx0/Qso03sxmaLktAsI=
