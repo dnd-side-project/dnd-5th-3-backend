@@ -173,8 +173,8 @@ class PostsControllerTest {
                                 fieldWithPath("content").description("글 내용"),
                                 fieldWithPath("productImageUrl").description("상품 이미지"),
                                 fieldWithPath("isVoted").description("투표 종료 여부"),
-                                fieldWithPath("permitRatio").description("찬성 투표 비율"),
-                                fieldWithPath("rejectRatio").description("반대 투표 비율"),
+                                fieldWithPath("permitCount").description("찬성 투표 수"),
+                                fieldWithPath("rejectCount").description("반대 투표 수"),
                                 fieldWithPath("createdDate").description("작성된 시간"),
                                 fieldWithPath("voteDeadline").description("투표 종료 시간"),
                                 fieldWithPath("currentMemberVoteResult").description("현재 사용자의 투표 결과")
@@ -185,8 +185,8 @@ class PostsControllerTest {
                 .andExpect(jsonPath("$.content").value("content"))
                 .andExpect(jsonPath("$.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.isVoted").value(false))
-                .andExpect(jsonPath("$.permitRatio").value(20L))
-                .andExpect(jsonPath("$.rejectRatio").value(80L))
+                .andExpect(jsonPath("$.permitCount").value(2))
+                .andExpect(jsonPath("$.rejectCount").value(8))
                 .andExpect(jsonPath("$.createdDate").value("2021-08-01T12:00:00"))
                 .andExpect(jsonPath("$.voteDeadline").value("2021-08-02T12:00:00"))
                 .andExpect(jsonPath("$.currentMemberVoteResult").value("NO_RESULT"));

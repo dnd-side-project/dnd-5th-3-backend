@@ -37,7 +37,6 @@ public class PostsController {
     @GetMapping("/api/v1/posts/{id}")
     public PostResponseDto findPostById(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
         Posts foundPost = postsService.findPostById(id);
-        VoteRatioVo ratioVo = new VoteRatioVo(foundPost);
         Vote voteResult = voteService.getVoteResult(member, foundPost);
         VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
 
@@ -47,8 +46,8 @@ public class PostsController {
                 .content(foundPost.getContent())
                 .productImageUrl(foundPost.getProductImageUrl())
                 .isVoted(foundPost.getIsVoted())
-                .permitRatio(ratioVo.getPermitRatio())
-                .rejectRatio(ratioVo.getRejectRatio())
+                .permitCount(foundPost.getPermitCount())
+                .rejectCount(foundPost.getRejectCount())
                 .createdDate(foundPost.getCreatedDate())
                 .voteDeadline(foundPost.getVoteDeadline())
                 .currentMemberVoteResult(currentMemberVoteResult)
