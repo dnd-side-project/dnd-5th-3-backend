@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -100,10 +101,10 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts/main")
-    public List<Map.Entry<String, MainPostDto>> mainPosts() {
+    public AllResponseDto mainPosts() {
         Map<String, Posts> mainPostsMap = postsService.findMainPosts();
         Map<String, MainPostDto> resultMap = new HashMap<>();
-        List<Map.Entry<String, MainPostDto>> resultList = new ArrayList<>();
+        List<MainPostDto> resultList = new ArrayList<>();
         mainPostsMap.forEach((key, value) -> {
             VoteRatioVo ratioVo = new VoteRatioVo(value);
             String productImageUrl = value.getProductImageUrl() == null ? "" : value.getProductImageUrl();
@@ -121,10 +122,40 @@ public class PostsController {
             resultMap.put(key, postDto);
         });
 
-        for (Map.Entry<String, MainPostDto> resultMapEntry : resultMap.entrySet()) {
-            resultList.add(resultMapEntry);
+        if (resultMap.get("neckAndNeckPost") == null) {
+            MainPostDto mock = MainPostDto.builder()
+                    .id(-1L)
+                    .name("no content")
+                    .title("no content")
+                    .productImageUrl("no content")
+                    .isVoted(true)
+                    .permitRatio(-99L)
+                    .rejectRatio(-99L)
+                    .createdDate(LocalDateTime.now())
+                    .voteDeadline(LocalDateTime.now())
+                    .build();
+            resultMap.put("neckAndNeckPost", mock);
         }
 
-        return resultList;
+        if (resultMap.get("bestResponsePost") == null) {
+            MainPostDto mock = MainPostDto.builder()
+                    .id(-1L)
+                    .name("no content")
+                    .title("no content")
+                    .productImageUrl("no content")
+                    .isVoted(true)
+                    .permitRatio(-99L)
+                    .rejectRatio(-99L)
+                    .createdDate(LocalDateTime.now())
+                    .voteDeadline(LocalDateTime.now())
+                    .build();
+            resultMap.put("bestResponsePost", mock);
+        }
+
+        for (MainPostDto value : resultMap.values()) {
+            resultList.add(value);
+        }
+
+        return new AllResponseDto(resultList);
     }
 }
