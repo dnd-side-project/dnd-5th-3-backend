@@ -39,13 +39,14 @@ public class PostsController {
         Posts foundPost = postsService.findPostById(id);
         Vote voteResult = voteService.getVoteResult(member, foundPost);
         VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
+        String productImageUrl = foundPost.getProductImageUrl() == null ? "" : foundPost.getProductImageUrl();
 
         return PostResponseDto.builder()
                 .id(foundPost.getId())
                 .name(foundPost.getMember().getName())
                 .title(foundPost.getTitle())
                 .content(foundPost.getContent())
-                .productImageUrl(foundPost.getProductImageUrl())
+                .productImageUrl(productImageUrl)
                 .isVoted(foundPost.getIsVoted())
                 .permitCount(foundPost.getPermitCount())
                 .rejectCount(foundPost.getRejectCount())
@@ -73,11 +74,12 @@ public class PostsController {
         List<Posts> postsList = postsService.findAllPosts(sorted);
         List<PostsListDto> dtoList = postsList.stream().map(p -> {
             VoteRatioVo ratioVo = new VoteRatioVo(p);
+            String productImageUrl = p.getProductImageUrl() == null ? "" : p.getProductImageUrl();
             return PostsListDto.builder()
                     .id(p.getId())
                     .name(p.getMember().getName())
                     .title(p.getTitle())
-                    .productImageUrl(p.getProductImageUrl())
+                    .productImageUrl(productImageUrl)
                     .isVoted(p.getIsVoted())
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
@@ -104,11 +106,12 @@ public class PostsController {
         List<Map.Entry<String, MainPostDto>> resultList = new ArrayList<>();
         mainPostsMap.forEach((key, value) -> {
             VoteRatioVo ratioVo = new VoteRatioVo(value);
+            String productImageUrl = value.getProductImageUrl() == null ? "" : value.getProductImageUrl();
             MainPostDto postDto = MainPostDto.builder()
                     .id(value.getId())
                     .name(value.getMember().getName())
                     .title(value.getTitle())
-                    .productImageUrl(value.getProductImageUrl())
+                    .productImageUrl(productImageUrl)
                     .isVoted(value.getIsVoted())
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
