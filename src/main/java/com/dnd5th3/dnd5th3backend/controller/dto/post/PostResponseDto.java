@@ -10,6 +10,7 @@ import java.time.LocalDateTime;
 @Getter
 public class PostResponseDto {
 
+    private Long id;
     private String name;
     private String title;
     private String content;

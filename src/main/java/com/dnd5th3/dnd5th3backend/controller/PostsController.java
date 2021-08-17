@@ -41,6 +41,7 @@ public class PostsController {
         VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
 
         return PostResponseDto.builder()
+                .id(foundPost.getId())
                 .name(foundPost.getMember().getName())
                 .title(foundPost.getTitle())
                 .content(foundPost.getContent())

@@ -168,6 +168,7 @@ class PostsControllerTest {
                                 parameterWithName("id").description("게시글 id")
                         ),
                         responseFields(
+                                fieldWithPath("id").description("게시글 id"),
                                 fieldWithPath("name").description("작성자 이름"),
                                 fieldWithPath("title").description("글 제목"),
                                 fieldWithPath("content").description("글 내용"),
@@ -180,6 +181,7 @@ class PostsControllerTest {
                                 fieldWithPath("currentMemberVoteResult").description("현재 사용자의 투표 결과")
                         )
                 ))
+                .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("name"))
                 .andExpect(jsonPath("$.title").value("test"))
                 .andExpect(jsonPath("$.content").value("content"))
@@ -330,7 +332,7 @@ class PostsControllerTest {
                                 parameterWithName("sorted").description("정렬 방법")
                         ),
                         responseFields(
-                                fieldWithPath("posts.[].id").description("글 아이디"),
+                                fieldWithPath("posts.[].id").description("게시글 id"),
                                 fieldWithPath("posts.[].name").description("작성자 이름"),
                                 fieldWithPath("posts.[].title").description("글 제목"),
                                 fieldWithPath("posts.[].productImageUrl").description("상품 이미지"),

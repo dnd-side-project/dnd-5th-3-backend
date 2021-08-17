@@ -465,7 +465,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_response_fields_2">Response Fields</a></li>
 </ul>
 </li>
-<li><a href="#posts-update">PUT :: 게시글 수정</a>
+<li><a href="#posts-update">POST :: 게시글 수정</a>
 <ul class="sectlevel2">
 <li><a href="#_http_request_3">HTTP Request</a></li>
 <li><a href="#_path_parameters_2">Path Parameters</a></li>
@@ -644,9 +644,10 @@ Host: docs.moomool.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 289
+Content-Length: 301
 
 {
+  "id" : 1,
   "name" : "name",
   "title" : "test",
   "content" : "content",
@@ -677,6 +678,11 @@ Content-Length: 289
 </tr>
 </thead>
 <tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시글 id</p></td>
+</tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>name</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>String</code></p></td>
@@ -733,7 +739,7 @@ Content-Length: 289
 </div>
 </div>
 <div class="sect1">
-<h2 id="posts-update"><a class="link" href="#posts-update">PUT :: 게시글 수정</a></h2>
+<h2 id="posts-update"><a class="link" href="#posts-update">POST :: 게시글 수정</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_http_request_3"><a class="link" href="#_http_request_3">HTTP Request</a></h3>
@@ -1039,7 +1045,7 @@ Content-Length: 536
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>posts.[].id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">글 아이디</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">게시글 id</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>posts.[].name</code></p></td>
@@ -1281,7 +1287,7 @@ Content-Length: 14
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-08-17 00:48:04 +0900
+Last updated 2021-08-17 04:34:01 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">
