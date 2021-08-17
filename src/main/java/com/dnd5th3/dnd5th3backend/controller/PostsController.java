@@ -13,6 +13,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,13 +40,14 @@ public class PostsController {
         Posts foundPost = postsService.findPostById(id);
         Vote voteResult = voteService.getVoteResult(member, foundPost);
         VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
+        String productImageUrl = foundPost.getProductImageUrl() == null ? "" : foundPost.getProductImageUrl();
 
         return PostResponseDto.builder()
                 .id(foundPost.getId())
                 .name(foundPost.getMember().getName())
                 .title(foundPost.getTitle())
                 .content(foundPost.getContent())
-                .productImageUrl(foundPost.getProductImageUrl())
+                .productImageUrl(productImageUrl)
                 .isVoted(foundPost.getIsVoted())
                 .permitCount(foundPost.getPermitCount())
                 .rejectCount(foundPost.getRejectCount())
@@ -73,11 +75,12 @@ public class PostsController {
         List<Posts> postsList = postsService.findAllPosts(sorted);
         List<PostsListDto> dtoList = postsList.stream().map(p -> {
             VoteRatioVo ratioVo = new VoteRatioVo(p);
+            String productImageUrl = p.getProductImageUrl() == null ? "" : p.getProductImageUrl();
             return PostsListDto.builder()
                     .id(p.getId())
                     .name(p.getMember().getName())
                     .title(p.getTitle())
-                    .productImageUrl(p.getProductImageUrl())
+                    .productImageUrl(productImageUrl)
                     .isVoted(p.getIsVoted())
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
@@ -98,17 +101,18 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts/main")
-    public List<Map.Entry<String, MainPostDto>> mainPosts() {
+    public AllResponseDto mainPosts() {
         Map<String, Posts> mainPostsMap = postsService.findMainPosts();
         Map<String, MainPostDto> resultMap = new HashMap<>();
-        List<Map.Entry<String, MainPostDto>> resultList = new ArrayList<>();
+        List<MainPostDto> resultList = new ArrayList<>();
         mainPostsMap.forEach((key, value) -> {
             VoteRatioVo ratioVo = new VoteRatioVo(value);
+            String productImageUrl = value.getProductImageUrl() == null ? "" : value.getProductImageUrl();
             MainPostDto postDto = MainPostDto.builder()
                     .id(value.getId())
                     .name(value.getMember().getName())
                     .title(value.getTitle())
-                    .productImageUrl(value.getProductImageUrl())
+                    .productImageUrl(productImageUrl)
                     .isVoted(value.getIsVoted())
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
@@ -118,10 +122,40 @@ public class PostsController {
             resultMap.put(key, postDto);
         });
 
-        for (Map.Entry<String, MainPostDto> resultMapEntry : resultMap.entrySet()) {
-            resultList.add(resultMapEntry);
+        if (resultMap.get("neckAndNeckPost") == null) {
+            MainPostDto mock = MainPostDto.builder()
+                    .id(-1L)
+                    .name("no content")
+                    .title("no content")
+                    .productImageUrl("no content")
+                    .isVoted(true)
+                    .permitRatio(-99L)
+                    .rejectRatio(-99L)
+                    .createdDate(LocalDateTime.now())
+                    .voteDeadline(LocalDateTime.now())
+                    .build();
+            resultMap.put("neckAndNeckPost", mock);
         }
 
-        return resultList;
+        if (resultMap.get("bestResponsePost") == null) {
+            MainPostDto mock = MainPostDto.builder()
+                    .id(-1L)
+                    .name("no content")
+                    .title("no content")
+                    .productImageUrl("no content")
+                    .isVoted(true)
+                    .permitRatio(-99L)
+                    .rejectRatio(-99L)
+                    .createdDate(LocalDateTime.now())
+                    .voteDeadline(LocalDateTime.now())
+                    .build();
+            resultMap.put("bestResponsePost", mock);
+        }
+
+        for (MainPostDto value : resultMap.values()) {
+            resultList.add(value);
+        }
+
+        return new AllResponseDto(resultList);
     }
 }
