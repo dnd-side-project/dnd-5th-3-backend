@@ -8,8 +8,6 @@ import lombok.Getter;
 public class CommentRequestDto {
     private final Long postId;
     private final Long commentId;
-    private final Long groupNo;
     private final Integer commentLayer;
-    private final Integer commentOrder;
     private final String content;
 }

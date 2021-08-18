@@ -68,7 +68,7 @@ public class PostsService {
         postsRepository.delete(foundPost);
     }
 
-    public List<Posts> findAllPosts(String sorted, int offset) {
+    public List<Posts> findAllPosts(String sorted) {
         List<Posts> allPosts = postsRepository.findAll();
         //프록시 객체 초기화, 투표 종료 여부 초기화
         allPosts.stream().forEach(p -> {
@@ -79,19 +79,19 @@ public class PostsService {
         });
 
         if (sorted.equals("rank-count")) {
-            List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount(offset);
+            List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount();
             return allPostsOrderByRankCount;
         }
         if (sorted.equals("created-date")) {
-            List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate(offset);
+            List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
             return allPostsOrderByCreatedDate;
         }
         if (sorted.equals("already-done")) {
-            List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone(offset);
+            List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
             return allPostsOrderByAlreadyDone;
         }
         if (sorted.equals("almost-done")) {
-            List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone(offset);
+            List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
             return allPostsOrderByAlmostDone;
         }
 

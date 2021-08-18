@@ -15,52 +15,48 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
     private final JPAQueryFactory query;
 
     @Override
-    public List<Posts> findPostsOrderByRankCount(int offset) {
+    public List<Posts> findPostsOrderByRankCount() {
 
         return query
                 .select(posts)
                 .from(posts)
                 .where(posts.isVoted.eq(false))
                 .orderBy(posts.rankCount.desc())
-                .offset(offset)
-                .limit(10)
+                .fetchAll()
                 .fetch();
     }
 
     @Override
-    public List<Posts> findPostsOrderByCreatedDate(int offset) {
+    public List<Posts> findPostsOrderByCreatedDate() {
 
         return query
                 .select(posts)
                 .from(posts)
                 .orderBy(posts.createdDate.desc())
-                .offset(offset)
-                .limit(10)
+                .fetchAll()
                 .fetch();
     }
 
     @Override
-    public List<Posts> findPostsOrderByAlreadyDone(int offset) {
+    public List<Posts> findPostsOrderByAlreadyDone() {
 
         return query
                 .select(posts)
                 .from(posts)
                 .where(posts.isVoted.eq(true))
                 .orderBy(posts.voteDeadline.asc())
-                .offset(offset)
-                .limit(10)
+                .fetchAll()
                 .fetch();
     }
 
     @Override
-    public List<Posts> findPostsOrderByAlmostDone(int offset) {
+    public List<Posts> findPostsOrderByAlmostDone() {
         return query
                 .select(posts)
                 .from(posts)
                 .where(posts.isVoted.eq(false))
                 .orderBy(posts.voteDeadline.asc())
-                .offset(offset)
-                .limit(10)
+                .fetchAll()
                 .fetch();
     }
 
