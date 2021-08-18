@@ -42,16 +42,15 @@ public class Comment extends BaseTime {
     @OneToMany(fetch = FetchType.LAZY,mappedBy = "comment")
     private List<CommentEmoji> commentEmoji;
 
-    public static Comment create(CommentRequestDto requestDto,Member member,Posts posts) {
+    public static Comment create(CommentRequestDto requestDto,long groupNo,int commentLayer,int commentOrder,Member member,Posts posts) {
         Comment comment = Comment.builder()
-                .member(member)
-                .posts(posts)
-                .id(requestDto.getCommentId())
-                .groupNo(requestDto.getGroupNo())
-                .commentLayer(requestDto.getCommentLayer())
-                .commentOrder(requestDto.getCommentOrder())
+                .groupNo(groupNo)
+                .commentLayer(commentLayer)
+                .commentOrder(commentOrder)
                 .content(requestDto.getContent())
                 .isDeleted(Boolean.FALSE)
+                .member(member)
+                .posts(posts)
                 .build();
         posts.addComment(comment);
 

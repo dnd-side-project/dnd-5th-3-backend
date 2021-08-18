@@ -63,6 +63,24 @@ include::{snippets}/comment/save/http-response.adoc[]
 === Response Fields
 include::{snippets}/comment/save/response-fields.adoc[]
 
+[[comment-reply]]
+== POST :: 대댓글 등록
+
+=== HTTP Request
+include::{snippets}/comment/reply/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/comment/reply/path-parameters.adoc[]
+
+=== Request Fields
+include::{snippets}/comment/reply/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/reply/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/reply/response-fields.adoc[]
+
 [[comment-edit]]
 == PUT :: 댓글 수정
 

@@ -10,7 +10,7 @@ INSERT INTO vote (vote_id, created_date, updated_date, result, member_id, post_i
 INSERT INTO comment (comment_id, created_date, updated_date, comment_layer, comment_order, content, group_no, is_deleted, member_id, post_id) VALUES (1, '2021-08-06 12:41:15.025050', '2021-08-06 12:41:15.025050', 0, 0, 'no.1 test content', 1, false, 1, 1);
 INSERT INTO comment (comment_id, created_date, updated_date, comment_layer, comment_order, content, group_no, is_deleted, member_id, post_id) VALUES (2, '2021-08-06 13:41:15.025050', '2021-08-06 13:41:15.025050', 0, 0, 'no.2 test content', 2, false, 2, 1);
 INSERT INTO comment (comment_id, created_date, updated_date, comment_layer, comment_order, content, group_no, is_deleted, member_id, post_id) VALUES (3, '2021-08-06 15:41:15.025050', '2021-08-06 15:41:15.025050', 0, 0, 'no.3 test content', 3, false, 3, 1);
-INSERT INTO comment (comment_id, created_date, updated_date, comment_layer, comment_order, content, group_no, is_deleted, member_id, post_id) VALUES (4, '2021-08-06 16:41:15.025050', '2021-08-06 16:41:15.025050', 1, 0, 'no.3 reply test content', 3, false, 2, 1);
+INSERT INTO comment (comment_id, created_date, updated_date, comment_layer, comment_order, content, group_no, is_deleted, member_id, post_id) VALUES (4, '2021-08-06 16:41:15.025050', '2021-08-06 16:41:15.025050', 1, 1, 'no.3 reply test content', 3, false, 2, 1);
 INSERT INTO comment (comment_id, created_date, updated_date, comment_layer, comment_order, content, group_no, is_deleted, member_id, post_id) VALUES (5, '2021-08-06 17:41:15.025050', '2021-08-06 17:41:15.025050', 1, 1, 'no.3 reply test content', 3, false, 1, 1);
 
 INSERT INTO emoji (emoji_id, detail) VALUES (1, '1');

@@ -21,8 +21,8 @@ PUT http://localhost:8080/api/v1/member/token
 Content-Type: application/json
 
 {
-  "email"        : "test@naver.com",
-  "refreshToken" : "1234"
+  "email"        : "test1@naver.com",
+  "refreshToken" : "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiNWViM2RiYjgtMWQyMi00ZGFiLTk1NTYtNjEzOGI5NWZlNzFmIn0sImV4cCI6MTYzMDQ1NzY0NH0.2RkrjuX2Aucij4p89XO75xfGliCIRTTTn252fLp-4cY"
 }
 
 ###

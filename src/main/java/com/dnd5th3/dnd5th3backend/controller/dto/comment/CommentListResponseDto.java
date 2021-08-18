@@ -27,9 +27,7 @@ public class CommentListResponseDto {
         private long memberId;
         private String email;
         private String writerName;
-        private long groupNo;
         private int commentLayer;
-        private int commentOrder;
         private String content;
         private VoteType voteType;
         private int replyCount;
