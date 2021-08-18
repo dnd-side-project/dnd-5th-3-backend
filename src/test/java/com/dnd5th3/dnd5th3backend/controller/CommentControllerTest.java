@@ -98,9 +98,7 @@ class CommentControllerTest {
                                 fieldWithPath("commentList.[].memberId").description("회원 ID"),
                                 fieldWithPath("commentList.[].email").description("회원 이메일"),
                                 fieldWithPath("commentList.[].writerName").description("작성자 닉네임"),
-                                fieldWithPath("commentList.[].groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentList.[].commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
                                 fieldWithPath("commentList.[].content").description("댓글 내용"),
                                 fieldWithPath("commentList.[].voteType").description("투표 상태"),
                                 fieldWithPath("commentList.[].createdDate").description("생성일자"),
@@ -138,16 +136,14 @@ class CommentControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         pathParameters(
-                                parameterWithName("commentId").description("글 ID")
+                                parameterWithName("commentId").description("댓글 ID")
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("commentList.[].commentId").description("댓글 ID"),
                                 fieldWithPath("commentList.[].memberId").description("회원 ID"),
                                 fieldWithPath("commentList.[].email").description("회원 이메일"),
                                 fieldWithPath("commentList.[].writerName").description("작성자 닉네임"),
-                                fieldWithPath("commentList.[].groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentList.[].commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentList.[].commentOrder").description("댓글 순서"),
                                 fieldWithPath("commentList.[].content").description("댓글 내용"),
                                 fieldWithPath("commentList.[].voteType").description("투표 상태"),
                                 fieldWithPath("commentList.[].createdDate").description("생성일자"),
@@ -161,20 +157,17 @@ class CommentControllerTest {
     }
 
     @DisplayName("댓글 등록 API 테스트")
+    @Order(3)
     @Test
     void saveAPI() throws Exception {
 
         long postId = 1;
-        long groupNo = 8;
         int commentLayer = 0;
-        int commentOrder = 0;
         String content = "comment save test";
 
         Map<String,Object> request = new HashMap<>();
         request.put("postId",postId);
-        request.put("groupNo",groupNo);
         request.put("commentLayer",commentLayer);
-        request.put("commentOrder",commentOrder);
         request.put("content",content);
 
         ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/comment")
@@ -192,16 +185,12 @@ class CommentControllerTest {
                         getDocumentResponse(),
                         relaxedRequestFields(
                                 fieldWithPath("postId").description("글 ID"),
-                                fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentOrder").description("댓글 순서"),
                                 fieldWithPath("content").description("댓글 내용")
                         ),
                         responseFields(
                                 fieldWithPath("commentId").description("생성된 댓글 ID"),
-                                fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentOrder").description("댓글 순서"),
                                 fieldWithPath("content").description("댓글 내용"),
                                 fieldWithPath("createdDate").description("생성일자"),
                                 fieldWithPath("updatedDate").description("수정일자"),
@@ -209,6 +198,52 @@ class CommentControllerTest {
                         )
                 ))
                 .andExpect(jsonPath("$.commentId").value(6L));
+
+    }
+
+    @DisplayName("대댓글 등록 API 테스트")
+    @Order(4)
+    @Test
+    void saveReplyAPI() throws Exception {
+
+        long commentId = 5;
+        int commentLayer = 1;
+        String content = "comment reply save test";
+
+        Map<String,Object> request = new HashMap<>();
+        request.put("commentLayer",commentLayer);
+        request.put("content",content);
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/comment/{commentId}/reply",commentId)
+                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString())
+                .content(objectMapper.writeValueAsString(request)));
+
+        actions
+                .andExpect(status().isCreated())
+                .andDo(print())
+                .andDo(document("comment/reply",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("commentId").description("댓글 ID")
+                        ),
+                        relaxedRequestFields(
+                                fieldWithPath("commentLayer").description("댓글 계층"),
+                                fieldWithPath("content").description("댓글 내용")
+                        ),
+                        responseFields(
+                                fieldWithPath("commentId").description("생성된 댓글 ID"),
+                                fieldWithPath("commentLayer").description("댓글 계층"),
+                                fieldWithPath("content").description("댓글 내용"),
+                                fieldWithPath("createdDate").description("생성일자"),
+                                fieldWithPath("updatedDate").description("수정일자"),
+                                fieldWithPath("isDeleted").description("삭제 여부")
+                        )
+                ))
+                .andExpect(jsonPath("$.content").value(content));
 
     }
 
@@ -242,9 +277,7 @@ class CommentControllerTest {
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("commentId").description("댓글 ID"),
-                                fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentOrder").description("댓글 순서"),
                                 fieldWithPath("content").description("수정된 댓글 내용"),
                                 fieldWithPath("createdDate").description("생성일자"),
                                 fieldWithPath("updatedDate").description("수정일자"),
@@ -281,9 +314,7 @@ class CommentControllerTest {
                         ),
                         relaxedResponseFields(
                                 fieldWithPath("commentId").description("삭제된 댓글 ID"),
-                                fieldWithPath("groupNo").description("댓글 그룹번호"),
                                 fieldWithPath("commentLayer").description("댓글 계층"),
-                                fieldWithPath("commentOrder").description("댓글 순서"),
                                 fieldWithPath("content").description("댓글 내용"),
                                 fieldWithPath("createdDate").description("생성일자"),
                                 fieldWithPath("updatedDate").description("수정일자"),

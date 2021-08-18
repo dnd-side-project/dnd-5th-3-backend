@@ -12,9 +12,7 @@ import java.time.LocalDateTime;
 public class CommentResponseDto {
 
     private Long commentId;
-    private Long groupNo;
     private Integer commentLayer;
-    private Integer commentOrder;
     private String content;
     private Boolean isDeleted;
     @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")

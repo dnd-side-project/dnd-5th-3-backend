@@ -32,11 +32,23 @@ public class CommentService {
     private final VoteRepository voteRepository;
     private static final int LOWER_COMMENT = 1;
     private static final int PAGE_SIZE = 50;
+    private static final int TOP = 0;
 
     @Transactional
     public Comment saveComment(CommentRequestDto requestDto, Member member){
         Posts posts = postsRepository.findById(requestDto.getPostId()).orElseThrow();
-        Comment comment = Comment.create(requestDto, member, posts);
+        long nextGroupNo = commentRepository.nextGroupNo(requestDto.getPostId(), requestDto.getCommentLayer());
+        Comment comment = Comment.create(requestDto,nextGroupNo, requestDto.getCommentLayer(),TOP,member, posts);
+        return commentRepository.save(comment);
+    }
+
+    @Transactional
+    public Comment saveReplyComment(CommentRequestDto requestDto, long commentId ,Member member){
+        Comment topComment = commentRepository.findById(commentId).orElseThrow();
+        Posts posts = topComment.getPosts();
+        long groupNo = topComment.getGroupNo();
+        int nextCommentOrder = commentRepository.nextCommentOrder(commentId,groupNo,requestDto.getCommentLayer());
+        Comment comment = Comment.create(requestDto, groupNo, requestDto.getCommentLayer(), nextCommentOrder, member, posts);
         return commentRepository.save(comment);
     }
 

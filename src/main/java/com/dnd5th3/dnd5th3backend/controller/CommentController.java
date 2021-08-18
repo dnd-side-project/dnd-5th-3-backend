@@ -56,4 +56,11 @@ public class CommentController {
         return ResponseEntity.ok(detailComment);
     }
 
+    @PostMapping("/{commentId}/reply")
+    public ResponseEntity<CommentResponseDto> saveReplyAPI(@PathVariable Long commentId, @RequestBody CommentRequestDto requestDto, @AuthenticationPrincipal Member member){
+        Comment comment = commentService.saveReplyComment(requestDto,commentId ,member);
+        CommentResponseDto commentResponseDto = modelMapper.map(comment, CommentResponseDto.class);
+        return ResponseEntity.status(HttpStatus.CREATED).body(commentResponseDto);
+    }
+
 }
