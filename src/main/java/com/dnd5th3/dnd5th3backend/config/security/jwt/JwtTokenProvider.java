@@ -70,7 +70,7 @@ public class JwtTokenProvider {
     public String createRefreshToken(Member member){
         String refreshToken = createToken(member, REFRESH_TOKEN_EXPIRED_TIME, true);
         saveRefreshToken(member,refreshToken);
-        return createToken(member,REFRESH_TOKEN_EXPIRED_TIME,true);
+        return refreshToken;
     }
 
     public String createAccessToken(Member member){
