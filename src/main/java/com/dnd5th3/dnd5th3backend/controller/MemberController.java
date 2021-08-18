@@ -31,4 +31,16 @@ public class MemberController {
         MemberReissueTokenResponseDto reissueTokenResponseDto = memberService.reissueAccessToken(memberRequestDto);
         return ResponseEntity.ok(reissueTokenResponseDto);
     }
+
+    @GetMapping("/exists/{email}/email")
+    public ResponseEntity<Boolean> existCheckAPI(@PathVariable String email){
+        boolean existsEmail = memberService.isExistsEmail(email);
+        return ResponseEntity.ok(existsEmail);
+    }
+
+    @GetMapping("/exists/{name}/name")
+    public ResponseEntity<Boolean> existEmailAPI(@PathVariable String name){
+        boolean existsName = memberService.isExistsName(name);
+        return ResponseEntity.ok(existsName);
+    }
 }
