@@ -37,6 +37,7 @@ public class Posts extends BaseTime {
     @NotNull
     private String content;
 
+    @Column(length = 1000)
     private String productImageUrl;
 
     @NotNull
