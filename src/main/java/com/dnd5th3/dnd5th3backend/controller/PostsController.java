@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -44,18 +46,19 @@ public class PostsController {
     @GetMapping("/api/v1/posts/{id}")
     public PostResponseDto findPostById(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
         Posts foundPost = postsService.findPostById(id);
-        VoteRatioVo ratioVo = new VoteRatioVo(foundPost);
         Vote voteResult = voteService.getVoteResult(member, foundPost);
         VoteType currentMemberVoteResult = voteResult == null ? VoteType.NO_RESULT : voteResult.getResult();
+        String productImageUrl = foundPost.getProductImageUrl() == null ? "" : foundPost.getProductImageUrl();
 
         return PostResponseDto.builder()
+                .id(foundPost.getId())
                 .name(foundPost.getMember().getName())
                 .title(foundPost.getTitle())
                 .content(foundPost.getContent())
-                .productImageUrl(foundPost.getProductImageUrl())
+                .productImageUrl(productImageUrl)
                 .isVoted(foundPost.getIsVoted())
-                .permitRatio(ratioVo.getPermitRatio())
-                .rejectRatio(ratioVo.getRejectRatio())
+                .permitCount(foundPost.getPermitCount())
+                .rejectCount(foundPost.getRejectCount())
                 .createdDate(foundPost.getCreatedDate())
                 .voteDeadline(foundPost.getVoteDeadline())
                 .currentMemberVoteResult(currentMemberVoteResult)
@@ -81,18 +84,21 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts")
-    public AllResponseDto findPostsList(@RequestParam String sorted, @RequestParam int offset) {
-        List<Posts> postsList = postsService.findAllPosts(sorted, offset);
+    public AllResponseDto findPostsList(@RequestParam String sorted) {
+        List<Posts> postsList = postsService.findAllPosts(sorted);
         List<PostsListDto> dtoList = postsList.stream().map(p -> {
             VoteRatioVo ratioVo = new VoteRatioVo(p);
+            String productImageUrl = p.getProductImageUrl() == null ? "" : p.getProductImageUrl();
             return PostsListDto.builder()
+                    .id(p.getId())
                     .name(p.getMember().getName())
                     .title(p.getTitle())
-                    .productImageUrl(p.getProductImageUrl())
+                    .productImageUrl(productImageUrl)
                     .isVoted(p.getIsVoted())
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
                     .createdDate(p.getCreatedDate())
+                    .voteDeadline(p.getVoteDeadline())
                     .build();
         }).collect(Collectors.toList());
 
@@ -108,24 +114,62 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts/main")
-    public Map<String, MainPostDto> mainPosts() {
+    public AllResponseDto mainPosts() {
         Map<String, Posts> mainPostsMap = postsService.findMainPosts();
         Map<String, MainPostDto> resultMap = new HashMap<>();
+        List<MainPostDto> resultList = new ArrayList<>();
         mainPostsMap.forEach((key, value) -> {
             VoteRatioVo ratioVo = new VoteRatioVo(value);
+            String productImageUrl = value.getProductImageUrl() == null ? "" : value.getProductImageUrl();
             MainPostDto postDto = MainPostDto.builder()
+                    .id(value.getId())
                     .name(value.getMember().getName())
                     .title(value.getTitle())
-                    .productImageUrl(value.getProductImageUrl())
+                    .productImageUrl(productImageUrl)
                     .isVoted(value.getIsVoted())
                     .permitRatio(ratioVo.getPermitRatio())
                     .rejectRatio(ratioVo.getRejectRatio())
                     .createdDate(value.getCreatedDate())
+                    .voteDeadline(value.getVoteDeadline())
                     .build();
             resultMap.put(key, postDto);
         });
 
-        return resultMap;
+        if (resultMap.get("neckAndNeckPost") == null) {
+            MainPostDto mock = MainPostDto.builder()
+                    .id(-1L)
+                    .name("no content")
+                    .title("no content")
+                    .productImageUrl("no content")
+                    .isVoted(true)
+                    .permitRatio(-99L)
+                    .rejectRatio(-99L)
+                    .createdDate(LocalDateTime.now())
+                    .voteDeadline(LocalDateTime.now())
+                    .build();
+            resultMap.put("neckAndNeckPost", mock);
+        }
+
+        if (resultMap.get("bestResponsePost") == null) {
+            MainPostDto mock = MainPostDto.builder()
+                    .id(-1L)
+                    .name("no content")
+                    .title("no content")
+                    .productImageUrl("no content")
+                    .isVoted(true)
+                    .permitRatio(-99L)
+                    .rejectRatio(-99L)
+                    .createdDate(LocalDateTime.now())
+                    .voteDeadline(LocalDateTime.now())
+                    .build();
+            resultMap.put("bestResponsePost", mock);
+        }
+
+        for (MainPostDto value : resultMap.values()) {
+            resultList.add(value);
+        }
+
+        return new AllResponseDto(resultList);
     }
 
 }

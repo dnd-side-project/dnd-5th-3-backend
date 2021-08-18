@@ -6,9 +6,9 @@ import java.util.List;
 
 public interface PostsRepositoryCustom {
 
-    List<Posts> findPostsOrderByRankCount(int offset);
-    List<Posts> findPostsOrderByCreatedDate(int offset);
-    List<Posts> findPostsOrderByAlreadyDone(int offset);
-    List<Posts> findPostsOrderByAlmostDone(int offset);
+    List<Posts> findPostsOrderByRankCount();
+    List<Posts> findPostsOrderByCreatedDate();
+    List<Posts> findPostsOrderByAlreadyDone();
+    List<Posts> findPostsOrderByAlmostDone();
     List<Posts> findPostsTop50Ranked();
 }

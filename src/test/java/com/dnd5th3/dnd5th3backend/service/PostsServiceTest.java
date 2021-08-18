@@ -186,16 +186,16 @@ class PostsServiceTest {
         almostDoneList.add(posts1);
         alreadyDoneList.add(posts2);
 
-        when(postsRepository.findPostsOrderByRankCount(0)).thenReturn(rankCountList);
-        when(postsRepository.findPostsOrderByCreatedDate(0)).thenReturn(createdDateList);
-        when(postsRepository.findPostsOrderByAlreadyDone(0)).thenReturn(alreadyDoneList);
-        when(postsRepository.findPostsOrderByAlmostDone(0)).thenReturn(almostDoneList);
+        when(postsRepository.findPostsOrderByRankCount()).thenReturn(rankCountList);
+        when(postsRepository.findPostsOrderByCreatedDate()).thenReturn(createdDateList);
+        when(postsRepository.findPostsOrderByAlreadyDone()).thenReturn(alreadyDoneList);
+        when(postsRepository.findPostsOrderByAlmostDone()).thenReturn(almostDoneList);
 
         //when
-        List<Posts> orderByRankCountList = postsService.findAllPosts("rank-count", 0);
-        List<Posts> orderByCreatedDateList = postsService.findAllPosts("created-date", 0);
-        List<Posts> orderByAlreadyDoneList = postsService.findAllPosts("already-done", 0);
-        List<Posts> orderByAlmostDoneList = postsService.findAllPosts("almost-done", 0);
+        List<Posts> orderByRankCountList = postsService.findAllPosts("rank-count");
+        List<Posts> orderByCreatedDateList = postsService.findAllPosts("created-date");
+        List<Posts> orderByAlreadyDoneList = postsService.findAllPosts("already-done");
+        List<Posts> orderByAlmostDoneList = postsService.findAllPosts("almost-done");
 
         //then
         Assertions.assertEquals(orderByRankCountList.get(0).getId(), posts1.getId());

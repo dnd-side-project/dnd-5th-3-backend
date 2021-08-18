@@ -173,25 +173,27 @@ class PostsControllerTest {
                                 parameterWithName("id").description("게시글 id")
                         ),
                         responseFields(
+                                fieldWithPath("id").description("게시글 id"),
                                 fieldWithPath("name").description("작성자 이름"),
                                 fieldWithPath("title").description("글 제목"),
                                 fieldWithPath("content").description("글 내용"),
                                 fieldWithPath("productImageUrl").description("상품 이미지"),
                                 fieldWithPath("isVoted").description("투표 종료 여부"),
-                                fieldWithPath("permitRatio").description("찬성 투표 비율"),
-                                fieldWithPath("rejectRatio").description("반대 투표 비율"),
+                                fieldWithPath("permitCount").description("찬성 투표 수"),
+                                fieldWithPath("rejectCount").description("반대 투표 수"),
                                 fieldWithPath("createdDate").description("작성된 시간"),
                                 fieldWithPath("voteDeadline").description("투표 종료 시간"),
                                 fieldWithPath("currentMemberVoteResult").description("현재 사용자의 투표 결과")
                         )
                 ))
+                .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("name"))
                 .andExpect(jsonPath("$.title").value("test"))
                 .andExpect(jsonPath("$.content").value("content"))
                 .andExpect(jsonPath("$.productImageUrl").value("test.jpg"))
                 .andExpect(jsonPath("$.isVoted").value(false))
-                .andExpect(jsonPath("$.permitRatio").value(20L))
-                .andExpect(jsonPath("$.rejectRatio").value(80L))
+                .andExpect(jsonPath("$.permitCount").value(2))
+                .andExpect(jsonPath("$.rejectCount").value(8))
                 .andExpect(jsonPath("$.createdDate").value("2021-08-01T12:00:00"))
                 .andExpect(jsonPath("$.voteDeadline").value("2021-08-02T12:00:00"))
                 .andExpect(jsonPath("$.currentMemberVoteResult").value("NO_RESULT"));
@@ -288,6 +290,7 @@ class PostsControllerTest {
                 .rankCount(15)
                 .permitCount(10)
                 .rejectCount(25)
+                .voteDeadline(LocalDateTime.of(2021, 8, 5, 12, 0, 0))
                 .build();
         posts1.setCreatedDate(LocalDateTime.of(2021, 8, 4, 12, 0, 0));
         Posts posts2 = Posts.builder()
@@ -299,6 +302,7 @@ class PostsControllerTest {
                 .rankCount(10)
                 .permitCount(30)
                 .rejectCount(10)
+                .voteDeadline(LocalDateTime.of(2021, 8, 5, 15, 0, 0))
                 .build();
         posts2.setCreatedDate(LocalDateTime.of(2021, 8, 4, 15, 0, 0));
 
@@ -306,13 +310,13 @@ class PostsControllerTest {
         orderByCreatedDateList.add(posts2);
         orderByCreatedDateList.add(posts1);
 
-        given(postsService.findAllPosts("created-date", 0)).willReturn(orderByCreatedDateList);
+        given(postsService.findAllPosts("created-date")).willReturn(orderByCreatedDateList);
 
         //when
-        ResultActions rankCountResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=rank-count&offset=0"));
-        ResultActions createdDateResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=created-date&offset=0"));
-        ResultActions alreadyDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=already-done&offset=0"));
-        ResultActions almostDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=almost-done&offset=0"));
+        ResultActions rankCountResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=rank-count"));
+        ResultActions createdDateResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=created-date"));
+        ResultActions alreadyDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=already-done"));
+        ResultActions almostDoneResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=almost-done"));
 
         //then
         rankCountResult
@@ -320,8 +324,7 @@ class PostsControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("sorted").description("정렬 방법"),
-                                parameterWithName("offset").description("오프셋")
+                                parameterWithName("sorted").description("정렬 방법")
                         )
                 ))
                 .andExpect(status().isOk());
@@ -331,20 +334,22 @@ class PostsControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("sorted").description("정렬 방법"),
-                                parameterWithName("offset").description("오프셋")
+                                parameterWithName("sorted").description("정렬 방법")
                         ),
                         responseFields(
+                                fieldWithPath("posts.[].id").description("게시글 id"),
                                 fieldWithPath("posts.[].name").description("작성자 이름"),
                                 fieldWithPath("posts.[].title").description("글 제목"),
                                 fieldWithPath("posts.[].productImageUrl").description("상품 이미지"),
                                 fieldWithPath("posts.[].isVoted").description("투표 종료 여부"),
                                 fieldWithPath("posts.[].permitRatio").description("찬성 투표 비율"),
                                 fieldWithPath("posts.[].rejectRatio").description("반대 투표 비율"),
-                                fieldWithPath("posts.[].createdDate").description("작성된 시간")
+                                fieldWithPath("posts.[].createdDate").description("작성된 시간"),
+                                fieldWithPath("posts.[].voteDeadline").description("투표 종료 시간")
                         )
                 ))
                 .andExpect(status().isOk())
+                .andExpect(jsonPath("$.posts[0].id").value(2L))
                 .andExpect(jsonPath("$.posts[0].name").value("name"))
                 .andExpect(jsonPath("$.posts[0].title").value("test2"))
                 .andExpect(jsonPath("$.posts[0].productImageUrl").value("test2.jpg"))
@@ -352,21 +357,23 @@ class PostsControllerTest {
                 .andExpect(jsonPath("$.posts[0].permitRatio").value(75L))
                 .andExpect(jsonPath("$.posts[0].rejectRatio").value(25L))
                 .andExpect(jsonPath("$.posts[0].createdDate").value("2021-08-04T15:00:00"))
+                .andExpect(jsonPath("$.posts[0].voteDeadline").value("2021-08-05T15:00:00"))
+                .andExpect(jsonPath("$.posts[1].id").value(1L))
                 .andExpect(jsonPath("$.posts[1].name").value("name"))
                 .andExpect(jsonPath("$.posts[1].title").value("test1"))
                 .andExpect(jsonPath("$.posts[1].productImageUrl").value("test1.jpg"))
                 .andExpect(jsonPath("$.posts[1].isVoted").value(false))
                 .andExpect(jsonPath("$.posts[1].permitRatio").value(29L))
                 .andExpect(jsonPath("$.posts[1].rejectRatio").value(71L))
-                .andExpect(jsonPath("$.posts[1].createdDate").value("2021-08-04T12:00:00"));
+                .andExpect(jsonPath("$.posts[1].createdDate").value("2021-08-04T12:00:00"))
+                .andExpect(jsonPath("$.posts[1].voteDeadline").value("2021-08-05T12:00:00"));
 
         alreadyDoneResult
                 .andDo(document("posts/findAll/alreadyDone",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("sorted").description("정렬 방법"),
-                                parameterWithName("offset").description("오프셋")
+                                parameterWithName("sorted").description("정렬 방법")
                         )
                 ))
                 .andExpect(status().isOk());
@@ -376,8 +383,7 @@ class PostsControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
-                                parameterWithName("sorted").description("정렬 방법"),
-                                parameterWithName("offset").description("오프셋")
+                                parameterWithName("sorted").description("정렬 방법")
                         )
                 ))
                 .andExpect(status().isOk());
@@ -448,6 +454,7 @@ class PostsControllerTest {
                 .rejectCount(10)
                 .rankCount(100)
                 .isDeleted(false)
+                .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
                 .build();
         hotPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Posts belovedPost = Posts.builder()
@@ -461,6 +468,7 @@ class PostsControllerTest {
                 .rejectCount(10)
                 .rankCount(80)
                 .isDeleted(false)
+                .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
                 .build();
         belovedPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Posts recommendPost = Posts.builder()
@@ -474,6 +482,7 @@ class PostsControllerTest {
                 .rejectCount(0)
                 .rankCount(90)
                 .isDeleted(false)
+                .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
                 .build();
         recommendPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Posts bestResponsePost = Posts.builder()
@@ -487,6 +496,7 @@ class PostsControllerTest {
                 .rejectCount(80)
                 .rankCount(120)
                 .isDeleted(false)
+                .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
                 .build();
         bestResponsePost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Posts neckAndNeckPost = Posts.builder()
@@ -500,6 +510,7 @@ class PostsControllerTest {
                 .rejectCount(80)
                 .rankCount(100)
                 .isDeleted(false)
+                .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
                 .build();
         neckAndNeckPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Map<String, Posts> mainPostsMap = new HashMap<>();
@@ -519,80 +530,53 @@ class PostsControllerTest {
                 .andDo(print())
                 .andDo(document("posts/main",
                         getDocumentRequest(),
-                        getDocumentResponse(),
-                        responseFields(
-                                fieldWithPath("hotPost.name").description("불타고 있는 글 작성자 이름"),
-                                fieldWithPath("hotPost.title").description("불타고 있는 글 제목"),
-                                fieldWithPath("hotPost.productImageUrl").description("불타고 있는 글 상품 이미지"),
-                                fieldWithPath("hotPost.isVoted").description("불타고 있는 글 투표 종료 여부"),
-                                fieldWithPath("hotPost.permitRatio").description("불타고 있는 글 찬성 비율"),
-                                fieldWithPath("hotPost.rejectRatio").description("불타고 있는 글 반대 비율"),
-                                fieldWithPath("hotPost.createdDate").description("불타고 있는 글 작성된 시간"),
-                                fieldWithPath("belovedPost.name").description("사랑 듬뿍 받은 글 작성자 이름"),
-                                fieldWithPath("belovedPost.title").description("사랑 듬뿍 받은 글 제목"),
-                                fieldWithPath("belovedPost.productImageUrl").description("사랑 듬뿍 받은 글 상품 이미지"),
-                                fieldWithPath("belovedPost.isVoted").description("사랑 듬뿍 받은 글 투표 종료 여부"),
-                                fieldWithPath("belovedPost.permitRatio").description("사랑 듬뿍 받은 글 찬성 비율"),
-                                fieldWithPath("belovedPost.rejectRatio").description("사랑 듬뿍 받은 글 반대 비율"),
-                                fieldWithPath("belovedPost.createdDate").description("사랑 듬뿍 받은 글 작성된 시간"),
-                                fieldWithPath("recommendPost.name").description("무물의 추천글 작성자 이름"),
-                                fieldWithPath("recommendPost.title").description("무물의 추천글 제목"),
-                                fieldWithPath("recommendPost.productImageUrl").description("무물의 추천글 상품 이미지"),
-                                fieldWithPath("recommendPost.isVoted").description("무물의 추천글 투표 종료 여부"),
-                                fieldWithPath("recommendPost.permitRatio").description("무물의 추천글 찬성 비율"),
-                                fieldWithPath("recommendPost.rejectRatio").description("무물의 추천글 반대 비율"),
-                                fieldWithPath("recommendPost.createdDate").description("무물의 추천글 작성된 시간"),
-                                fieldWithPath("bestResponsePost.name").description("최고의 반응글 작성자 이름"),
-                                fieldWithPath("bestResponsePost.title").description("최고의 반응글 제목"),
-                                fieldWithPath("bestResponsePost.productImageUrl").description("최고의 반응글 상품 이미지"),
-                                fieldWithPath("bestResponsePost.isVoted").description("최고의 반응글 투표 종료 여부"),
-                                fieldWithPath("bestResponsePost.permitRatio").description("최고의 반응글 찬성 비율"),
-                                fieldWithPath("bestResponsePost.rejectRatio").description("최고의 반응글 반대 비율"),
-                                fieldWithPath("bestResponsePost.createdDate").description("최고의 반응글 작성된 시간"),
-                                fieldWithPath("neckAndNeckPost.name").description("막상막하 투표글 작성자 이름"),
-                                fieldWithPath("neckAndNeckPost.title").description("막상막하 투표글 제목"),
-                                fieldWithPath("neckAndNeckPost.productImageUrl").description("막상막하 투표글 상품 이미지"),
-                                fieldWithPath("neckAndNeckPost.isVoted").description("막상막하 투표글 투표 종료 여부"),
-                                fieldWithPath("neckAndNeckPost.permitRatio").description("막상막하 투표글 찬성 비율"),
-                                fieldWithPath("neckAndNeckPost.rejectRatio").description("막상막하 투표글 반대 비율"),
-                                fieldWithPath("neckAndNeckPost.createdDate").description("막상막하 투표글 작성된 시간")
-                                )
+                        getDocumentResponse()
                 ))
-                .andExpect(jsonPath("$.hotPost.name").value("name"))
-                .andExpect(jsonPath("$.hotPost.title").value("불타고 있는 글"))
-                .andExpect(jsonPath("$.hotPost.productImageUrl").value("test.jpg"))
-                .andExpect(jsonPath("$.hotPost.isVoted").value(false))
-                .andExpect(jsonPath("$.hotPost.permitRatio").value(50))
-                .andExpect(jsonPath("$.hotPost.rejectRatio").value(50))
-                .andExpect(jsonPath("$.hotPost.createdDate").value("2021-08-12T12:00:00"))
-                .andExpect(jsonPath("$.belovedPost.name").value("name"))
-                .andExpect(jsonPath("$.belovedPost.title").value("사랑 듬뿍 받은 글"))
-                .andExpect(jsonPath("$.belovedPost.productImageUrl").value("test.jpg"))
-                .andExpect(jsonPath("$.belovedPost.isVoted").value(false))
-                .andExpect(jsonPath("$.belovedPost.permitRatio").value(50))
-                .andExpect(jsonPath("$.belovedPost.rejectRatio").value(50))
-                .andExpect(jsonPath("$.belovedPost.createdDate").value("2021-08-12T12:00:00"))
-                .andExpect(jsonPath("$.recommendPost.name").value("name"))
-                .andExpect(jsonPath("$.recommendPost.title").value("무물의 추천글"))
-                .andExpect(jsonPath("$.recommendPost.productImageUrl").value("test.jpg"))
-                .andExpect(jsonPath("$.recommendPost.isVoted").value(false))
-                .andExpect(jsonPath("$.recommendPost.permitRatio").value(0))
-                .andExpect(jsonPath("$.recommendPost.rejectRatio").value(0))
-                .andExpect(jsonPath("$.recommendPost.createdDate").value("2021-08-12T12:00:00"))
-                .andExpect(jsonPath("$.bestResponsePost.name").value("name"))
-                .andExpect(jsonPath("$.bestResponsePost.title").value("최고의 반응글"))
-                .andExpect(jsonPath("$.bestResponsePost.productImageUrl").value("test.jpg"))
-                .andExpect(jsonPath("$.bestResponsePost.isVoted").value(false))
-                .andExpect(jsonPath("$.bestResponsePost.permitRatio").value(50))
-                .andExpect(jsonPath("$.bestResponsePost.rejectRatio").value(50))
-                .andExpect(jsonPath("$.bestResponsePost.createdDate").value("2021-08-12T12:00:00"))
-                .andExpect(jsonPath("$.neckAndNeckPost.name").value("name"))
-                .andExpect(jsonPath("$.neckAndNeckPost.title").value("막상막하 투표글"))
-                .andExpect(jsonPath("$.neckAndNeckPost.productImageUrl").value("test.jpg"))
-                .andExpect(jsonPath("$.neckAndNeckPost.isVoted").value(false))
-                .andExpect(jsonPath("$.neckAndNeckPost.permitRatio").value(50))
-                .andExpect(jsonPath("$.neckAndNeckPost.rejectRatio").value(50))
-                .andExpect(jsonPath("$.neckAndNeckPost.createdDate").value("2021-08-12T12:00:00"));
+                .andExpect(jsonPath("$.posts[2].voteDeadline").value("2021-08-13T12:00:00"))
+                .andExpect(jsonPath("$.posts[0].id").value(3L))
+                .andExpect(jsonPath("$.posts[0].name").value("name"))
+                .andExpect(jsonPath("$.posts[0].title").value("무물의 추천글"))
+                .andExpect(jsonPath("$.posts[0].productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.posts[0].isVoted").value(false))
+                .andExpect(jsonPath("$.posts[0].permitRatio").value(0))
+                .andExpect(jsonPath("$.posts[0].rejectRatio").value(0))
+                .andExpect(jsonPath("$.posts[0].createdDate").value("2021-08-12T12:00:00"))
+                .andExpect(jsonPath("$.posts[0].voteDeadline").value("2021-08-13T12:00:00"))
+                .andExpect(jsonPath("$.posts[1].id").value(1L))
+                .andExpect(jsonPath("$.posts[1].name").value("name"))
+                .andExpect(jsonPath("$.posts[1].title").value("불타고 있는 글"))
+                .andExpect(jsonPath("$.posts[1].productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.posts[1].isVoted").value(false))
+                .andExpect(jsonPath("$.posts[1].permitRatio").value(50))
+                .andExpect(jsonPath("$.posts[1].rejectRatio").value(50))
+                .andExpect(jsonPath("$.posts[1].createdDate").value("2021-08-12T12:00:00"))
+                .andExpect(jsonPath("$.posts[1].voteDeadline").value("2021-08-13T12:00:00"))
+                .andExpect(jsonPath("$.posts[2].id").value(2L))
+                .andExpect(jsonPath("$.posts[2].name").value("name"))
+                .andExpect(jsonPath("$.posts[2].title").value("사랑 듬뿍 받은 글"))
+                .andExpect(jsonPath("$.posts[2].productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.posts[2].isVoted").value(false))
+                .andExpect(jsonPath("$.posts[2].permitRatio").value(50))
+                .andExpect(jsonPath("$.posts[2].rejectRatio").value(50))
+                .andExpect(jsonPath("$.posts[2].createdDate").value("2021-08-12T12:00:00"))
+                .andExpect(jsonPath("$.posts[3].id").value(5L))
+                .andExpect(jsonPath("$.posts[3].name").value("name"))
+                .andExpect(jsonPath("$.posts[3].title").value("막상막하 투표글"))
+                .andExpect(jsonPath("$.posts[3].productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.posts[3].isVoted").value(false))
+                .andExpect(jsonPath("$.posts[3].permitRatio").value(50))
+                .andExpect(jsonPath("$.posts[3].rejectRatio").value(50))
+                .andExpect(jsonPath("$.posts[3].createdDate").value("2021-08-12T12:00:00"))
+                .andExpect(jsonPath("$.posts[3].voteDeadline").value("2021-08-13T12:00:00"))
+                .andExpect(jsonPath("$.posts[4].id").value(4L))
+                .andExpect(jsonPath("$.posts[4].name").value("name"))
+                .andExpect(jsonPath("$.posts[4].title").value("최고의 반응글"))
+                .andExpect(jsonPath("$.posts[4].productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.posts[4].isVoted").value(false))
+                .andExpect(jsonPath("$.posts[4].permitRatio").value(50))
+                .andExpect(jsonPath("$.posts[4].rejectRatio").value(50))
+                .andExpect(jsonPath("$.posts[4].createdDate").value("2021-08-12T12:00:00"))
+                .andExpect(jsonPath("$.posts[4].voteDeadline").value("2021-08-13T12:00:00"));
     }
 
 }

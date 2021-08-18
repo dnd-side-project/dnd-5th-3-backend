@@ -14,13 +14,14 @@ import java.util.List;
 
 @RequiredArgsConstructor
 public class CommentRepositoryCustomImpl implements CommentRepositoryCustom {
-
+    private static final int TOP_COMMENT = 0;
     private final JPAQueryFactory query;
 
     @Override
     public Page<Comment> getAllCommentList(long postId, Pageable pageable){
-        QueryResults<Comment> results = query.selectFrom(comment)
-                .where(comment.posts.id.eq(postId))
+        QueryResults<Comment> results = query
+                .selectFrom(comment)
+                .where(comment.posts.id.eq(postId).and(comment.commentLayer.eq(TOP_COMMENT)))
                 .orderBy(comment.groupNo.desc(), comment.commentOrder.asc())
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
