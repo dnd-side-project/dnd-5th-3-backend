@@ -45,4 +45,12 @@ public class MemberService {
                 .build();
     }
 
+    public boolean isExistsEmail(String email){
+      return memberRepository.existsByEmail(email);
+    }
+
+    public boolean isExistsName(String name){
+      return memberRepository.existsByName(name);
+    }
+
 }

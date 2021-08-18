@@ -58,6 +58,32 @@ include::{snippets}/member/reissue/http-response.adoc[]
 === Response Fields
 include::{snippets}/member/reissue/response-fields.adoc[]
 
+[[member-exists-email]]
+== GET :: 이메일 중복 확인
+
+=== HTTP Request
+include::{snippets}/member/exists/email/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/member/exists/email/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/exists/email/http-response.adoc[]
+
+[[member-exists-name]]
+== GET :: 닉네임 중복 확인
+
+=== HTTP Request
+include::{snippets}/member/exists/name/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/member/exists/name/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/exists/name/http-response.adoc[]
+
+
+
 
 
 

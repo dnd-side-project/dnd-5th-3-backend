@@ -1,8 +1,6 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
-import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import org.junit.jupiter.api.*;
@@ -13,7 +11,6 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -26,11 +23,12 @@ import java.util.Map;
 
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentRequest;
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
 import static org.springframework.restdocs.payload.PayloadDocumentation.fieldWithPath;
+import static org.springframework.restdocs.request.RequestDocumentation.parameterWithName;
+import static org.springframework.restdocs.request.RequestDocumentation.pathParameters;
 import static org.springframework.security.test.web.servlet.setup.SecurityMockMvcConfigurers.springSecurity;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -133,5 +131,49 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.accessToken").exists());
     }
 
+    @DisplayName("이메일 중복체크 API 테스트")
+    @Test
+    void existsEmailAPI() throws Exception {
+        String email = "test@naver.com";
 
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/member/exists/{email}/email",email)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString()));
+
+        actions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member/exists/email",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("email").description("이메일")
+                        ),
+                        responseBody()
+                )).andReturn();
+    }
+
+    @DisplayName("닉네임 중복체크 API 테스트")
+    @Test
+    void existsNameAPI() throws Exception {
+        String name = "moomool";
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/member/exists/{name}/name",name)
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString()));
+
+        actions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member/exists/name",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        pathParameters(
+                                parameterWithName("name").description("닉네임")
+                        ),
+                        responseBody()
+                ));
+    }
 }
