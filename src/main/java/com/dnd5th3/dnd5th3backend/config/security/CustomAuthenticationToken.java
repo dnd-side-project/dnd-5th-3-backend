@@ -2,7 +2,6 @@ package com.dnd5th3.dnd5th3backend.config.security;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.util.Assert;
 
 import java.util.Collection;
 
