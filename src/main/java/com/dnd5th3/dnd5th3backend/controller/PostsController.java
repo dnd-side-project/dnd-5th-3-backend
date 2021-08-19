@@ -76,7 +76,6 @@ public class PostsController {
         return IdResponseDto.builder().id(updatedPost.getId()).build();
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
     @DeleteMapping("/api/v1/posts/{id}")
     public IdResponseDto deletePost(@PathVariable(name = "id") Long id) {
         postsService.deletePost(id);

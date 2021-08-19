@@ -273,7 +273,6 @@ class PostsControllerTest {
                                 fieldWithPath("id").description("삭제된 게시글 id").type(Long.class)
                         )
                 ))
-                .andExpect(status().isNoContent())
                 .andExpect(jsonPath("$.id").value(1L));
     }
 
