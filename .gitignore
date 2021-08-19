@@ -41,3 +41,6 @@ out/
 
 ### db_volume ###
 db_volume
+
+### AWS_Credentials ###
+/src/main/resources/application-aws.yml
