@@ -8,11 +8,14 @@ import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import com.dnd5th3.dnd5th3backend.service.VoteService;
+import com.dnd5th3.dnd5th3backend.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,11 +29,16 @@ public class PostsController {
 
     private final PostsService postsService;
     private final VoteService voteService;
+    private final S3Uploader s3Uploader;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping("/api/v1/posts")
-    public IdResponseDto savePost(@RequestBody SaveRequestDto postSaveRequestDto, @AuthenticationPrincipal Member member) {
-        Posts savedPosts = postsService.savePost(member, postSaveRequestDto.getTitle(), postSaveRequestDto.getContent(), postSaveRequestDto.getProductImageUrl());
+    public IdResponseDto savePost(@RequestPart String title,
+                                  @RequestPart String content,
+                                  @RequestPart MultipartFile file,
+                                  @AuthenticationPrincipal Member member) throws IOException{
+        String productImageUrl = s3Uploader.upload(file, "static");
+        Posts savedPosts = postsService.savePost(member, title, content, productImageUrl);
 
         return IdResponseDto.builder().id(savedPosts.getId()).build();
     }
@@ -57,9 +65,14 @@ public class PostsController {
                 .build();
     }
 
-    @PutMapping("/api/v1/posts/{id}")
-    public IdResponseDto updatePost(@PathVariable(name = "id") Long id, @RequestBody UpdateRequestDto updateRequestDto) {
-        Posts updatedPost = postsService.updatePost(id, updateRequestDto.getTitle(), updateRequestDto.getContent(), updateRequestDto.getProductImageUrl());
+    @PostMapping("/api/v1/posts/{id}")
+    public IdResponseDto updatePost(@PathVariable(name = "id") Long id,
+                                    @RequestPart String title,
+                                    @RequestPart String content,
+                                    @RequestPart MultipartFile file
+                                    ) throws IOException {
+        String productImageUrl = s3Uploader.upload(file, "static");
+        Posts updatedPost = postsService.updatePost(id, title, content, productImageUrl);
         return IdResponseDto.builder().id(updatedPost.getId()).build();
     }
 
@@ -158,4 +171,5 @@ public class PostsController {
 
         return new AllResponseDto(resultList);
     }
+
 }

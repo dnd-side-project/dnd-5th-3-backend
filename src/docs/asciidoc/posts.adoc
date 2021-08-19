@@ -17,7 +17,7 @@
 include::{snippets}/posts/save/http-request.adoc[]
 
 === Request Fields
-include::{snippets}/posts/save/request-fields.adoc[]
+include::{snippets}/posts/save/request-parts.adoc[]
 
 === HTTP Response
 include::{snippets}/posts/save/http-response.adoc[]
@@ -50,7 +50,7 @@ include::{snippets}/posts/update/http-request.adoc[]
 include::{snippets}/posts/update/path-parameters.adoc[]
 
 === Request Fields
-include::{snippets}/posts/update/request-fields.adoc[]
+include::{snippets}/posts/update/request-parts.adoc[]
 
 === HTTP Response
 include::{snippets}/posts/update/http-response.adoc[]

@@ -15,6 +15,18 @@ spring:
         format_sql: true
         default_batch_fetch_size: 1000
 
+cloud:
+  aws:
+    s3:
+      bucket: moomool-images
+    region:
+      static: ap-northeast-2
+    stack:
+      auto: false
+    credentials:
+      access-key: ${AWS_ACCESS_KEY}
+      secret-key: ${AWS_SECRET_KEY}
+
 logging:
   level:
     org:

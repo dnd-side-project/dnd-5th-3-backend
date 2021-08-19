@@ -465,7 +465,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_response_fields_2">Response Fields</a></li>
 </ul>
 </li>
-<li><a href="#posts-update">POST :: 게시글 수정</a>
+<li><a href="#posts-update">PUT :: 게시글 수정</a>
 <ul class="sectlevel2">
 <li><a href="#_http_request_3">HTTP Request</a></li>
 <li><a href="#_path_parameters_2">Path Parameters</a></li>
@@ -517,16 +517,31 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/posts HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Content-Length: 86
+Content-Type: multipart/mixed; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Host: docs.moomool.com
 
-{
-  "title" : "test",
-  "content" : "test content",
-  "productImageUrl" : "test.jpg"
-}</code></pre>
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=title
+
+test
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=content
+
+content
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=title
+
+test
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=content
+
+content
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=file; filename=test.jpg
+Content-Type: image/jpeg
+
+test.jpg
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
 </div>
@@ -739,23 +754,38 @@ Content-Length: 301
 </div>
 </div>
 <div class="sect1">
-<h2 id="posts-update"><a class="link" href="#posts-update">POST :: 게시글 수정</a></h2>
+<h2 id="posts-update"><a class="link" href="#posts-update">PUT :: 게시글 수정</a></h2>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_http_request_3"><a class="link" href="#_http_request_3">HTTP Request</a></h3>
 <div class="listingblock">
 <div class="content">
-<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">PUT /api/v1/posts/1 HTTP/1.1
-Content-Type: application/json;charset=UTF-8
-Accept: application/json
-Content-Length: 92
+<pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/posts/1 HTTP/1.1
+Content-Type: multipart/mixed; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
 Host: docs.moomool.com
 
-{
-  "title" : "update",
-  "content" : "update content",
-  "productImageUrl" : "update.jpg"
-}</code></pre>
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=title
+
+update
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=content
+
+update content
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=title
+
+update
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=content
+
+update content
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Content-Disposition: form-data; name=file; filename=test.jpg
+Content-Type: image/jpeg
+
+test.jpg
+--6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
 </div>
