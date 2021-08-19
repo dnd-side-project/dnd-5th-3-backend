@@ -152,7 +152,7 @@ class CommentControllerTest {
                                 fieldWithPath("totalCount").description("댓글 전체 개수(상단 포함)")
                         )
                 ))
-                .andExpect(jsonPath("$.totalCount").value(3L));
+                .andExpect(jsonPath("$.totalCount").value(2L));
 
     }
 

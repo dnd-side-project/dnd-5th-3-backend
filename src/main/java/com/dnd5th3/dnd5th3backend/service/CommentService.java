@@ -74,15 +74,22 @@ public class CommentService {
 
         List<Vote> voteList = voteRepository.getAllByPostId(requestComment.getPosts().getId());
         Map<Member, Vote> votedMemberMap = voteList.stream().collect(Collectors.toMap(Vote::getMember, vote -> vote));
+        long countDeleted = 0;
 
         for (Comment comment : commentList){
+
             CommentListResponseDto.CommentDto commentDto = convertCommentDto(votedMemberMap, comment);
+
+            if(Boolean.TRUE.equals(comment.getIsDeleted())) countDeleted++;
+
             commentDtoList.add(commentDto);
         }
+        long totalCount = commentDtoList.size() - countDeleted;
+        totalCount = totalCount > 0 ? totalCount-1:totalCount;
 
         return CommentListResponseDto.builder()
                 .commentList(commentDtoList)
-                .totalCount(commentDtoList.size())
+                .totalCount(totalCount)
                 .build();
     }
 
@@ -95,7 +102,7 @@ public class CommentService {
 
         List<Vote> voteList = voteRepository.getAllByPostId(postId);
         Map<Member, Vote> votedMemberMap = voteList.stream().collect(Collectors.toMap(Vote::getMember, vote -> vote));
-        int countDeleted = 0;
+        long countDeleted = 0;
 
         for(Comment comment : commentList){
             CommentListResponseDto.CommentDto commentDto =  convertCommentDto(votedMemberMap,comment);
