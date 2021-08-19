@@ -30,15 +30,15 @@ public class CommentService {
     private final PostsRepository postsRepository;
     private final ModelMapper modelMapper;
     private final VoteRepository voteRepository;
-    private static final int LOWER_COMMENT = 1;
+    private static final int LOWER_LAYER = 1;
     private static final int PAGE_SIZE = 50;
-    private static final int TOP = 0;
+    private static final int TOP_LAYER = 0;
 
     @Transactional
     public Comment saveComment(CommentRequestDto requestDto, Member member){
         Posts posts = postsRepository.findById(requestDto.getPostId()).orElseThrow();
         long nextGroupNo = commentRepository.nextGroupNo(requestDto.getPostId(), requestDto.getCommentLayer());
-        Comment comment = Comment.create(requestDto,nextGroupNo, requestDto.getCommentLayer(),TOP,member, posts);
+        Comment comment = Comment.create(requestDto,nextGroupNo, requestDto.getCommentLayer(), TOP_LAYER,member, posts);
         return commentRepository.save(comment);
     }
 
@@ -74,15 +74,22 @@ public class CommentService {
 
         List<Vote> voteList = voteRepository.getAllByPostId(requestComment.getPosts().getId());
         Map<Member, Vote> votedMemberMap = voteList.stream().collect(Collectors.toMap(Vote::getMember, vote -> vote));
+        long countDeleted = 0;
 
         for (Comment comment : commentList){
+
             CommentListResponseDto.CommentDto commentDto = convertCommentDto(votedMemberMap, comment);
+
+            if(Boolean.TRUE.equals(comment.getIsDeleted())) countDeleted++;
+
             commentDtoList.add(commentDto);
         }
+        long totalCount = commentDtoList.size() - countDeleted;
+        totalCount = totalCount > 0 ? totalCount-1:totalCount;
 
         return CommentListResponseDto.builder()
                 .commentList(commentDtoList)
-                .totalCount(commentDtoList.size())
+                .totalCount(totalCount)
                 .build();
     }
 
@@ -95,10 +102,13 @@ public class CommentService {
 
         List<Vote> voteList = voteRepository.getAllByPostId(postId);
         Map<Member, Vote> votedMemberMap = voteList.stream().collect(Collectors.toMap(Vote::getMember, vote -> vote));
+        long countDeleted = 0;
 
         for(Comment comment : commentList){
             CommentListResponseDto.CommentDto commentDto =  convertCommentDto(votedMemberMap,comment);
-            commentDto.setReplyCount(commentRepository.countByGroupNoAndCommentLayer(comment.getGroupNo(),LOWER_COMMENT));
+            commentDto.setReplyCount(commentRepository.countReply(postId,comment.getGroupNo(), LOWER_LAYER));
+
+            if(Boolean.TRUE.equals(comment.getIsDeleted())) countDeleted++;
 
             List<CommentListResponseDto.EmojiIDto> emojiIDtoList = new ArrayList<>();
 
@@ -117,7 +127,7 @@ public class CommentService {
         return CommentListResponseDto.builder()
                 .commentList(commentDtoList)
                 .totalPage(pagingComment.getTotalPages())
-                .totalCount(pagingComment.getTotalElements())
+                .totalCount(pagingComment.getTotalElements() - countDeleted)
                 .pageNum(pagingComment.getNumber())
                 .build();
     }

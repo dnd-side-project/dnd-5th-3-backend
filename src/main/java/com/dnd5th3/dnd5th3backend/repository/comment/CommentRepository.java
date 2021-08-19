@@ -9,7 +9,12 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<Comment,Long>,CommentRepositoryCustom {
 
-    int countByGroupNoAndCommentLayer(long groupNo,int commentLayer);
+    @Query (" SELECT COUNT (c.id) FROM Comment c" +
+            " WHERE c.posts.id = :postId " +
+            " AND   c.groupNo = :groupNo " +
+            " AND   c.commentLayer = :commentLayer" +
+            " AND   c.isDeleted = false ")
+    int countReply(long postId,long groupNo,int commentLayer);
 
     @Query( " SELECT c FROM Comment c" +
             " WHERE c.posts.id = :postId AND c.groupNo = :groupNo" +
