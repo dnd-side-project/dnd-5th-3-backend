@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
+@Transactional
 @Service
 public class EmojiService {
 
@@ -32,7 +33,7 @@ public class EmojiService {
     public CommentEmoji saveCommentEmoji(EmojiRequestDto emojiRequestDto, Member member){
 
         Emoji emoji = emojiRepository.findById(emojiRequestDto.getEmojiId()).orElseThrow();
-        Comment comment = commentRepository.findById(emojiRequestDto.getEmojiId()).orElseThrow();
+        Comment comment = commentRepository.findById(emojiRequestDto.getCommentId()).orElseThrow();
 
         CommentEmoji commentEmoji = commentEmojiRepository.save(CommentEmoji.builder()
                 .comment(comment)
@@ -48,7 +49,6 @@ public class EmojiService {
         return commentEmoji;
     }
 
-    @Transactional
     public CommentEmoji updateCountCommentEmoji(EmojiRequestDto emojiRequestDto,Member member){
 
         CommentEmoji commentEmoji = commentEmojiRepository.findById(emojiRequestDto.getCommentEmojiId()).orElseThrow();
