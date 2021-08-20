@@ -84,7 +84,7 @@ class CommentServiceTest {
     void getDetailComment() {
         long commentId  = 3;
         long expectedTotalCount = 3;
-        CommentListResponseDto detailComment = commentService.getDetailComment(commentId);
+        CommentListResponseDto detailComment = commentService.getDetailComment(commentId,member);
         assertEquals(expectedTotalCount,detailComment.getCommentList().size(),"댓글 상세 개수 확인");
     }
 

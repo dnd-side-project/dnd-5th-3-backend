@@ -67,7 +67,7 @@ public class CommentService {
     }
 
     @Transactional
-    public CommentListResponseDto getDetailComment(long commentId){
+    public CommentListResponseDto getDetailComment(long commentId,Member member){
         Comment requestComment = commentRepository.findById(commentId).orElseThrow();
         List<Comment> commentList = commentRepository.getCommentGroup(requestComment.getPosts().getId(), requestComment.getGroupNo());
         List<CommentListResponseDto.CommentDto> commentDtoList = new ArrayList<>();
@@ -82,6 +82,9 @@ public class CommentService {
 
             if(Boolean.TRUE.equals(comment.getIsDeleted())) countDeleted++;
 
+            List<CommentListResponseDto.EmojiIDto> emojiIDtoList = getEmojiIDtoList(member, comment);
+
+            commentDto.setEmojiList(emojiIDtoList);
             commentDtoList.add(commentDto);
         }
         long totalCount = commentDtoList.size() - countDeleted;
@@ -110,20 +113,14 @@ public class CommentService {
 
             if(Boolean.TRUE.equals(comment.getIsDeleted())) countDeleted++;
 
-            List<CommentListResponseDto.EmojiIDto> emojiIDtoList = new ArrayList<>();
-
-            for(CommentEmoji commentEmoji1 : comment.getCommentEmoji()){
-                CommentListResponseDto.EmojiIDto emojiIDto = new CommentListResponseDto.EmojiIDto();
-                emojiIDto.setEmojiId(commentEmoji1.getEmoji().getId());
-                emojiIDto.setEmojiCount(commentEmoji1.getCommentEmojiCount());
-                setIsCheckedEmoji(member, commentEmoji1, emojiIDto);
-                emojiIDtoList.add(emojiIDto);
-            }
+            List<CommentListResponseDto.EmojiIDto> emojiIDtoList = getEmojiIDtoList(member, comment);
 
             commentDto.setEmojiList(emojiIDtoList);
             commentDtoList.add(commentDto);
         }
+
         commentDtoList.sort(Comparator.comparing(CommentListResponseDto.CommentDto::getCommentId));
+
         return CommentListResponseDto.builder()
                 .commentList(commentDtoList)
                 .totalPage(pagingComment.getTotalPages())
@@ -147,6 +144,20 @@ public class CommentService {
         }
 
         return commentDto;
+    }
+
+    private List<CommentListResponseDto.EmojiIDto> getEmojiIDtoList(Member member, Comment comment) {
+        List<CommentListResponseDto.EmojiIDto> emojiIDtoList = new ArrayList<>();
+
+        for (CommentEmoji commentEmoji1 : comment.getCommentEmoji()) {
+            CommentListResponseDto.EmojiIDto emojiIDto = new CommentListResponseDto.EmojiIDto();
+            emojiIDto.setCmtEmojiId(commentEmoji1.getId());
+            emojiIDto.setEmojiId(commentEmoji1.getEmoji().getId());
+            emojiIDto.setEmojiCount(commentEmoji1.getCommentEmojiCount());
+            setIsCheckedEmoji(member, commentEmoji1, emojiIDto);
+            emojiIDtoList.add(emojiIDto);
+        }
+        return emojiIDtoList;
     }
 
     private void setIsCheckedEmoji(Member member, CommentEmoji commentEmoji1, CommentListResponseDto.EmojiIDto emojiIDto) {

@@ -51,8 +51,8 @@ public class CommentController {
     }
 
     @GetMapping("/{commentId}")
-    public ResponseEntity<CommentListResponseDto> getDetailAPI(@PathVariable Long commentId){
-        CommentListResponseDto detailComment = commentService.getDetailComment(commentId);
+    public ResponseEntity<CommentListResponseDto> getDetailAPI(@PathVariable Long commentId, @AuthenticationPrincipal Member member){
+        CommentListResponseDto detailComment = commentService.getDetailComment(commentId,member);
         return ResponseEntity.ok(detailComment);
     }
 
