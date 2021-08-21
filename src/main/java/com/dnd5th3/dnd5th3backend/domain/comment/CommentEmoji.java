@@ -37,7 +37,7 @@ public class CommentEmoji {
 
     private Integer commentEmojiCount;
 
-    @OneToMany(fetch = LAZY,mappedBy = "commentEmoji")
+    @OneToMany(fetch = LAZY,mappedBy = "commentEmoji",cascade = CascadeType.ALL)
     private List<CommentEmojiMember> commentEmojiMembers;
 
     public boolean update(boolean isChecked) {

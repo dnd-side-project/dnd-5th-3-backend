@@ -2,6 +2,7 @@ package com.dnd5th3.dnd5th3backend.controller.dto.comment;
 
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -44,6 +45,8 @@ public class CommentListResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class EmojiIDto{
+        @JsonProperty(value = "commentEmojiId")
+        private long cmtEmojiId;
         private long emojiId;
         private long emojiCount;
         private boolean isChecked;

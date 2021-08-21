@@ -64,6 +64,13 @@ public class EmojiService {
                     .commentEmoji(commentEmoji)
                     .member(member)
                     .build());
+        }else {
+            if(!isNeedToDelete){
+                commentEmojiMemberRepository.save(CommentEmojiMember.builder()
+                        .commentEmoji(commentEmoji)
+                        .member(member)
+                        .build());
+            }
         }
 
         return commentEmoji;

@@ -106,6 +106,7 @@ class CommentControllerTest {
                                 fieldWithPath("commentList.[].replyCount").description("대댓글 개수"),
                                 fieldWithPath("commentList.[].deleted").description("삭제여부"),
                                 fieldWithPath("commentList.[].emojiList").description("댓글 이모지 리스트"),
+                                fieldWithPath("commentList.[].emojiList.[].commentEmojiId").description("댓글이모지 ID"),
                                 fieldWithPath("commentList.[].emojiList.[].emojiId").description("이모지 ID"),
                                 fieldWithPath("commentList.[].emojiList.[].emojiCount").description("이모지 개수"),
                                 fieldWithPath("commentList.[].emojiList.[].checked").description("유저 클릭 여부 "),
