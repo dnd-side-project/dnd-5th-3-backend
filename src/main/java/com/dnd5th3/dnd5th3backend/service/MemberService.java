@@ -9,6 +9,7 @@ import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @RequiredArgsConstructor
 @Service
@@ -53,4 +54,20 @@ public class MemberService {
       return memberRepository.existsByName(name);
     }
 
+    public boolean isCollectPassword(String password,Member member){
+        Member targetMember = memberRepository.findByEmail(member.getEmail());
+        return passwordEncoder.matches(password,targetMember.getPassword());
+    }
+
+    @Transactional
+    public Member updateMember(MemberRequestDto memberRequestDto, Member member) {
+        Member targetMember = memberRepository.findByEmail(member.getEmail());
+        if(memberRequestDto.getPassword() != null){
+            String encode = passwordEncoder.encode(memberRequestDto.getPassword());
+            targetMember.update(memberRequestDto.getName(),encode);
+        }else {
+            targetMember.update(memberRequestDto.getName(),memberRequestDto.getPassword());
+        }
+        return targetMember;
+    }
 }

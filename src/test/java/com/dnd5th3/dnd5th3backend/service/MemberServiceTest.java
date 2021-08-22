@@ -7,11 +7,15 @@ import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtTokenProvider;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberReissueTokenResponseDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.crypto.factory.PasswordEncoderFactories;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -23,6 +27,17 @@ class MemberServiceTest {
 
     @Autowired
     private MemberService memberService;
+
+    @Autowired
+    private MemberRepository memberRepository;
+
+    private Member member;
+
+    @BeforeEach
+    void setup(){
+        long memberId = 1;
+        member = memberRepository.getById(memberId);
+    }
 
     @DisplayName("회원 등록 테스트")
     @Test
@@ -63,4 +78,28 @@ class MemberServiceTest {
         assertTrue(existsEmail," 닉네임 중복 확인");
     }
 
+    @DisplayName("비밀번호 확인 테스트")
+    @Test
+    void isCollectPassword() {
+        String password = "1234";
+        boolean collectPassword = memberService.isCollectPassword(password, member);
+        assertTrue(collectPassword," 비밀번호 일치 확인");
+    }
+
+    @DisplayName("프로필 변경 테스트")
+    @Test
+    void updateMember() {
+        String name = "moomool2";
+        MemberRequestDto memberRequestDto = new MemberRequestDto(null,name,null,null,null);
+        Member member = memberService.updateMember(memberRequestDto, this.member);
+        assertEquals(name,member.getName()," 닉네임 변경되었는지 확인");
+
+        PasswordEncoder passwordEncoder = PasswordEncoderFactories.createDelegatingPasswordEncoder();
+        String password = "12345";
+        name = "moomool3";
+        memberRequestDto = new MemberRequestDto(null,name,password,null,null);
+        member = memberService.updateMember(memberRequestDto, this.member);
+        assertEquals(name,member.getName()," 닉네임 변경되었는지 확인");
+        assertTrue(passwordEncoder.matches(password,member.getPassword())," 비밀번호 변경되었는지 확인");
+    }
 }

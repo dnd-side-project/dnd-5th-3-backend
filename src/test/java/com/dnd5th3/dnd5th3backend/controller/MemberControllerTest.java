@@ -1,6 +1,8 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
+import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import org.junit.jupiter.api.*;
@@ -11,6 +13,7 @@ import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
 import org.springframework.restdocs.mockmvc.RestDocumentationRequestBuilders;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
@@ -47,12 +50,18 @@ class MemberControllerTest {
     @Autowired
     private WebApplicationContext context;
 
+    @Autowired
+    private MemberRepository memberRepository;
+
+    private Member member;
+
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation){
         mvc = MockMvcBuilders.webAppContextSetup(context)
                 .apply(documentationConfiguration(restDocumentation))
                 .apply(springSecurity(new MockSecurityFilter()))
                 .build();
+        member = memberRepository.findByEmail("test@gmail.com");
     }
 
 
@@ -172,6 +181,71 @@ class MemberControllerTest {
                         getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("name").description("닉네임")
+                        ),
+                        responseBody()
+                ));
+    }
+
+    @DisplayName("프로필 변경 API 테스트")
+    @Test
+    void upateProfileAPI() throws Exception {
+        String name = "moo";
+        String password= "12345";
+
+        Map<String,Object> request = new HashMap<>();
+        request.put("name",name);
+        request.put("password",password);
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/member")
+                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString())
+                .content(objectMapper.writeValueAsString(request)));
+
+        actions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member/update",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("name").description("변경될 닉네임"),
+                                fieldWithPath("password").description("변경될 비밀번호")
+                        ),
+                        responseFields(
+                                fieldWithPath("memberId").description("회원 ID(고유번호)"),
+                                fieldWithPath("email").description("이메일"),
+                                fieldWithPath("name").description("닉네임"),
+                                fieldWithPath("memberType").description("회원 유형")
+                        )
+                ))
+                .andExpect(jsonPath("$.name").value(name));
+    }
+
+    @DisplayName("비밀번호 확인 API 테스트")
+    @Test
+    void checkPasswordAPI() throws Exception {
+        String password= "12345";
+
+        Map<String,Object> request = new HashMap<>();
+        request.put("password",password);
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/member/check/password")
+                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString())
+                .content(objectMapper.writeValueAsString(request)));
+
+        actions
+                .andExpect(status().isOk())
+                .andDo(print())
+                .andDo(document("member/check/password",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("password").description("요청 비밀번호")
                         ),
                         responseBody()
                 ));

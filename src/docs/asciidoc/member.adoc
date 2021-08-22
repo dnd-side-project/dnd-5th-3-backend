@@ -42,6 +42,22 @@ include::{snippets}/member/login/response-fields.adoc[]
 
 * HTTP Header에 [Authorization : 엑세스토큰] 형태로 추가
 
+[[member-update]]
+== PUT :: 프로필 업데이트
+
+=== HTTP Request
+include::{snippets}/member/update/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/update/request-fields.adoc[]
+* 각각 호출 가능
+
+=== HTTP Response
+include::{snippets}/member/update/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/update/response-fields.adoc[]
+
 
 [[member-reissue]]
 == PUT :: 엑세스 토큰 재발급
@@ -82,6 +98,18 @@ include::{snippets}/member/exists/name/path-parameters.adoc[]
 === HTTP Response
 include::{snippets}/member/exists/name/http-response.adoc[]
 
+
+[[member-check-password]]
+== POST :: 비밀번호 확인
+
+=== HTTP Request
+include::{snippets}/member/check/password/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/check/password/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/check/password/http-response.adoc[]
 
 
 
