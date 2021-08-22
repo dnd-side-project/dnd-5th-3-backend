@@ -3,6 +3,7 @@ package com.dnd5th3.dnd5th3backend.domain.member;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -11,6 +12,7 @@ import javax.persistence.*;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 public class Member extends BaseTime {
     @Id
     @Column(name = "member_id")
@@ -42,5 +44,14 @@ public class Member extends BaseTime {
                 .memberType(MemberType.GENERAL)
                 .role(Role.ROLE_USER)
                 .build();
+    }
+
+    public void update(String name,String encodePassword){
+        if(name != null){
+          this.name = name;
+        }
+        if(encodePassword != null){
+           this.password = encodePassword;
+        }
     }
 }

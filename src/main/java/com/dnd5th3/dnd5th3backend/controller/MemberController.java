@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -42,5 +43,18 @@ public class MemberController {
     public ResponseEntity<Boolean> existEmailAPI(@PathVariable String name){
         boolean existsName = memberService.isExistsName(name);
         return ResponseEntity.ok(existsName);
+    }
+
+    @PostMapping("/check/password")
+    public ResponseEntity<Boolean> checkPasswordAPI(@RequestBody MemberRequestDto memberRequestDto,@AuthenticationPrincipal Member member){
+        boolean existsName = memberService.isCollectPassword(memberRequestDto.getPassword(),member);
+        return ResponseEntity.ok(existsName);
+    }
+
+    @PutMapping
+    public ResponseEntity<MemberResponseDto> updateProfileAPI(@RequestBody MemberRequestDto memberRequestDto,@AuthenticationPrincipal Member member){
+        Member updateMember = memberService.updateMember(memberRequestDto,member);
+        MemberResponseDto memberResponseDto = modelMapper.map(updateMember, MemberResponseDto.class);
+        return ResponseEntity.ok(memberResponseDto);
     }
 }

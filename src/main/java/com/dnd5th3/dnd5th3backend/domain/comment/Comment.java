@@ -5,6 +5,7 @@ import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import lombok.*;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicUpdate
 public class Comment extends BaseTime {
 
     @Id
