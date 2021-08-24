@@ -57,7 +57,6 @@ class VoteServiceTest {
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(0)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
         vote = Vote.builder()

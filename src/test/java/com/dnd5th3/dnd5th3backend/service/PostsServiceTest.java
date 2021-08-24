@@ -46,7 +46,6 @@ class PostsServiceTest {
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(0)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
     }
@@ -108,7 +107,6 @@ class PostsServiceTest {
         postsService.deletePost(post.getId());
 
         //then
-        Assertions.assertEquals(post.getIsDeleted(), true);
         verify(postsRepository, times(1)).delete(eq(post));
     }
 
@@ -126,7 +124,6 @@ class PostsServiceTest {
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(15)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
         Posts posts2 = Posts.builder()
@@ -139,7 +136,6 @@ class PostsServiceTest {
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(10)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
 
@@ -161,7 +157,6 @@ class PostsServiceTest {
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(20)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
         Posts posts4 = Posts.builder()
@@ -174,7 +169,6 @@ class PostsServiceTest {
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(25)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
 

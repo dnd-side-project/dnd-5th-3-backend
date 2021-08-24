@@ -53,9 +53,6 @@ public class Posts extends BaseTime {
     private Integer rankCount;
 
     @NotNull
-    private Boolean isDeleted;
-
-    @NotNull
     private LocalDateTime voteDeadline;
 
     public void update(String title, String content, String productImageUrl) {
@@ -74,10 +71,6 @@ public class Posts extends BaseTime {
 
     public void makeVotedStatusTrue() {
         this.isVoted = true;
-    }
-
-    public void makeDeletedStatusTrue() {
-        this.isDeleted = true;
     }
 
     public void increaseVoteCount(VoteType result) {

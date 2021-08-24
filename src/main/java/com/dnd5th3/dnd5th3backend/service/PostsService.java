@@ -33,7 +33,6 @@ public class PostsService {
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(0)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
                 .build();
         return postsRepository.save(newPosts);
@@ -64,7 +63,6 @@ public class PostsService {
 
     public void deletePost(Long id) {
         Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
-        foundPost.makeDeletedStatusTrue();
         postsRepository.delete(foundPost);
     }
 
