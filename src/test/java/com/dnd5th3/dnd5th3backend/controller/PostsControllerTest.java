@@ -148,10 +148,12 @@ class PostsControllerTest {
                 .content("content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(2)
                 .rejectCount(8)
                 .rankCount(100)
                 .voteDeadline(LocalDateTime.of(2021, 8, 2, 12, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 9, 12, 0, 0))
                 .build();
         post.setCreatedDate(LocalDateTime.of(2021, 8, 1, 12, 0, 0));
         Vote vote = Vote.builder().id(1L).member(member).posts(post).result(VoteType.NO_RESULT).build();
@@ -209,10 +211,12 @@ class PostsControllerTest {
                 .content("update content")
                 .productImageUrl("update.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(36)
                 .rejectCount(25)
                 .rankCount(70)
                 .voteDeadline(LocalDateTime.of(2021, 8, 3, 12, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 10, 12, 0, 0))
                 .build();
         response.setCreatedDate(LocalDateTime.of(2021, 8, 2, 12, 0, 0));
         String title = "update";
@@ -284,10 +288,12 @@ class PostsControllerTest {
                 .title("test1")
                 .productImageUrl("test1.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .rankCount(15)
                 .permitCount(10)
                 .rejectCount(25)
                 .voteDeadline(LocalDateTime.of(2021, 8, 5, 12, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 12, 12, 0, 0))
                 .build();
         posts1.setCreatedDate(LocalDateTime.of(2021, 8, 4, 12, 0, 0));
         Posts posts2 = Posts.builder()
@@ -296,10 +302,12 @@ class PostsControllerTest {
                 .title("test2")
                 .productImageUrl("test2.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .rankCount(10)
                 .permitCount(30)
                 .rejectCount(10)
                 .voteDeadline(LocalDateTime.of(2021, 8, 5, 15, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 12, 15, 0, 0))
                 .build();
         posts2.setCreatedDate(LocalDateTime.of(2021, 8, 4, 15, 0, 0));
 
@@ -447,10 +455,12 @@ class PostsControllerTest {
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(10)
                 .rejectCount(10)
                 .rankCount(100)
                 .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 20, 12, 0, 0))
                 .build();
         hotPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Posts belovedPost = Posts.builder()
@@ -460,10 +470,12 @@ class PostsControllerTest {
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(10)
                 .rejectCount(10)
                 .rankCount(80)
                 .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 20, 12, 0, 0))
                 .build();
         belovedPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Posts recommendPost = Posts.builder()
@@ -473,10 +485,12 @@ class PostsControllerTest {
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(90)
                 .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 20, 12, 0, 0))
                 .build();
         recommendPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Posts bestResponsePost = Posts.builder()
@@ -486,10 +500,12 @@ class PostsControllerTest {
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(80)
                 .rejectCount(80)
                 .rankCount(120)
                 .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 20, 12, 0, 0))
                 .build();
         bestResponsePost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Posts neckAndNeckPost = Posts.builder()
@@ -499,10 +515,12 @@ class PostsControllerTest {
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(80)
                 .rejectCount(80)
                 .rankCount(100)
                 .voteDeadline(LocalDateTime.of(2021, 8, 13, 12, 0, 0))
+                .postsDeadline(LocalDateTime.of(2021, 8, 20, 12, 0, 0))
                 .build();
         neckAndNeckPost.setCreatedDate(LocalDateTime.of(2021, 8, 12, 12, 0, 0));
         Map<String, Posts> mainPostsMap = new HashMap<>();
