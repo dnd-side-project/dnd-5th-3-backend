@@ -566,14 +566,14 @@ Host: docs.moomool.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1592
+Content-Length: 1755
 
 {
   "commentList" : [ {
     "commentId" : 1,
     "memberId" : 1,
     "email" : "test@gmail.com",
-    "writerName" : "moomool",
+    "writerName" : "moo",
     "commentLayer" : 0,
     "content" : "no.1 test content",
     "voteType" : "PERMIT",
@@ -583,19 +583,23 @@ Content-Length: 1592
     "emojiList" : [ {
       "emojiId" : 1,
       "emojiCount" : 1,
-      "checked" : true
+      "checked" : true,
+      "commentEmojiId" : 1
     }, {
       "emojiId" : 2,
       "emojiCount" : 1,
-      "checked" : true
+      "checked" : true,
+      "commentEmojiId" : 2
     }, {
       "emojiId" : 3,
       "emojiCount" : 2,
-      "checked" : false
+      "checked" : true,
+      "commentEmojiId" : 3
     }, {
       "emojiId" : 1,
       "emojiCount" : 1,
-      "checked" : true
+      "checked" : true,
+      "commentEmojiId" : 6
     } ],
     "deleted" : false
   }, {
@@ -612,7 +616,8 @@ Content-Length: 1592
     "emojiList" : [ {
       "emojiId" : 2,
       "emojiCount" : 1,
-      "checked" : false
+      "checked" : false,
+      "commentEmojiId" : 4
     } ],
     "deleted" : false
   }, {
@@ -629,7 +634,8 @@ Content-Length: 1592
     "emojiList" : [ {
       "emojiId" : 5,
       "emojiCount" : 1,
-      "checked" : false
+      "checked" : false,
+      "commentEmojiId" : 5
     } ],
     "deleted" : false
   } ],
@@ -717,6 +723,11 @@ Content-Length: 1592
 <td class="tableblock halign-left valign-top"><p class="tableblock">댓글 이모지 리스트</p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>commentList.[].emojiList.[].commentEmojiId</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">댓글이모지 ID</p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>commentList.[].emojiList.[].emojiId</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>Number</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">이모지 ID</p></td>
@@ -800,7 +811,7 @@ Host: docs.moomool.com</code></pre>
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">HTTP/1.1 200 OK
 Content-Type: application/json
-Content-Length: 1219
+Content-Length: 1243
 
 {
   "commentList" : [ {
@@ -817,7 +828,8 @@ Content-Length: 1219
     "emojiList" : [ {
       "emojiId" : 5,
       "emojiCount" : 1,
-      "checked" : false
+      "checked" : false,
+      "commentEmojiId" : 5
     } ],
     "deleted" : false
   }, {
@@ -837,7 +849,7 @@ Content-Length: 1219
     "commentId" : 5,
     "memberId" : 1,
     "email" : "test@gmail.com",
-    "writerName" : "moomool",
+    "writerName" : "moo",
     "commentLayer" : 1,
     "content" : "no.3 reply test content",
     "voteType" : "PERMIT",
@@ -849,7 +861,7 @@ Content-Length: 1219
   } ],
   "pageNum" : 0,
   "totalPage" : 0,
-  "totalCount" : 3
+  "totalCount" : 2
 }</code></pre>
 </div>
 </div>
@@ -1005,8 +1017,8 @@ Content-Length: 183
   "commentLayer" : 0,
   "content" : "comment save test",
   "isDeleted" : false,
-  "createdDate" : "2021-08-19 18:04:41",
-  "updatedDate" : "2021-08-19 18:04:41"
+  "createdDate" : "2021-08-25 01:16:20",
+  "updatedDate" : "2021-08-25 01:16:20"
 }</code></pre>
 </div>
 </div>
@@ -1146,8 +1158,8 @@ Content-Length: 189
   "commentLayer" : 1,
   "content" : "comment reply save test",
   "isDeleted" : false,
-  "createdDate" : "2021-08-19 18:04:42",
-  "updatedDate" : "2021-08-19 18:04:42"
+  "createdDate" : "2021-08-25 01:16:20",
+  "updatedDate" : "2021-08-25 01:16:20"
 }</code></pre>
 </div>
 </div>
@@ -1266,7 +1278,7 @@ Content-Length: 183
   "content" : "comment edit test",
   "isDeleted" : false,
   "createdDate" : "2021-08-06 12:41:15",
-  "updatedDate" : "2021-08-19 18:04:42"
+  "updatedDate" : "2021-08-25 01:16:20"
 }</code></pre>
 </div>
 </div>
@@ -1379,7 +1391,7 @@ Content-Length: 182
   "content" : "comment edit test",
   "isDeleted" : true,
   "createdDate" : "2021-08-06 12:41:15",
-  "updatedDate" : "2021-08-19 18:04:42"
+  "updatedDate" : "2021-08-25 01:16:20"
 }</code></pre>
 </div>
 </div>

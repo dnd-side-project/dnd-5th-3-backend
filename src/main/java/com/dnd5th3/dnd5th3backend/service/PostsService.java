@@ -30,11 +30,12 @@ public class PostsService {
                 .content(content)
                 .productImageUrl(productImageUrl)
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(0)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .postsDeadline(LocalDateTime.now().plusDays(7L))
                 .build();
         return postsRepository.save(newPosts);
     }
@@ -44,8 +45,12 @@ public class PostsService {
         //프록시 객체 초기화
         Hibernate.initialize(foundPost.getMember());
         //투표 종료 여부
-        if (LocalDateTime.now().isAfter(foundPost.getVoteDeadline())) {
+        if (foundPost.getIsVoted() == false && LocalDateTime.now().isAfter(foundPost.getVoteDeadline())) {
             foundPost.makeVotedStatusTrue();
+        }
+        //메인페이지 게시 조건 종료 여부
+        if (foundPost.getIsPostsEnd() == false && LocalDateTime.now().isAfter(foundPost.getPostsDeadline())) {
+            foundPost.makePostsEndStatusTrue();
         }
         //조회수 증가
         foundPost.increaseRankCount();
@@ -64,7 +69,6 @@ public class PostsService {
 
     public void deletePost(Long id) {
         Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
-        foundPost.makeDeletedStatusTrue();
         postsRepository.delete(foundPost);
     }
 
@@ -75,6 +79,9 @@ public class PostsService {
             Hibernate.initialize(p.getMember());
             if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
                 p.makeVotedStatusTrue();
+            }
+            if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
+                p.makePostsEndStatusTrue();
             }
         });
 
@@ -108,6 +115,9 @@ public class PostsService {
             Hibernate.initialize(p.getComments());
             if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
                 p.makeVotedStatusTrue();
+            }
+            if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
+                p.makePostsEndStatusTrue();
             }
         });
         //추출한 50개 중 반응(댓글)이 있는 것들만 필터링

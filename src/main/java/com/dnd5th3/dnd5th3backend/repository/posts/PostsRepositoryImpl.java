@@ -65,7 +65,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
         return query
                 .select(posts)
                 .from(posts)
-                .where(posts.isVoted.eq(false))
+                .where(posts.isPostsEnd.eq(false))
                 .orderBy(posts.rankCount.desc())
                 .offset(0)
                 .limit(50)

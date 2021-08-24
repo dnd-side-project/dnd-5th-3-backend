@@ -44,6 +44,9 @@ public class Posts extends BaseTime {
     private Boolean isVoted;
 
     @NotNull
+    private Boolean isPostsEnd;
+
+    @NotNull
     private Integer permitCount;
 
     @NotNull
@@ -53,10 +56,10 @@ public class Posts extends BaseTime {
     private Integer rankCount;
 
     @NotNull
-    private Boolean isDeleted;
+    private LocalDateTime voteDeadline;
 
     @NotNull
-    private LocalDateTime voteDeadline;
+    private LocalDateTime postsDeadline;
 
     public void update(String title, String content, String productImageUrl) {
         if (title != null) {
@@ -76,9 +79,7 @@ public class Posts extends BaseTime {
         this.isVoted = true;
     }
 
-    public void makeDeletedStatusTrue() {
-        this.isDeleted = true;
-    }
+    public void makePostsEndStatusTrue() { this.isPostsEnd = true; }
 
     public void increaseVoteCount(VoteType result) {
         if (result.equals(VoteType.PERMIT)) {

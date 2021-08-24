@@ -109,7 +109,7 @@ class MemberControllerTest {
     @Test
     void reissueAPI() throws Exception {
         String email = "test@naver.com";
-        String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiYzNhOGJlNGQtNjAxYS00YjY0LWE3NWMtYmVhY2U3ZTAzMjExIn0sImV4cCI6MTYyOTY5MDY3NX0.EgqcB0chYYTAx7VDUTqeMC-sV_0veGr7QOrFc4Bo8ig";
+        String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiMzRhMjIxODEtN2VhZi00NGI4LTg5ZDYtY2ViNDc4MzI5NzFhIn0sImV4cCI6MTYzMTAzMDY2N30.im-tspukCr25HOFg61DRrNjYkJ4oVumjsdWHqnuDHyQ";
 
         Map<String,Object> request = new HashMap<>();
         request.put("email",email);
