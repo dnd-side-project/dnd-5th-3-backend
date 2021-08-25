@@ -85,19 +85,19 @@ public class PostsService {
             }
         });
 
-        if (sorted.equals("rank-count")) {
+        if ("rank-count".equals(sorted)) {
             List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount();
             return allPostsOrderByRankCount;
         }
-        if (sorted.equals("created-date")) {
+        if ("created-date".equals(sorted)) {
             List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
             return allPostsOrderByCreatedDate;
         }
-        if (sorted.equals("already-done")) {
+        if ("already-done".equals(sorted)) {
             List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
             return allPostsOrderByAlreadyDone;
         }
-        if (sorted.equals("almost-done")) {
+        if ("almost-done".equals(sorted)) {
             List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
             return allPostsOrderByAlmostDone;
         }
