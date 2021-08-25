@@ -3,13 +3,13 @@ package com.dnd5th3.dnd5th3backend.domain.posts;
 import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -30,6 +30,9 @@ public class Posts extends BaseTime {
 
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     private List<Comment> comments;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "posts", cascade = CascadeType.ALL)
+    private List<Vote> voteList;
 
     @NotNull
     private String title;
