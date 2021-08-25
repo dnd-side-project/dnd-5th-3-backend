@@ -43,11 +43,12 @@ class PostsServiceTest {
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(0)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .postsDeadline(LocalDateTime.now().plusDays(7L))
                 .build();
     }
 
@@ -108,7 +109,6 @@ class PostsServiceTest {
         postsService.deletePost(post.getId());
 
         //then
-        Assertions.assertEquals(post.getIsDeleted(), true);
         verify(postsRepository, times(1)).delete(eq(post));
     }
 
@@ -123,11 +123,12 @@ class PostsServiceTest {
                 .content("test content1")
                 .productImageUrl("test1.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(15)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .postsDeadline(LocalDateTime.now().plusDays(7L))
                 .build();
         Posts posts2 = Posts.builder()
                 .id(2L)
@@ -136,11 +137,12 @@ class PostsServiceTest {
                 .content("test content2")
                 .productImageUrl("test2.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(10)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .postsDeadline(LocalDateTime.now().plusDays(7L))
                 .build();
 
         List<Posts> rankCountList = new ArrayList<>();
@@ -158,11 +160,12 @@ class PostsServiceTest {
                 .content("test content3")
                 .productImageUrl("test3.jpg")
                 .isVoted(true)
+                .isPostsEnd(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(20)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .postsDeadline(LocalDateTime.now().plusDays(7L))
                 .build();
         Posts posts4 = Posts.builder()
                 .id(4L)
@@ -171,11 +174,12 @@ class PostsServiceTest {
                 .content("test content4")
                 .productImageUrl("test4.jpg")
                 .isVoted(true)
+                .isPostsEnd(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(25)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .postsDeadline(LocalDateTime.now().plusDays(7L))
                 .build();
 
         List<Posts> alreadyDoneList = new ArrayList<>();

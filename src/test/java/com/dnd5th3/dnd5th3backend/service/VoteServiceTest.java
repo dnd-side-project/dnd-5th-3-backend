@@ -54,11 +54,12 @@ class VoteServiceTest {
                 .content("test content")
                 .productImageUrl("test.jpg")
                 .isVoted(false)
+                .isPostsEnd(false)
                 .permitCount(0)
                 .rejectCount(0)
                 .rankCount(0)
-                .isDeleted(false)
                 .voteDeadline(LocalDateTime.now().plusDays(1L))
+                .postsDeadline(LocalDateTime.now().plusDays(7L))
                 .build();
         vote = Vote.builder()
                 .member(member)
