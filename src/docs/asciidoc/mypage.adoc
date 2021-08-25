@@ -1,4 +1,4 @@
-= MainPage API Docs
+= MyPage API Docs
 권준원
 1.0.0, 26/08/2021
 :doctype: book
@@ -10,4 +10,16 @@
 :operation-http-request-title: Example Request
 :operation-http-response-title: Example Response
 
-== GET
+== GET :: 마이페이지 조회
+
+=== HTTP Request
+include::{snippets}/mypage/http-request.adoc[]
+
+=== Request Parameters
+include::{snippets}/mypage/request-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/mypage/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/mypage/response-fields.adoc[]
