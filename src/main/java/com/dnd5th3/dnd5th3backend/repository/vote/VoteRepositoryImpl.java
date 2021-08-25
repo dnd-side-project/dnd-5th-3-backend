@@ -6,6 +6,8 @@ import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
+import java.util.List;
+
 import static com.dnd5th3.dnd5th3backend.domain.vote.QVote.vote;
 
 @RequiredArgsConstructor
@@ -20,5 +22,16 @@ public class VoteRepositoryImpl implements VoteRepositoryCustom{
                 .from(vote)
                 .where(vote.member.eq(member), vote.posts.eq(posts))
                 .fetchOne();
+    }
+
+    @Override
+    public List<Vote> findVoteByMemberOrderByCreatedDate(Member member) {
+        return query
+                .select(vote)
+                .from(vote)
+                .where(vote.member.eq(member))
+                .orderBy(vote.createdDate.desc())
+                .fetchAll()
+                .fetch();
     }
 }

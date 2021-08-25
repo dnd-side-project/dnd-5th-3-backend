@@ -3,8 +3,10 @@ package com.dnd5th3.dnd5th3backend.service;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vo.VoteRatioVo;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.exception.PostNotFoundException;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
+import com.dnd5th3.dnd5th3backend.repository.vote.VoteRepository;
 import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -22,6 +24,7 @@ import java.util.stream.Collectors;
 public class PostsService {
 
     private final PostsRepository postsRepository;
+    private final VoteRepository voteRepository;
 
     public Posts savePost(Member member, String title, String content, String productImageUrl) {
         Posts newPosts = Posts.builder()
@@ -170,5 +173,29 @@ public class PostsService {
         resultMap.put("recommendPost", recommendPost);
 
         return resultMap;
+    }
+
+    public List<Posts> findAllPostsByMember(Member member, String sorted) {
+        //내가 쓴 글
+        if ("written".equals(sorted)) {
+            List<Posts> postsByMember = postsRepository.findPostsByMemberOrderByCreatedDate(member);
+            postsByMember.stream().forEach(p -> {
+                Hibernate.initialize(p.getMember());
+            });
+            return postsByMember;
+        }
+        //투표한 글
+        if ("voted".equals(sorted)) {
+            List<Vote> voteList = voteRepository.findVoteByMemberOrderByCreatedDate(member);
+            List<Posts> postsList = new ArrayList<>();
+            voteList.forEach(v -> {
+                Hibernate.initialize(v.getPosts());
+                Hibernate.initialize(v.getPosts().getMember());
+                postsList.add(v.getPosts());
+            });
+            return postsList;
+        }
+
+        throw new PostNotFoundException("게시글을 불러올 수 없습니다.");
     }
 }
