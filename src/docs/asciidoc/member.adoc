@@ -111,6 +111,20 @@ include::{snippets}/member/check/password/request-fields.adoc[]
 === HTTP Response
 include::{snippets}/member/check/password/http-response.adoc[]
 
+[[member-delete]]
+== DELETE :: 회원탈퇴
+
+=== HTTP Request
+include::{snippets}/member/delete/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/delete/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/delete/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/delete/response-fields.adoc[]
 
 
 

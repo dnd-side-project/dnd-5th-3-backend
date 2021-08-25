@@ -281,12 +281,12 @@ class MemberControllerTest {
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestFields(
-                                fieldWithPath("email").description("탈퇴하는 회원 이메일")
+                                fieldWithPath("email").description("요청 이메일")
                         ),
                         responseFields(
                                 fieldWithPath("memberId").description("회원 ID(고유번호)"),
-                                fieldWithPath("email").description("회원가입 이메일"),
-                                fieldWithPath("name").description("회원가입 닉네임"),
+                                fieldWithPath("email").description("탈퇴된 이메일"),
+                                fieldWithPath("name").description("닉네임"),
                                 fieldWithPath("memberType").description("회원 유형")
                         )
                 ))

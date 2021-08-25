@@ -40,9 +40,6 @@ public class Member extends BaseTime {
     private String refreshToken;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
-    private List<CommentEmojiMember> commentEmojiMemberList;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
     private List<Posts> postsList;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
