@@ -234,7 +234,7 @@ class PostsServiceTest {
         when(voteRepository.findVoteByMemberOrderByCreatedDate(member)).thenReturn(voteList);
 
         //when
-        List<Posts> sortedByWrote = postsService.findAllPostsByMember(member, "wrote");
+        List<Posts> sortedByWrote = postsService.findAllPostsByMember(member, "written");
         List<Posts> sortedByVoted = postsService.findAllPostsByMember(member, "voted");
 
         //then
