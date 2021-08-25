@@ -20,7 +20,7 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
         return query
                 .select(posts)
                 .from(posts)
-                .where(posts.isVoted.eq(false))
+                .where(posts.isPostsEnd.eq(false))
                 .orderBy(posts.rankCount.desc())
                 .fetchAll()
                 .fetch();
