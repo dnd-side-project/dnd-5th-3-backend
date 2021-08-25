@@ -107,7 +107,7 @@ class MyPageControllerTest {
         //then
         result
                 .andDo(print())
-                .andDo(document("mainpage",
+                .andDo(document("mypage",
                         getDocumentRequest(),
                         getDocumentResponse(),
                         requestParameters(
