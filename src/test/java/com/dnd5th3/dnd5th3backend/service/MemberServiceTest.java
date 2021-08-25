@@ -102,4 +102,14 @@ class MemberServiceTest {
         assertEquals(name,member.getName()," 닉네임 변경되었는지 확인");
         assertTrue(passwordEncoder.matches(password,member.getPassword())," 비밀번호 변경되었는지 확인");
     }
+
+    @DisplayName("회원 탈퇴 테스트")
+    @Test
+    void deleteMember() {
+        String email = "test@gmail.com";
+        MemberRequestDto memberRequestDto = new MemberRequestDto(email,null,null,null,null);
+
+        Member member = memberService.deleteMember(memberRequestDto,this.member);
+        assertEquals(member.getEmail(), this.member.getEmail()," 정상 삭제 확인");
+    }
 }
