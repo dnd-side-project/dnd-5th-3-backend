@@ -1,11 +1,15 @@
 package com.dnd5th3.dnd5th3backend.domain.member;
 
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
+import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
+import com.dnd5th3.dnd5th3backend.domain.comment.CommentEmojiMember;
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
+import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import lombok.*;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Builder
 @Getter
@@ -34,6 +38,12 @@ public class Member extends BaseTime {
 
     @Setter
     private String refreshToken;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Posts> postsList;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Comment> commentList;
 
     public static Member create(MemberRequestDto memberRequestDto,String encodePassword){
 

@@ -3,13 +3,13 @@ package com.dnd5th3.dnd5th3backend.domain.posts;
 import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import lombok.*;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 
 @Getter
@@ -31,6 +31,9 @@ public class Posts extends BaseTime {
     @OneToMany(mappedBy = "posts", cascade = CascadeType.ALL)
     private List<Comment> comments;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "posts", cascade = CascadeType.ALL)
+    private List<Vote> voteList;
+
     @NotNull
     private String title;
 
@@ -44,6 +47,9 @@ public class Posts extends BaseTime {
     private Boolean isVoted;
 
     @NotNull
+    private Boolean isPostsEnd;
+
+    @NotNull
     private Integer permitCount;
 
     @NotNull
@@ -53,10 +59,10 @@ public class Posts extends BaseTime {
     private Integer rankCount;
 
     @NotNull
-    private Boolean isDeleted;
+    private LocalDateTime voteDeadline;
 
     @NotNull
-    private LocalDateTime voteDeadline;
+    private LocalDateTime postsDeadline;
 
     public void update(String title, String content, String productImageUrl) {
         if (title != null) {
@@ -76,9 +82,7 @@ public class Posts extends BaseTime {
         this.isVoted = true;
     }
 
-    public void makeDeletedStatusTrue() {
-        this.isDeleted = true;
-    }
+    public void makePostsEndStatusTrue() { this.isPostsEnd = true; }
 
     public void increaseVoteCount(VoteType result) {
         if (result.equals(VoteType.PERMIT)) {

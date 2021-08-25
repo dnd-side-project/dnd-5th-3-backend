@@ -55,7 +55,7 @@ class MemberServiceTest {
     void reissueAccessToken() {
 
         String email = "test@naver.com";
-        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiYzNhOGJlNGQtNjAxYS00YjY0LWE3NWMtYmVhY2U3ZTAzMjExIn0sImV4cCI6MTYyOTY5MDY3NX0.EgqcB0chYYTAx7VDUTqeMC-sV_0veGr7QOrFc4Bo8ig";
+        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiMzRhMjIxODEtN2VhZi00NGI4LTg5ZDYtY2ViNDc4MzI5NzFhIn0sImV4cCI6MTYzMTAzMDY2N30.im-tspukCr25HOFg61DRrNjYkJ4oVumjsdWHqnuDHyQ";
 
         MemberRequestDto memberRequestDto = new MemberRequestDto(email, null, null,null,refreshToken);
         MemberReissueTokenResponseDto reissueTokenResponseDto = memberService.reissueAccessToken(memberRequestDto);
@@ -101,5 +101,15 @@ class MemberServiceTest {
         member = memberService.updateMember(memberRequestDto, this.member);
         assertEquals(name,member.getName()," 닉네임 변경되었는지 확인");
         assertTrue(passwordEncoder.matches(password,member.getPassword())," 비밀번호 변경되었는지 확인");
+    }
+
+    @DisplayName("회원 탈퇴 테스트")
+    @Test
+    void deleteMember() {
+        String email = "test@gmail.com";
+        MemberRequestDto memberRequestDto = new MemberRequestDto(email,null,null,null,null);
+
+        Member member = memberService.deleteMember(memberRequestDto,this.member);
+        assertEquals(member.getEmail(), this.member.getEmail()," 정상 삭제 확인");
     }
 }

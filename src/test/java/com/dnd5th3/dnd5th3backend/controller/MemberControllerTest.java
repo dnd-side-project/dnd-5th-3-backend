@@ -40,6 +40,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @SpringBootTest
 @ExtendWith({RestDocumentationExtension.class, SpringExtension.class})
 @ActiveProfiles("h2")
+@TestMethodOrder(value = MethodOrderer.OrderAnnotation.class)
 class MemberControllerTest {
 
     private MockMvc mvc;
@@ -65,6 +66,7 @@ class MemberControllerTest {
     }
 
 
+    @Order(1)
     @DisplayName("회원가입 API 테스트")
     @Test
     void signUpAPI() throws Exception {
@@ -105,11 +107,12 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.name").value(name));
     }
 
+    @Order(2)
     @DisplayName("AccessToken 재발급 API 테스트")
     @Test
     void reissueAPI() throws Exception {
         String email = "test@naver.com";
-        String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiYzNhOGJlNGQtNjAxYS00YjY0LWE3NWMtYmVhY2U3ZTAzMjExIn0sImV4cCI6MTYyOTY5MDY3NX0.EgqcB0chYYTAx7VDUTqeMC-sV_0veGr7QOrFc4Bo8ig";
+        String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiMzRhMjIxODEtN2VhZi00NGI4LTg5ZDYtY2ViNDc4MzI5NzFhIn0sImV4cCI6MTYzMTAzMDY2N30.im-tspukCr25HOFg61DRrNjYkJ4oVumjsdWHqnuDHyQ";
 
         Map<String,Object> request = new HashMap<>();
         request.put("email",email);
@@ -140,6 +143,7 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.accessToken").exists());
     }
 
+    @Order(3)
     @DisplayName("이메일 중복체크 API 테스트")
     @Test
     void existsEmailAPI() throws Exception {
@@ -163,6 +167,7 @@ class MemberControllerTest {
                 )).andReturn();
     }
 
+    @Order(4)
     @DisplayName("닉네임 중복체크 API 테스트")
     @Test
     void existsNameAPI() throws Exception {
@@ -186,9 +191,10 @@ class MemberControllerTest {
                 ));
     }
 
+    @Order(5)
     @DisplayName("프로필 변경 API 테스트")
     @Test
-    void upateProfileAPI() throws Exception {
+    void updateProfileAPI() throws Exception {
         String name = "moo";
         String password= "12345";
 
@@ -223,6 +229,7 @@ class MemberControllerTest {
                 .andExpect(jsonPath("$.name").value(name));
     }
 
+    @Order(6)
     @DisplayName("비밀번호 확인 API 테스트")
     @Test
     void checkPasswordAPI() throws Exception {
@@ -249,5 +256,40 @@ class MemberControllerTest {
                         ),
                         responseBody()
                 ));
+    }
+
+    @Order(7)
+    @DisplayName("회원 탈퇴 API 테스트")
+    @Test
+    void withdrawalAPI() throws Exception {
+        String email = "test@gmail.com";
+
+        Map<String,Object> request = new HashMap<>();
+        request.put("email",email);
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/member")
+                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString())
+                .content(objectMapper.writeValueAsString(request)));
+
+        actions
+                .andExpect(status().isAccepted())
+                .andDo(print())
+                .andDo(document("member/delete",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").description("요청 이메일")
+                        ),
+                        responseFields(
+                                fieldWithPath("memberId").description("회원 ID(고유번호)"),
+                                fieldWithPath("email").description("탈퇴된 이메일"),
+                                fieldWithPath("name").description("닉네임"),
+                                fieldWithPath("memberType").description("회원 유형")
+                        )
+                ))
+                .andExpect(jsonPath("$.email").value(email));
     }
 }

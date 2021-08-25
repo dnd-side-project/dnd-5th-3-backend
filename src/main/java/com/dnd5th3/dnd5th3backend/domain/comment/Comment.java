@@ -41,7 +41,7 @@ public class Comment extends BaseTime {
     @JoinColumn(name = "post_id")
     private Posts posts;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "comment")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "comment",cascade = CascadeType.ALL)
     private List<CommentEmoji> commentEmoji;
 
     public static Comment create(CommentRequestDto requestDto,long groupNo,int commentLayer,int commentOrder,Member member,Posts posts) {

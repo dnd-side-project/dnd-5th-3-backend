@@ -3,13 +3,19 @@ package com.dnd5th3.dnd5th3backend.service;
 import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtTokenProvider;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberReissueTokenResponseDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
+import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.exception.TokenException;
+import com.dnd5th3.dnd5th3backend.repository.comment.CommentRepository;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
+import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -18,6 +24,8 @@ public class MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtTokenProvider jwtTokenProvider;
+    private final CommentRepository commentRepository;
+    private final PostsRepository postsRepository;
 
     public Member saveMember(MemberRequestDto memberRequestDto) {
         String encode = passwordEncoder.encode(memberRequestDto.getPassword());
@@ -69,5 +77,22 @@ public class MemberService {
             targetMember.update(memberRequestDto.getName(),memberRequestDto.getPassword());
         }
         return targetMember;
+    }
+
+    @Transactional
+    public Member deleteMember(MemberRequestDto memberRequestDto,Member member) {
+        if(memberRequestDto.getEmail().equals(member.getEmail())){
+            Member targetMember = memberRepository.findByEmail(member.getEmail());
+            List<Comment> commentList = targetMember.getCommentList();
+            List<Posts> postsList = targetMember.getPostsList();
+
+            commentRepository.deleteAll(commentList);
+            postsRepository.deleteAll(postsList);
+            memberRepository.delete(targetMember);
+
+            return targetMember;
+        }else {
+            throw new IllegalArgumentException();
+        }
     }
 }

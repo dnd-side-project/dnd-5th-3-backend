@@ -57,4 +57,11 @@ public class MemberController {
         MemberResponseDto memberResponseDto = modelMapper.map(updateMember, MemberResponseDto.class);
         return ResponseEntity.ok(memberResponseDto);
     }
+
+    @DeleteMapping
+    public ResponseEntity<MemberResponseDto> withdrawalAPI(@RequestBody MemberRequestDto memberRequestDto, @AuthenticationPrincipal Member member){
+        Member deleteMember = memberService.deleteMember(memberRequestDto,member);
+        MemberResponseDto memberResponseDto = modelMapper.map(deleteMember, MemberResponseDto.class);
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(memberResponseDto);
+    }
 }
