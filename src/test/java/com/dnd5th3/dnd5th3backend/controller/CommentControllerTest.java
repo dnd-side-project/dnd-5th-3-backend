@@ -249,6 +249,7 @@ class CommentControllerTest {
     }
 
     @DisplayName("댓글 수정 API 테스트")
+    @Order(5)
     @Test
     void editAPI() throws Exception {
 
@@ -290,6 +291,7 @@ class CommentControllerTest {
     }
 
     @DisplayName("댓글 삭제 API 테스트")
+    @Order(6)
     @Test
     void deleteAPI() throws Exception {
         long commentId = 1;

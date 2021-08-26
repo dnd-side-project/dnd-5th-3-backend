@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -50,17 +51,18 @@ class MemberServiceTest {
         assertNotNull(member.getId(),"회원 정상등록 확인");
     }
     
-    @DisplayName("AccessToken 재발급 테스트")
-    @Test
-    void reissueAccessToken() {
-
-        String email = "test@naver.com";
-        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiMzRhMjIxODEtN2VhZi00NGI4LTg5ZDYtY2ViNDc4MzI5NzFhIn0sImV4cCI6MTYzMTAzMDY2N30.im-tspukCr25HOFg61DRrNjYkJ4oVumjsdWHqnuDHyQ";
-
-        MemberRequestDto memberRequestDto = new MemberRequestDto(email, null, null,null,refreshToken);
-        MemberReissueTokenResponseDto reissueTokenResponseDto = memberService.reissueAccessToken(memberRequestDto);
-        assertNotNull(reissueTokenResponseDto.getAccessToken());
-    }
+//    @DisplayName("AccessToken 재발급 테스트")
+//    @Rollback(value = false)
+//    @Test
+//    void reissueAccessToken() {
+//
+//        String email = "token@naver.com";
+//        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiYWUxN2IyYzgtMmZhZS00ODUyLTg2MzItZTAyNjVmYzNjZDgzIn0sImV4cCI6MjgzOTU4NDM4OX0.4TuG0Kgejk4bzKv_LWizeoToM3JqZN68spRtvRyqfpY";
+//
+//        MemberRequestDto memberRequestDto = new MemberRequestDto(email, null, null,null,refreshToken);
+//        MemberReissueTokenResponseDto reissueTokenResponseDto = memberService.reissueAccessToken(memberRequestDto);
+//        assertNotNull(reissueTokenResponseDto.getAccessToken());
+//    }
 
     @DisplayName("이메일 중복확인 테스트")
     @Test
@@ -106,10 +108,11 @@ class MemberServiceTest {
     @DisplayName("회원 탈퇴 테스트")
     @Test
     void deleteMember() {
-        String email = "test@gmail.com";
+        String email = "del@naver.com";
+        long memberId = 4;
+        Member mem = memberRepository.getById(memberId);
         MemberRequestDto memberRequestDto = new MemberRequestDto(email,null,null,null,null);
-
-        Member member = memberService.deleteMember(memberRequestDto,this.member);
-        assertEquals(member.getEmail(), this.member.getEmail()," 정상 삭제 확인");
+        Member member = memberService.deleteMember(memberRequestDto,mem);
+        assertEquals(member.getEmail(), mem.getEmail()," 정상 삭제 확인");
     }
 }

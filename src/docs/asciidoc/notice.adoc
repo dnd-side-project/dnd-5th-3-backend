@@ -1,0 +1,39 @@
+= Notice API Docs
+강성효
+1.0.0, 26/08/2021
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+
+[[notice-get]]
+== GET :: 공지사항 목록 조회
+
+=== HTTP Request
+include::{snippets}/notice/get/http-request.adoc[]
+
+=== HTTP Response
+include::{snippets}/notice/get/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/notice/get/response-fields.adoc[]
+
+[[notice-detail]]
+== GET :: 공지사항 상세 조회
+
+=== HTTP Request
+include::{snippets}/notice/detail/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/notice/detail/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/notice/detail/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/notice/detail/response-fields.adoc[]
