@@ -4,12 +4,12 @@ spring:
       client:
         registration:
           google:
-            clientId: 303468713368-lhi3i6hf8msro74hkaokqcrdio8bt9in.apps.googleusercontent.com
-            clientSecret: OkHSirMmy6Y8QsQqXQdkOXmo
+            clientId: ${OAUTH_CLIENT_ID}
+            clientSecret: ${OAUTH_CLIENT_SECRET}
             scope : profile,email
 
 jwt:
-  secret: ${JWT_SECRET}
+  secret: d2h5LWRpZC15b3UtYnV5LXRoaXMtc2VjcmV0LWtleS13aHktZGlkLXlvdS1idXktdGhpcy1zZWNyZXQta2V5
   access-token-expired-time: 86400
   refresh-token-expired-time: 1209600
 
