@@ -12,6 +12,10 @@ script:
 - "./gradlew clean build"
 - export AWS_ACCESS_KEY=$AWS_ACCESS_KEY
 - export AWS_SECRET_KEY=$AWS_SECRET_KEY
+- export OAUTH_CLIENT_ID=$OAUTH_CLIENT_ID
+- export OAUTH_CLIENT_SECRET=$OAUTH_CLIENT_SECRET
+- export MAIL_PW=$MAIL_PW
+- export JWT_SECRET=$JWT_SECRET
 before_deploy:
 - mkdir -p before-deploy
 - cp scripts/*.sh before-deploy/
