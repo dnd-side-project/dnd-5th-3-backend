@@ -59,21 +59,6 @@ include::{snippets}/member/update/http-response.adoc[]
 include::{snippets}/member/update/response-fields.adoc[]
 
 
-[[member-reissue]]
-== PUT :: 엑세스 토큰 재발급
-
-=== HTTP Request
-include::{snippets}/member/reissue/http-request.adoc[]
-
-=== Request Fields
-include::{snippets}/member/reissue/request-fields.adoc[]
-
-=== HTTP Response
-include::{snippets}/member/reissue/http-response.adoc[]
-
-=== Response Fields
-include::{snippets}/member/reissue/response-fields.adoc[]
-
 [[member-exists-email]]
 == GET :: 이메일 중복 확인
 
