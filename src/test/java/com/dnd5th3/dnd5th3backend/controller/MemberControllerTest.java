@@ -262,13 +262,13 @@ class MemberControllerTest {
     @DisplayName("회원 탈퇴 API 테스트")
     @Test
     void withdrawalAPI() throws Exception {
-        String email = "test@gmail.com";
-
+        String email = "del@naver.com";
+        Member mem = memberRepository.findByEmail(email);
         Map<String,Object> request = new HashMap<>();
         request.put("email",email);
 
         ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/member")
-                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .principal(new UsernamePasswordAuthenticationToken(mem,null))
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding(Charsets.UTF_8.toString())

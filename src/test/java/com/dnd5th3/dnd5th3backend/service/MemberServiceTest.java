@@ -106,10 +106,11 @@ class MemberServiceTest {
     @DisplayName("회원 탈퇴 테스트")
     @Test
     void deleteMember() {
-        String email = "test@gmail.com";
+        String email = "del@naver.com";
+        long memberId = 4;
+        Member mem = memberRepository.getById(memberId);
         MemberRequestDto memberRequestDto = new MemberRequestDto(email,null,null,null,null);
-
-        Member member = memberService.deleteMember(memberRequestDto,this.member);
-        assertEquals(member.getEmail(), this.member.getEmail()," 정상 삭제 확인");
+        Member member = memberService.deleteMember(memberRequestDto,mem);
+        assertEquals(member.getEmail(), mem.getEmail()," 정상 삭제 확인");
     }
 }
