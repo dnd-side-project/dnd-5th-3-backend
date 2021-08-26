@@ -3,12 +3,14 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
+import com.dnd5th3.dnd5th3backend.utils.EmailSender;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.google.common.base.Charsets;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.restdocs.RestDocumentationContextProvider;
 import org.springframework.restdocs.RestDocumentationExtension;
@@ -53,6 +55,9 @@ class MemberControllerTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @MockBean
+    private EmailSender emailSender;
 
     private Member member;
 
@@ -112,7 +117,7 @@ class MemberControllerTest {
     @Test
     void reissueAPI() throws Exception {
         String email = "test@naver.com";
-        String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiMzRhMjIxODEtN2VhZi00NGI4LTg5ZDYtY2ViNDc4MzI5NzFhIn0sImV4cCI6MTYzMTAzMDY2N30.im-tspukCr25HOFg61DRrNjYkJ4oVumjsdWHqnuDHyQ";
+        String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiZmExODk5YmUtNzA3Yi00ZTFhLTlhMTItZjk5M2U0ZmU4OTc5In0sImV4cCI6MTIwOTc2Mjk5NDI4Njh9.-6_9NqpVfcvTQor24x0vJ_KVNWEVzp2wLo2jkytkJcw";
 
         Map<String,Object> request = new HashMap<>();
         request.put("email",email);
@@ -258,7 +263,7 @@ class MemberControllerTest {
                 ));
     }
 
-    @Order(7)
+    @Order(8)
     @DisplayName("회원 탈퇴 API 테스트")
     @Test
     void withdrawalAPI() throws Exception {
@@ -291,5 +296,33 @@ class MemberControllerTest {
                         )
                 ))
                 .andExpect(jsonPath("$.email").value(email));
+    }
+
+    @Order(7)
+    @DisplayName("임시비밀번호 발급 API 테스트")
+    @Test
+    void resetAPI() throws Exception {
+        String email = "test@gmail.com";
+
+        Map<String,Object> request = new HashMap<>();
+        request.put("email",email);
+
+        ResultActions actions = mvc.perform(RestDocumentationRequestBuilders.put("/api/v1/member/reset")
+                .principal(new UsernamePasswordAuthenticationToken(member,null))
+                .contentType(MediaType.APPLICATION_JSON)
+                .accept(MediaType.APPLICATION_JSON)
+                .characterEncoding(Charsets.UTF_8.toString())
+                .content(objectMapper.writeValueAsString(request)));
+
+        actions
+                .andExpect(status().isResetContent())
+                .andDo(print())
+                .andDo(document("member/reset",
+                        getDocumentRequest(),
+                        getDocumentResponse(),
+                        requestFields(
+                                fieldWithPath("email").description("요청 이메일")
+                        )
+                ));
     }
 }
