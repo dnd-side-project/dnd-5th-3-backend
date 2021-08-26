@@ -111,7 +111,7 @@ class MemberControllerTest {
     @DisplayName("AccessToken 재발급 API 테스트")
     @Test
     void reissueAPI() throws Exception {
-        String email = "test@naver.com";
+        String email = "token@naver.com";
         String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiZWE0ZDdlY2ItNDJiZi00NzNkLThiNmUtNjUyOWM2MWRiZjFjIn0sImV4cCI6MTIwOTYxNjI5OTgxMzUxfQ.NQ8MDNomkVpBzrIej1XlivWw88E9cib-Qw1WI5_KhRk";
 
         Map<String,Object> request = new HashMap<>();

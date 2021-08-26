@@ -16,6 +16,7 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ActiveProfiles;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -51,10 +52,11 @@ class MemberServiceTest {
     }
     
     @DisplayName("AccessToken 재발급 테스트")
+    @Rollback(value = false)
     @Test
     void reissueAccessToken() {
 
-        String email = "test@naver.com";
+        String email = "token@naver.com";
         String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiZWE0ZDdlY2ItNDJiZi00NzNkLThiNmUtNjUyOWM2MWRiZjFjIn0sImV4cCI6MTIwOTYxNjI5OTgxMzUxfQ.NQ8MDNomkVpBzrIej1XlivWw88E9cib-Qw1WI5_KhRk";
 
         MemberRequestDto memberRequestDto = new MemberRequestDto(email, null, null,null,refreshToken);
