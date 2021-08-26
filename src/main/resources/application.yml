@@ -15,11 +15,6 @@ spring:
     properties:
       mail.smtp.auth: true
       mail.smtp.starttls.enable: true
-  data:
-    rest:
-      base-path: /api/v1
-  hateoas:
-    use-hal-as-default-json-media-type: false
 
 jwt:
   secret: ${JWT_SECRET}
