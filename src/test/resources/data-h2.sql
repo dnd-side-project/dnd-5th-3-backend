@@ -1,6 +1,6 @@
 
 INSERT INTO member (member_id, created_date, updated_date, email, member_type, name, password, refresh_token, role) VALUES (1, '2021-08-06 12:41:15.025050', '2021-08-06 12:41:15.025050', 'test@gmail.com', 'GENERAL', 'moomool', '{bcrypt}$2a$10$C5Kq5knLtzT7v/9RLOt6weQaAJne/JaGfhDFQJO.XFYAamPmzZAw.', null, 'ROLE_USER');
-INSERT INTO member (member_id, created_date, updated_date, email, member_type, name, password, refresh_token, role) VALUES (2, '2021-08-06 12:41:15.025050', '2021-08-06 12:41:15.025050', 'test@naver.com', 'GENERAL', 'kang', '{bcrypt}$2a$10$/p94I4bR6CumEXfuUZrJJ.KuAix.eh4pFBKAWkSj.WmMgiFVEKWDy', 'eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiMzRhMjIxODEtN2VhZi00NGI4LTg5ZDYtY2ViNDc4MzI5NzFhIn0sImV4cCI6MTYzMTAzMDY2N30.im-tspukCr25HOFg61DRrNjYkJ4oVumjsdWHqnuDHyQ', 'ROLE_USER');
+INSERT INTO member (member_id, created_date, updated_date, email, member_type, name, password, refresh_token, role) VALUES (2, '2021-08-06 12:41:15.025050', '2021-08-06 12:41:15.025050', 'test@naver.com', 'GENERAL', 'kang', '{bcrypt}$2a$10$/p94I4bR6CumEXfuUZrJJ.KuAix.eh4pFBKAWkSj.WmMgiFVEKWDy', 'eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiZWE0ZDdlY2ItNDJiZi00NzNkLThiNmUtNjUyOWM2MWRiZjFjIn0sImV4cCI6MTIwOTYxNjI5OTgxMzUxfQ.NQ8MDNomkVpBzrIej1XlivWw88E9cib-Qw1WI5_KhRk', 'ROLE_USER');
 INSERT INTO member (member_id, created_date, updated_date, email, member_type, name, password, refresh_token, role) VALUES (3, '2021-08-06 12:41:15.025050', '2021-08-06 12:41:15.025050', 'merge@naver.com','GENERAL', 'kim', '{bcrypt}$2a$10$/p94I4bR6CumEXfuUZrJJ.KuAix.eh4pFBKAWkSj.WmMgiFVEKWDy', 'eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiYzNhOGJlNGQtNjAxYS00YjY0LWE3NWMtYmVhY2U3ZTAzMjExIn0sImV4cCI6MTYyOTY5MDY3NX0.EgqcB0chYYTAx7VDUTqeMC-sV_0veGr7QOrFc4Bo8ig', 'ROLE_USER');
 INSERT INTO posts (post_id, created_date, updated_date, content, is_posts_end, is_voted, permit_count, product_image_url, reject_count, title, vote_deadline, posts_deadline, member_id,rank_count) VALUES (1, '2021-08-06 21:31:56', '2021-08-06 21:32:02', 'test', false, false, 0, 1, 1, 'test', '2021-08-06 21:33:24', '2021-08-13 21:33:24', 1,0);
 
@@ -30,3 +30,6 @@ INSERT INTO comment_emoji_member (comment_emoji_member_id, comment_emoji_id, mem
 INSERT INTO comment_emoji_member (comment_emoji_member_id, comment_emoji_id, member_id) VALUES (3, 2, 2);
 INSERT INTO comment_emoji_member (comment_emoji_member_id, comment_emoji_id, member_id) VALUES (4, 2, 1);
 INSERT INTO comment_emoji_member (comment_emoji_member_id, comment_emoji_id, member_id) VALUES (5, 5, 2);
+
+INSERT INTO notice (notice_id, title, content, created_date, updated_date) VALUES (1,'no.1 notice title','notice content',sysdate(),sysdate());
+INSERT INTO notice (notice_id, title, content, created_date, updated_date) VALUES (2,'no.2 notice title','notice content',sysdate(),sysdate());

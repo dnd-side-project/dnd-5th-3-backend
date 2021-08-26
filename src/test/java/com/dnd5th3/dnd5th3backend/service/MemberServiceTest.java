@@ -55,7 +55,7 @@ class MemberServiceTest {
     void reissueAccessToken() {
 
         String email = "test@naver.com";
-        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiMzRhMjIxODEtN2VhZi00NGI4LTg5ZDYtY2ViNDc4MzI5NzFhIn0sImV4cCI6MTYzMTAzMDY2N30.im-tspukCr25HOFg61DRrNjYkJ4oVumjsdWHqnuDHyQ";
+        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiZWE0ZDdlY2ItNDJiZi00NzNkLThiNmUtNjUyOWM2MWRiZjFjIn0sImV4cCI6MTIwOTYxNjI5OTgxMzUxfQ.NQ8MDNomkVpBzrIej1XlivWw88E9cib-Qw1WI5_KhRk";
 
         MemberRequestDto memberRequestDto = new MemberRequestDto(email, null, null,null,refreshToken);
         MemberReissueTokenResponseDto reissueTokenResponseDto = memberService.reissueAccessToken(memberRequestDto);
