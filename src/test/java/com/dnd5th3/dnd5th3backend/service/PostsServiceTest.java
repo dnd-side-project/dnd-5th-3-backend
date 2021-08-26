@@ -3,7 +3,10 @@ package com.dnd5th3.dnd5th3backend.service;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
+import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
+import com.dnd5th3.dnd5th3backend.repository.vote.VoteRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -26,6 +29,9 @@ class PostsServiceTest {
 
     @Mock
     private PostsRepository postsRepository;
+
+    @Mock
+    private VoteRepository voteRepository;
 
     @InjectMocks
     private PostsService postsService;
@@ -206,6 +212,34 @@ class PostsServiceTest {
         Assertions.assertEquals(orderByCreatedDateList.get(0).getId(), posts2.getId());
         Assertions.assertEquals(orderByAlreadyDoneList.get(0).getId(), posts3.getId());
         Assertions.assertEquals(orderByAlmostDoneList.get(0).getId(), posts1.getId());
+    }
+
+    @DisplayName("사용자별 post 리스트 조회 테스트")
+    @Test
+    void findAllPostsByMemberTest() throws Exception {
+        //given
+        List<Posts> postsList = new ArrayList<>();
+        postsList.add(post);
+
+        List<Vote> voteList = new ArrayList<>();
+        Vote vote = Vote.builder()
+                .id(1L)
+                .member(member)
+                .posts(post)
+                .result(VoteType.PERMIT)
+                .build();
+        voteList.add(vote);
+
+        when(postsRepository.findPostsByMemberOrderByCreatedDate(member)).thenReturn(postsList);
+        when(voteRepository.findVoteByMemberOrderByCreatedDate(member)).thenReturn(voteList);
+
+        //when
+        List<Posts> sortedByWrote = postsService.findAllPostsByMember(member, "written");
+        List<Posts> sortedByVoted = postsService.findAllPostsByMember(member, "voted");
+
+        //then
+        Assertions.assertEquals(post.getId(), sortedByWrote.get(0).getId());
+        Assertions.assertEquals(post.getId(), sortedByVoted.get(0).getId());
     }
 
 }

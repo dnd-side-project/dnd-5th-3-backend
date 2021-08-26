@@ -3,8 +3,10 @@ package com.dnd5th3.dnd5th3backend.service;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
+import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.exception.PostNotFoundException;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
+import com.dnd5th3.dnd5th3backend.repository.vote.VoteRepository;
 import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.Hibernate;
@@ -20,6 +22,7 @@ import java.util.*;
 public class PostsService {
 
     private final PostsRepository postsRepository;
+    private final VoteRepository voteRepository;
 
     public Posts savePost(Member member, String title, String content, String productImageUrl) {
         Posts newPosts = Posts.builder()
