@@ -30,3 +30,6 @@ INSERT INTO comment_emoji_member (comment_emoji_member_id, comment_emoji_id, mem
 INSERT INTO comment_emoji_member (comment_emoji_member_id, comment_emoji_id, member_id) VALUES (3, 2, 2);
 INSERT INTO comment_emoji_member (comment_emoji_member_id, comment_emoji_id, member_id) VALUES (4, 2, 1);
 INSERT INTO comment_emoji_member (comment_emoji_member_id, comment_emoji_id, member_id) VALUES (5, 5, 2);
+
+INSERT INTO notice (notice_id, title, content, created_date, updated_date) VALUES (1,'no.1 notice title','notice content',sysdate(),sysdate());
+INSERT INTO notice (notice_id, title, content, created_date, updated_date) VALUES (2,'no.2 notice title','notice content',sysdate(),sysdate());
