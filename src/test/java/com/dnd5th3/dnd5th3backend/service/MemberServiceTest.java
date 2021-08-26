@@ -8,11 +8,13 @@ import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberReissueTokenRespon
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
+import com.dnd5th3.dnd5th3backend.utils.EmailSender;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -30,6 +32,9 @@ class MemberServiceTest {
 
     @Autowired
     private MemberRepository memberRepository;
+
+    @MockBean
+    private EmailSender emailSender;
 
     private Member member;
 
@@ -55,7 +60,7 @@ class MemberServiceTest {
     void reissueAccessToken() {
 
         String email = "test@naver.com";
-        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiMzRhMjIxODEtN2VhZi00NGI4LTg5ZDYtY2ViNDc4MzI5NzFhIn0sImV4cCI6MTYzMTAzMDY2N30.im-tspukCr25HOFg61DRrNjYkJ4oVumjsdWHqnuDHyQ";
+        String refreshToken= "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiZmExODk5YmUtNzA3Yi00ZTFhLTlhMTItZjk5M2U0ZmU4OTc5In0sImV4cCI6MTIwOTc2Mjk5NDI4Njh9.-6_9NqpVfcvTQor24x0vJ_KVNWEVzp2wLo2jkytkJcw";
 
         MemberRequestDto memberRequestDto = new MemberRequestDto(email, null, null,null,refreshToken);
         MemberReissueTokenResponseDto reissueTokenResponseDto = memberService.reissueAccessToken(memberRequestDto);
@@ -111,5 +116,17 @@ class MemberServiceTest {
 
         Member member = memberService.deleteMember(memberRequestDto,this.member);
         assertEquals(member.getEmail(), this.member.getEmail()," 정상 삭제 확인");
+    }
+
+    @DisplayName("비밀번호 초기화 테스트")
+    @Test
+    void resetPasswordMember(){
+        String email = "test@gmail.com";
+        MemberRequestDto memberRequestDto = new MemberRequestDto(email,null,null,null,null);
+        assertDoesNotThrow(()->memberService.resetPasswordMember(memberRequestDto)," 비밀번호 초기화 오류 없는지 확인");
+
+        email = "test1234@gmail.com";
+        MemberRequestDto memberRequestDto2 = new MemberRequestDto(email,null,null,null,null);
+        assertThrows(IllegalArgumentException.class,()->memberService.resetPasswordMember(memberRequestDto2),"가입된 이메일이 아닌 경우 Exception 발생 확인 ");
     }
 }

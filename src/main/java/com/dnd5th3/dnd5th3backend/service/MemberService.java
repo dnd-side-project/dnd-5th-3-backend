@@ -10,11 +10,14 @@ import com.dnd5th3.dnd5th3backend.exception.TokenException;
 import com.dnd5th3.dnd5th3backend.repository.comment.CommentRepository;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
+import com.dnd5th3.dnd5th3backend.utils.EmailSender;
+import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.mail.MessagingException;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -26,6 +29,7 @@ public class MemberService {
     private final JwtTokenProvider jwtTokenProvider;
     private final CommentRepository commentRepository;
     private final PostsRepository postsRepository;
+    private final EmailSender emailSender;
 
     public Member saveMember(MemberRequestDto memberRequestDto) {
         String encode = passwordEncoder.encode(memberRequestDto.getPassword());
@@ -91,6 +95,18 @@ public class MemberService {
             memberRepository.delete(targetMember);
 
             return targetMember;
+        }else {
+            throw new IllegalArgumentException();
+        }
+    }
+
+    @Transactional
+    public void resetPasswordMember(MemberRequestDto memberRequestDto) throws MessagingException {
+        Member member = memberRepository.findByEmail(memberRequestDto.getEmail());
+        if(member != null){
+            String tempPassword = RandomNumber.generatePassword();
+            emailSender.sendTemporaryPassword(member,tempPassword);
+            member.update(null,passwordEncoder.encode(tempPassword));
         }else {
             throw new IllegalArgumentException();
         }
