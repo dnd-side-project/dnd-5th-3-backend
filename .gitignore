@@ -44,3 +44,6 @@ db_volume
 
 ### AWS_Credentials ###
 /src/main/resources/application-aws.yml
+
+### OAuth_Credentials ###
+/src/main/resources/application-oauth.yml
