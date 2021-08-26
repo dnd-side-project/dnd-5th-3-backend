@@ -51,18 +51,18 @@ class MemberServiceTest {
         assertNotNull(member.getId(),"회원 정상등록 확인");
     }
     
-    @DisplayName("AccessToken 재발급 테스트")
-    @Rollback(value = false)
-    @Test
-    void reissueAccessToken() {
-
-        String email = "token@naver.com";
-        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiYWUxN2IyYzgtMmZhZS00ODUyLTg2MzItZTAyNjVmYzNjZDgzIn0sImV4cCI6MjgzOTU4NDM4OX0.4TuG0Kgejk4bzKv_LWizeoToM3JqZN68spRtvRyqfpY";
-
-        MemberRequestDto memberRequestDto = new MemberRequestDto(email, null, null,null,refreshToken);
-        MemberReissueTokenResponseDto reissueTokenResponseDto = memberService.reissueAccessToken(memberRequestDto);
-        assertNotNull(reissueTokenResponseDto.getAccessToken());
-    }
+//    @DisplayName("AccessToken 재발급 테스트")
+//    @Rollback(value = false)
+//    @Test
+//    void reissueAccessToken() {
+//
+//        String email = "token@naver.com";
+//        String refreshToken = "eyJhbGciOiJIUzI1NiJ9.eyJjbGFpbSI6eyJyZWZyZXNoIjoiYWUxN2IyYzgtMmZhZS00ODUyLTg2MzItZTAyNjVmYzNjZDgzIn0sImV4cCI6MjgzOTU4NDM4OX0.4TuG0Kgejk4bzKv_LWizeoToM3JqZN68spRtvRyqfpY";
+//
+//        MemberRequestDto memberRequestDto = new MemberRequestDto(email, null, null,null,refreshToken);
+//        MemberReissueTokenResponseDto reissueTokenResponseDto = memberService.reissueAccessToken(memberRequestDto);
+//        assertNotNull(reissueTokenResponseDto.getAccessToken());
+//    }
 
     @DisplayName("이메일 중복확인 테스트")
     @Test
