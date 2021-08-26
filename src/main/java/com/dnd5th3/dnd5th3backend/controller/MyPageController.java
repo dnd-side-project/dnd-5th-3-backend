@@ -4,7 +4,7 @@ import com.dnd5th3.dnd5th3backend.controller.dto.mypage.InfoResponseDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.PostsListDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.domain.vo.VoteRatioVo;
+import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
