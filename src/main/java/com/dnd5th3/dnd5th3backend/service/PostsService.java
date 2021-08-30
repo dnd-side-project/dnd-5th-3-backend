@@ -76,65 +76,40 @@ public class PostsService {
     }
 
     public List<Posts> findAllPosts(String sorted) {
+        List<Posts> allPosts = postsRepository.findAll();
+        //프록시 객체 초기화, 투표 종료 여부 초기화
+        allPosts.stream().forEach(p -> {
+            Hibernate.initialize(p.getMember());
+            if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
+                p.makeVotedStatusTrue();
+            }
+            if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
+                p.makePostsEndStatusTrue();
+            }
+        });
+
         //인기순
         if ("rank-count".equals(sorted)) {
             List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount();
-            //프록시 객체 초기화, 투표 종료 여부 초기화
-            allPostsOrderByRankCount.stream().forEach(p -> {
-                Hibernate.initialize(p.getMember());
-                if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
-                    p.makeVotedStatusTrue();
-                }
-                if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
-                    p.makePostsEndStatusTrue();
-                }
-            });
             return allPostsOrderByRankCount;
         }
         //최신순
         if ("created-date".equals(sorted)) {
             List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
-            allPostsOrderByCreatedDate.stream().forEach(p -> {
-                Hibernate.initialize(p.getMember());
-                if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
-                    p.makeVotedStatusTrue();
-                }
-                if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
-                    p.makePostsEndStatusTrue();
-                }
-            });
             return allPostsOrderByCreatedDate;
         }
         //최근마감순
         if ("already-done".equals(sorted)) {
             List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
-            allPostsOrderByAlreadyDone.stream().forEach(p -> {
-                Hibernate.initialize(p.getMember());
-                if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
-                    p.makeVotedStatusTrue();
-                }
-                if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
-                    p.makePostsEndStatusTrue();
-                }
-            });
             return allPostsOrderByAlreadyDone;
         }
         //마감임박순
         if ("almost-done".equals(sorted)) {
             List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
-            allPostsOrderByAlmostDone.stream().forEach(p -> {
-                Hibernate.initialize(p.getMember());
-                if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
-                    p.makeVotedStatusTrue();
-                }
-                if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
-                    p.makePostsEndStatusTrue();
-                }
-            });
             return allPostsOrderByAlmostDone;
         }
 
-        throw new PostNotFoundException("게시글을 불러올 수 없습니다.");
+        return allPosts;
     }
 
     public Map<String, Posts> findMainPosts() {
