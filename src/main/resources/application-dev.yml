@@ -13,6 +13,7 @@ spring:
     show-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+    open-in-view: true
   security:
     oauth2:
       client:
