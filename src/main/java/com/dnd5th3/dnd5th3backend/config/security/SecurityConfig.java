@@ -7,6 +7,7 @@ import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtAuthenticationFilter;
 import com.dnd5th3.dnd5th3backend.config.security.oauth2.CustomOAuth2UserServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -41,9 +42,10 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                         .authorizeRequests()
                         .antMatchers("/api/v1/login").permitAll()
+                        .antMatchers("/api/v1/member/reset").permitAll()
                         .antMatchers("/api/v1/member/token").permitAll()
                         .antMatchers("/api/v1/member/exists/**").permitAll()
-                        .antMatchers("/api/v1/member").permitAll()
+                        .antMatchers(HttpMethod.POST,"/api/v1/member").permitAll()
                         .antMatchers("/api/v1/posts/**").permitAll()
                         .antMatchers("/api/v1/mypage").permitAll()
                         .antMatchers("/docs/**").permitAll()

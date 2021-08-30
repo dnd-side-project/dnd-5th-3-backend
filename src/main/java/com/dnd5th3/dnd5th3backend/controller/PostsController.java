@@ -3,7 +3,7 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.*;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.domain.vo.VoteRatioVo;
+import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
 import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
 import com.dnd5th3.dnd5th3backend.service.PostsService;

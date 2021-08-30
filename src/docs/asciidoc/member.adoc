@@ -59,6 +59,21 @@ include::{snippets}/member/update/http-response.adoc[]
 include::{snippets}/member/update/response-fields.adoc[]
 
 
+[[member-reissue]]
+== PUT :: 엑세스 토큰 재발급
+
+=== HTTP Request
+include::{snippets}/member/reissue/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/reissue/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/reissue/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/reissue/response-fields.adoc[]
+
 [[member-exists-email]]
 == GET :: 이메일 중복 확인
 
@@ -110,6 +125,19 @@ include::{snippets}/member/delete/http-response.adoc[]
 
 === Response Fields
 include::{snippets}/member/delete/response-fields.adoc[]
+
+[[member-reset]]
+== PUT :: 임시비밀번호 발급
+
+=== HTTP Request
+include::{snippets}/member/reset/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/reset/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/reset/http-response.adoc[]
+- 임시비밀번호는 메일로 전송
 
 
 

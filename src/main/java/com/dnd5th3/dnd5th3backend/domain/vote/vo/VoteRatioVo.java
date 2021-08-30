@@ -1,4 +1,4 @@
-package com.dnd5th3.dnd5th3backend.domain.vo;
+package com.dnd5th3.dnd5th3backend.domain.vote.vo;
 
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import lombok.Getter;

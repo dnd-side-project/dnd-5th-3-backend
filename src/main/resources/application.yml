@@ -7,6 +7,14 @@ spring:
             clientId: ${OAUTH_CLIENT_ID}
             clientSecret: ${OAUTH_CLIENT_SECRET}
             scope : profile,email
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: moomool.official@gmail.com
+    password: ${MAIL_PW}
+    properties:
+      mail.smtp.auth: true
+      mail.smtp.starttls.enable: true
 
 jwt:
   secret: ${JWT_SECRET}

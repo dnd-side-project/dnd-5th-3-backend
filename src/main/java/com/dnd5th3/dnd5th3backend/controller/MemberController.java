@@ -12,6 +12,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import javax.mail.MessagingException;
+
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/api/v1/member")
@@ -63,5 +65,11 @@ public class MemberController {
         Member deleteMember = memberService.deleteMember(memberRequestDto,member);
         MemberResponseDto memberResponseDto = modelMapper.map(deleteMember, MemberResponseDto.class);
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(memberResponseDto);
+    }
+
+    @PutMapping("/reset")
+    public ResponseEntity<Void> resetAPI(@RequestBody MemberRequestDto memberRequestDto) throws MessagingException {
+        memberService.resetPasswordMember(memberRequestDto);
+        return ResponseEntity.status(HttpStatus.RESET_CONTENT).build();
     }
 }

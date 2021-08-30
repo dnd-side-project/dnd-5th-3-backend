@@ -2,7 +2,6 @@ package com.dnd5th3.dnd5th3backend.domain.member;
 
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
-import com.dnd5th3.dnd5th3backend.domain.comment.CommentEmojiMember;
 import com.dnd5th3.dnd5th3backend.domain.common.BaseTime;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import lombok.*;
@@ -28,6 +27,7 @@ public class Member extends BaseTime {
 
     private String password;
 
+    @Column(unique = true)
     private String name;
 
     @Enumerated(value = EnumType.STRING)

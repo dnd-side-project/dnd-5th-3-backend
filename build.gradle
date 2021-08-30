@@ -100,6 +100,8 @@ dependencies {
      */
     implementation 'org.modelmapper:modelmapper:2.4.3'
     implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 
 }
 
