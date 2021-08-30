@@ -86,18 +86,22 @@ public class PostsService {
             }
         });
 
+        //인기순
         if ("rank-count".equals(sorted)) {
             List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount();
             return allPostsOrderByRankCount;
         }
+        //최신순
         if ("created-date".equals(sorted)) {
             List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
             return allPostsOrderByCreatedDate;
         }
+        //최근마감순
         if ("already-done".equals(sorted)) {
             List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
             return allPostsOrderByAlreadyDone;
         }
+        //마감임박순
         if ("almost-done".equals(sorted)) {
             List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
             return allPostsOrderByAlmostDone;
