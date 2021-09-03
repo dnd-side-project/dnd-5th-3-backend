@@ -40,12 +40,11 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
 
     @Override
     public List<Posts> findPostsOrderByAlreadyDone() {
-
         return query
                 .select(posts)
                 .from(posts)
                 .where(posts.isVoted.eq(true))
-                .orderBy(posts.voteDeadline.asc())
+                .orderBy(posts.voteDeadline.desc())
                 .fetchAll()
                 .fetch();
     }
