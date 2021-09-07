@@ -54,6 +54,12 @@ public class EmojiService {
 
         CommentEmoji commentEmoji = commentEmojiRepository.findById(emojiRequestDto.getCommentEmojiId()).orElseThrow();
 
+        boolean isNeedToDelete = commentEmoji.update(emojiRequestDto.getIsChecked());
+
+        if(isNeedToDelete){
+            commentEmojiRepository.delete(commentEmoji);
+        }
+
         if(Boolean.FALSE.equals(emojiRequestDto.getIsChecked())){
             commentEmojiMemberRepository.deleteByCommentEmojiIdAndMemberId(commentEmoji.getId(),member.getId());
         }else {
@@ -63,11 +69,7 @@ public class EmojiService {
                     .build());
         }
 
-        boolean isNeedToDelete = commentEmoji.update(emojiRequestDto.getIsChecked());
 
-        if(isNeedToDelete){
-            commentEmojiRepository.delete(commentEmoji);
-        }
 
         return commentEmoji;
     }
