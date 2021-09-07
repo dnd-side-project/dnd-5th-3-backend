@@ -49,28 +49,24 @@ public class EmojiService {
         return commentEmoji;
     }
 
+    @Transactional
     public CommentEmoji updateCountCommentEmoji(EmojiRequestDto emojiRequestDto,Member member){
 
         CommentEmoji commentEmoji = commentEmojiRepository.findById(emojiRequestDto.getCommentEmojiId()).orElseThrow();
+
+        if(Boolean.FALSE.equals(emojiRequestDto.getIsChecked())){
+            commentEmojiMemberRepository.deleteByCommentEmojiIdAndMemberId(commentEmoji.getId(),member.getId());
+        }else {
+            commentEmojiMemberRepository.save(CommentEmojiMember.builder()
+                    .commentEmoji(commentEmoji)
+                    .member(member)
+                    .build());
+        }
 
         boolean isNeedToDelete = commentEmoji.update(emojiRequestDto.getIsChecked());
 
         if(isNeedToDelete){
             commentEmojiRepository.delete(commentEmoji);
-        }
-
-        if(Boolean.FALSE.equals(emojiRequestDto.getIsChecked())){
-            commentEmojiMemberRepository.delete(CommentEmojiMember.builder()
-                    .commentEmoji(commentEmoji)
-                    .member(member)
-                    .build());
-        }else {
-            if(!isNeedToDelete){
-                commentEmojiMemberRepository.save(CommentEmojiMember.builder()
-                        .commentEmoji(commentEmoji)
-                        .member(member)
-                        .build());
-            }
         }
 
         return commentEmoji;
