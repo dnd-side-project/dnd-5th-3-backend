@@ -5,6 +5,7 @@ import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberReissueTokenRespon
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.domain.member.MemberType;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.exception.TokenException;
 import com.dnd5th3.dnd5th3backend.repository.comment.CommentRepository;
@@ -13,13 +14,17 @@ import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
 import com.dnd5th3.dnd5th3backend.utils.EmailSender;
 import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.mail.MessagingException;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class MemberService {
@@ -84,7 +89,7 @@ public class MemberService {
     }
 
     @Transactional
-    public Member deleteMember(MemberRequestDto memberRequestDto,Member member) {
+    public Member withdrawal(MemberRequestDto memberRequestDto, Member member) {
         if(memberRequestDto.getEmail().equals(member.getEmail())){
             Member targetMember = memberRepository.findByEmail(member.getEmail());
             List<Comment> commentList = targetMember.getCommentList();
@@ -92,7 +97,7 @@ public class MemberService {
 
             commentRepository.deleteAll(commentList);
             postsRepository.deleteAll(postsList);
-            memberRepository.delete(targetMember);
+            targetMember.updateMemberType(MemberType.WITHDRAWAL);
 
             return targetMember;
         }else {
@@ -109,6 +114,19 @@ public class MemberService {
             member.update(null,passwordEncoder.encode(tempPassword));
         }else {
             throw new IllegalArgumentException();
+        }
+    }
+
+    @Transactional
+    public void deleteWithdrawalMember(long termDay) {
+        List<Member> memberList = memberRepository.findAllByMemberType(MemberType.WITHDRAWAL);
+        for(Member member :  memberList){
+            LocalDate withdrawalDay = member.getUpdatedDate().toLocalDate();
+            long between = ChronoUnit.DAYS.between(withdrawalDay, LocalDate.now());
+            if(between >= termDay){
+                log.info(" 탈퇴한 회원 - [{}]",member.getEmail());
+                memberRepository.delete(member);
+            }
         }
     }
 }

@@ -1,6 +1,7 @@
 package com.dnd5th3.dnd5th3backend.config.security;
 
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.domain.member.MemberType;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
@@ -22,7 +23,7 @@ public class CustomUserDetailServiceImpl implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username);
-        if(member == null){
+        if(member == null || MemberType.WITHDRAWAL.equals(member.getMemberType())){
             throw new UsernameNotFoundException("등록된 계정이 없습니다.");
         }
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();

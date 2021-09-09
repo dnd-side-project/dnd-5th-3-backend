@@ -65,4 +65,8 @@ public class Member extends BaseTime {
            this.password = encodePassword;
         }
     }
+
+    public void updateMemberType(MemberType memberType){
+       this.memberType = memberType;
+    }
 }
