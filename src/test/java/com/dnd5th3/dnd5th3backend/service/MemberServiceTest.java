@@ -7,6 +7,7 @@ import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtTokenProvider;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberReissueTokenResponseDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
+import com.dnd5th3.dnd5th3backend.domain.member.MemberType;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import com.dnd5th3.dnd5th3backend.utils.EmailSender;
 import org.junit.jupiter.api.BeforeEach;
@@ -108,16 +109,7 @@ class MemberServiceTest {
         assertTrue(passwordEncoder.matches(password,member.getPassword())," 비밀번호 변경되었는지 확인");
     }
 
-    @DisplayName("회원 탈퇴 테스트")
-    @Test
-    void deleteMember() {
-        String email = "test@gmail.com";
-        MemberRequestDto memberRequestDto = new MemberRequestDto(email,null,null,null,null);
-
-        Member member = memberService.deleteMember(memberRequestDto,this.member);
-        assertEquals(member.getEmail(), this.member.getEmail()," 정상 삭제 확인");
-    }
-
+    
     @DisplayName("비밀번호 초기화 테스트")
     @Test
     void resetPasswordMember(){
@@ -128,5 +120,28 @@ class MemberServiceTest {
         email = "test1234@gmail.com";
         MemberRequestDto memberRequestDto2 = new MemberRequestDto(email,null,null,null,null);
         assertThrows(IllegalArgumentException.class,()->memberService.resetPasswordMember(memberRequestDto2),"가입된 이메일이 아닌 경우 Exception 발생 확인 ");
+    }
+
+    @DisplayName("회원 탈퇴 테스트")
+    @Test
+    void withdrawal() {
+        String email = "test@gmail.com";
+        MemberRequestDto memberRequestDto = new MemberRequestDto(email,null,null,null,null);
+
+        Member member = memberService.withdrawal(memberRequestDto,this.member);
+        assertEquals(MemberType.WITHDRAWAL,member.getMemberType()," 회원 탈퇴 상태변경 확인");
+    }
+
+    @DisplayName("회원 삭제 테스트")
+    @Test
+    void deleteWithdrawalMember() {
+        String email = "test@gmail.com";
+        MemberRequestDto memberRequestDto = new MemberRequestDto(email,null,null,null,null);
+
+        memberService.withdrawal(memberRequestDto,this.member);
+
+        memberService.deleteWithdrawalMember(0);
+        Member member = memberRepository.findByEmail(email);
+        assertNull(member,"계정 삭제 확인");
     }
 }
