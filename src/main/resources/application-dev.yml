@@ -5,27 +5,11 @@ spring:
     username: ${DATABASE_USERNAME}
     password: ${DATABASE_PASSWORD}
   jpa:
+    open-in-view: false
     hibernate:
       ddl-auto: update
-    properties:
-      hibernate:
-      format_sql: true
-    show-sql: true
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
-  security:
-    oauth2:
-      client:
-        registration:
-          google:
-            clientId: ${OAUTH_CLIENT_ID}
-            clientSecret: ${OAUTH_CLIENT_SECRET}
-            scope: profile,email
-
-jwt:
-  secret: ${JWT_SECRET}
-  access-token-expired-time: 86400
-  refresh-token-expired-time: 1209600
 
 cloud:
   aws:
@@ -41,4 +25,4 @@ cloud:
 
 logging:
   level:
-    root: debug
+    root: INFO
