@@ -1,6 +1,7 @@
 package com.dnd5th3.dnd5th3backend.service;
 
 import com.dnd5th3.dnd5th3backend.config.security.jwt.JwtTokenProvider;
+import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberListResponseDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberReissueTokenResponseDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.comment.Comment;
@@ -15,6 +16,11 @@ import com.dnd5th3.dnd5th3backend.utils.EmailSender;
 import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.mail.MessagingException;
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -35,6 +42,9 @@ public class MemberService {
     private final CommentRepository commentRepository;
     private final PostsRepository postsRepository;
     private final EmailSender emailSender;
+    private final ModelMapper modelMapper;
+    private static final int PAGE_SIZE = 20;
+
 
     public Member saveMember(MemberRequestDto memberRequestDto) {
         String encode = passwordEncoder.encode(memberRequestDto.getPassword());
@@ -128,5 +138,24 @@ public class MemberService {
                 memberRepository.delete(member);
             }
         }
+    }
+
+    @Transactional
+    public MemberListResponseDto getPageMemberList(Pageable pageable){
+        Pageable page = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(Sort.Direction.DESC, "id"));
+        Page<Member> memberPage = memberRepository.findAll(page);
+        MemberListResponseDto map = modelMapper.map(memberPage.getContent(), MemberListResponseDto.class);
+
+        MemberListResponseDto memberListResponseDto = new MemberListResponseDto();
+        List<MemberListResponseDto.MemberDto> memberDtoList = new ArrayList<>();
+        for(Member member : memberPage.getContent()){
+            MemberListResponseDto.MemberDto memberDto = modelMapper.map(member, MemberListResponseDto.MemberDto.class);
+            memberDtoList.add(memberDto);
+        }
+        memberListResponseDto.setMemberDtoList(memberDtoList);
+        memberListResponseDto.setPageNum(memberPage.getNumber());
+        memberListResponseDto.setTotalPage(memberPage.getTotalPages());
+        memberListResponseDto.setTotalCount(memberPage.getTotalElements());
+        return memberListResponseDto;
     }
 }

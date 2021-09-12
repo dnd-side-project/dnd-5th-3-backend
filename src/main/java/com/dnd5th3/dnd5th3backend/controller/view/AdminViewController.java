@@ -1,13 +1,15 @@
 package com.dnd5th3.dnd5th3backend.controller.view;
 
+import com.dnd5th3.dnd5th3backend.controller.dto.member.MemberListResponseDto;
 import com.dnd5th3.dnd5th3backend.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDateTime;
@@ -28,6 +30,8 @@ public class AdminViewController {
     }
 
     @GetMapping("/members")
-    public void members(@RequestParam(defaultValue = "0") Integer pageNum, Model model){
+    public void members(@PageableDefault Pageable pageable, Model model){
+        MemberListResponseDto memberListResponseDto = memberService.getPageMemberList(pageable);
+        model.addAttribute("memberListResponseDto",memberListResponseDto);
     }
 }
