@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="ko"  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <div class="list-group">
+            <div class="list-group-item list-group-item flex-column align-items-start mt-1">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Moom</h5>
+                    <small>tjgy9023@gmail.com</small>
+                </div>
+                <p class="mb-1">
+                    <div class="form-group">
+                        <label for=""></label>
+                            <select class="form-control" name="" id="">
+                            <option>ROLE_ADMIN</option>
+                            <option></option>
+                            <option></option>
+                        </select>
+                    </div>
+                </p>
+                <footer class=" d-flex w-100 justify-content-between">
+                    <small>2021-08-16 </small>
+                    <span>
+                          <a class="badge badge-primary">수정</a>
+                          <a class="badge badge-danger">삭제</a>
+                    </span>
+                </footer>
+            </div>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Heading</h5>
+                    <small>small</small>
+                </div>
+                <p class="mb-1">Paragraph</p>
+                <small>paragraph footer</small>
+            </a>
+            <a href="#" class="list-group-item list-group-item-action flex-column align-items-start disabled">
+                <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1">Heading</h5>
+                    <small>small</small>
+                </div>
+                <p class="mb-1">Paragraph</p>
+                <small>paragraph footer</small>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
