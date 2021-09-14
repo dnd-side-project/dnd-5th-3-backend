@@ -43,7 +43,7 @@ public class MemberService {
     private final PostsRepository postsRepository;
     private final EmailSender emailSender;
     private final ModelMapper modelMapper;
-    private static final int PAGE_SIZE = 20;
+    private static final int PAGE_SIZE = 3;
 
 
     public Member saveMember(MemberRequestDto memberRequestDto) {
