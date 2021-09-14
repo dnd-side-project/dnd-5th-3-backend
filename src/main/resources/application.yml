@@ -9,6 +9,7 @@ spring:
       client:
         registration:
           google:
+            redirect-uri: https://moomool.shop/login/oauth2/code/google
             clientId: ${OAUTH_CLIENT_ID}
             clientSecret: ${OAUTH_CLIENT_SECRET}
             scope : profile,email
