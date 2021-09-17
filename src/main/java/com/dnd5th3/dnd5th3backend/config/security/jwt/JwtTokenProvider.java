@@ -3,7 +3,6 @@ package com.dnd5th3.dnd5th3backend.config.security.jwt;
 import com.dnd5th3.dnd5th3backend.config.security.CustomAuthenticationToken;
 import com.dnd5th3.dnd5th3backend.config.security.MemberContext;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
-import com.dnd5th3.dnd5th3backend.exception.MemberNotFoundException;
 import com.dnd5th3.dnd5th3backend.repository.member.MemberRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
@@ -13,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
 import javax.crypto.SecretKey;
@@ -78,12 +78,11 @@ public class JwtTokenProvider {
     }
 
     public void saveRefreshToken(Member member,String refreshToken){
-        Member targetMember = memberRepository.findById(member.getId()).orElseThrow();
-        targetMember.setRefreshToken(refreshToken);
-        memberRepository.save(targetMember);
+        member.setRefreshToken(refreshToken);
+        memberRepository.save(member);
     }
 
-    public boolean isVaildToken(String token){
+    public boolean isValidToken(String token){
         try{
             Date expiredDate = jwtParser.parseClaimsJws(token).getBody().getExpiration();
             Date now = new Date();
@@ -97,7 +96,7 @@ public class JwtTokenProvider {
         return false;
     }
 
-    public Authentication getAuthentication(String token){
+    public Authentication getAuthentication(String token) throws UsernameNotFoundException {
         String memberEmail = jwtParser.parseClaimsJws(token).getBody().getSubject();
         MemberContext memberContext = (MemberContext) userDetailsService.loadUserByUsername(memberEmail);
         return new CustomAuthenticationToken(memberContext.getMember(),null,memberContext.getAuthorities());

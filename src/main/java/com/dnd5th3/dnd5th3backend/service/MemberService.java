@@ -58,7 +58,7 @@ public class MemberService {
         String reissueAccessToken;
 
         if(memberRequestDto.getRefreshToken().equals(refreshToken)){
-            if(jwtTokenProvider.isVaildToken(refreshToken)){
+            if(jwtTokenProvider.isValidToken(refreshToken)){
               reissueAccessToken = jwtTokenProvider.createAccessToken(member);
             }else {
                 throw new TokenException();
@@ -83,6 +83,9 @@ public class MemberService {
 
     public boolean isCollectPassword(String password,Member member){
         Member targetMember = memberRepository.findByEmail(member.getEmail());
+        if(MemberType.SOCIAL.equals(targetMember.getMemberType())){
+            throw new IllegalArgumentException();
+        }
         return passwordEncoder.matches(password,targetMember.getPassword());
     }
 
@@ -118,11 +121,12 @@ public class MemberService {
     @Transactional
     public void resetPasswordMember(MemberRequestDto memberRequestDto) throws MessagingException {
         Member member = memberRepository.findByEmail(memberRequestDto.getEmail());
-        if(member != null){
+        if(member != null && MemberType.GENERAL.equals(member.getMemberType())){
             String tempPassword = RandomNumber.generatePassword();
             emailSender.sendTemporaryPassword(member,tempPassword);
             member.update(null,passwordEncoder.encode(tempPassword));
         }else {
+            log.error("패스워드 초기화 오류 : [{}]",memberRequestDto.getEmail());
             throw new IllegalArgumentException();
         }
     }
@@ -144,7 +148,6 @@ public class MemberService {
     public MemberListResponseDto getPageMemberList(Pageable pageable){
         Pageable page = PageRequest.of(pageable.getPageNumber(), PAGE_SIZE, Sort.by(Sort.Direction.DESC, "id"));
         Page<Member> memberPage = memberRepository.findAll(page);
-        MemberListResponseDto map = modelMapper.map(memberPage.getContent(), MemberListResponseDto.class);
 
         MemberListResponseDto memberListResponseDto = new MemberListResponseDto();
         List<MemberListResponseDto.MemberDto> memberDtoList = new ArrayList<>();
