@@ -24,7 +24,7 @@ public class CustomUserDetailServiceImpl implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         Member member = memberRepository.findByEmail(username);
         if(member == null || MemberType.WITHDRAWAL.equals(member.getMemberType())){
-            throw new UsernameNotFoundException("등록된 계정이 없습니다.");
+            throw new UsernameNotFoundException("등록된 계정이 없습니다. ["+username+"]");
         }
         List<GrantedAuthority> grantedAuthorityList = new ArrayList<>();
         grantedAuthorityList.add(new SimpleGrantedAuthority(member.getRole().name()));

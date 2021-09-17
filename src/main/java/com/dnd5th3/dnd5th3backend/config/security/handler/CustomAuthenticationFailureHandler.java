@@ -1,6 +1,7 @@
 package com.dnd5th3.dnd5th3backend.config.security.handler;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.security.core.AuthenticationException;
@@ -13,6 +14,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 
+@Slf4j
 @Component
 public class CustomAuthenticationFailureHandler implements AuthenticationFailureHandler {
 
@@ -23,6 +25,7 @@ public class CustomAuthenticationFailureHandler implements AuthenticationFailure
         response.setStatus(HttpStatus.UNAUTHORIZED.value());
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.setCharacterEncoding(StandardCharsets.UTF_8.toString());
+        log.warn("로그인 인증 실패 : {}",exception.getMessage());
 
         objectMapper.writeValue(response.getWriter(),"로그인 인증에 실패했습니다.");
     }
