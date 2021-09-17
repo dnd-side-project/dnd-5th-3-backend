@@ -13,7 +13,7 @@ import org.springframework.stereotype.Component;
 public class MemberScheduler {
 
     private final MemberService memberService;
-    private static final long WITHDRAWAL_MEMBER_MAINTENANCE_PERIOD = 0;
+    private static final long WITHDRAWAL_MEMBER_MAINTENANCE_PERIOD = 7;
 
     @Async
     @Scheduled(cron = "0 0 0 * * *")
