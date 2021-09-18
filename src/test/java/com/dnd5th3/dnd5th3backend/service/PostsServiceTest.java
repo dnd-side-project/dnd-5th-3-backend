@@ -112,7 +112,7 @@ class PostsServiceTest {
         when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
 
         //when
-        postsService.deletePost(post.getId());
+        postsService.deletePost(post.getId(), member);
 
         //then
         verify(postsRepository, times(1)).delete(eq(post));

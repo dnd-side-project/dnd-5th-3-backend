@@ -16,6 +16,9 @@
 === HTTP Request
 include::{snippets}/posts/save/http-request.adoc[]
 
+=== Request Headers
+include::{snippets}/posts/save/request-headers.adoc[]
+
 === Request Fields
 include::{snippets}/posts/save/request-parts.adoc[]
 
@@ -67,6 +70,9 @@ include::{snippets}/posts/delete/http-request.adoc[]
 === Path Parameters
 include::{snippets}/posts/delete/path-parameters.adoc[]
 
+=== Request Headers
+include::{snippets}/posts/delete/request-headers.adoc[]
+
 === HTTP Response
 include::{snippets}/posts/delete/http-response.adoc[]
 
@@ -112,6 +118,9 @@ include::{snippets}/posts/vote/http-request.adoc[]
 
 === Path Parameters
 include::{snippets}/posts/vote/path-parameters.adoc[]
+
+=== Request Headers
+include::{snippets}/posts/vote/request-headers.adoc[]
 
 === Request Fields
 include::{snippets}/posts/vote/request-fields.adoc[]

@@ -452,6 +452,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#posts-save">POST :: 게시글 등록</a>
 <ul class="sectlevel2">
 <li><a href="#_http_request">HTTP Request</a></li>
+<li><a href="#_request_headers">Request Headers</a></li>
 <li><a href="#_request_fields">Request Fields</a></li>
 <li><a href="#_http_response">HTTP Response</a></li>
 <li><a href="#_response_fields">Response Fields</a></li>
@@ -478,6 +479,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_http_request_4">HTTP Request</a></li>
 <li><a href="#_path_parameters_3">Path Parameters</a></li>
+<li><a href="#_request_headers_2">Request Headers</a></li>
 <li><a href="#_http_response_4">HTTP Response</a></li>
 <li><a href="#_response_fields_4">Response Fields</a></li>
 </ul>
@@ -500,6 +502,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_http_request_7">HTTP Request</a></li>
 <li><a href="#_path_parameters_4">Path Parameters</a></li>
+<li><a href="#_request_headers_3">Request Headers</a></li>
 <li><a href="#_request_fields_3">Request Fields</a></li>
 <li><a href="#_http_response_7">HTTP Response</a></li>
 <li><a href="#_response_fields_6">Response Fields</a></li>
@@ -518,6 +521,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/posts HTTP/1.1
 Content-Type: multipart/mixed; boundary=6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
+Authorization: Bearer Token
 Host: docs.moomool.com
 
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm
@@ -544,6 +548,27 @@ test.jpg
 --6o2knFse3p53ty9dmcQvWAIx1zInP11uCfbm--</code></pre>
 </div>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_request_headers"><a class="link" href="#_request_headers">Request Headers</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 사용자 토큰</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_request_fields"><a class="link" href="#_request_fields">Request Fields</a></h3>
@@ -883,6 +908,7 @@ Content-Length: 14
 <div class="listingblock">
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">DELETE /api/v1/posts/1 HTTP/1.1
+Authorization: Bearer Token
 Host: docs.moomool.com</code></pre>
 </div>
 </div>
@@ -905,6 +931,27 @@ Host: docs.moomool.com</code></pre>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">게시글 id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_request_headers_2"><a class="link" href="#_request_headers_2">Request Headers</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 사용자 토큰</p></td>
 </tr>
 </tbody>
 </table>
@@ -1199,6 +1246,7 @@ Content-Length: 1385
 <div class="content">
 <pre class="highlightjs highlight nowrap"><code data-lang="http" class="language-http hljs">POST /api/v1/posts/1/vote HTTP/1.1
 Content-Type: application/json;charset=UTF-8
+Authorization: Bearer Token
 Accept: application/json
 Content-Length: 25
 Host: docs.moomool.com
@@ -1227,6 +1275,27 @@ Host: docs.moomool.com
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>id</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">투표할 게시글 id</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="sect2">
+<h3 id="_request_headers_3"><a class="link" href="#_request_headers_3">Request Headers</a></h3>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">Name</th>
+<th class="tableblock halign-left valign-top">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>Authorization</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">현재 사용자 토큰</p></td>
 </tr>
 </tbody>
 </table>
@@ -1299,7 +1368,7 @@ Content-Length: 14
 <div id="footer">
 <div id="footer-text">
 Version 0.0.1-SNAPSHOT<br>
-Last updated 2021-08-25 02:00:32 +0900
+Last updated 2021-09-18 19:04:59 +0900
 </div>
 </div>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.15.6/styles/github.min.css">

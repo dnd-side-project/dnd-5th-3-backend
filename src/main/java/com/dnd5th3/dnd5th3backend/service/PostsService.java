@@ -4,11 +4,13 @@ import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
 import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
+import com.dnd5th3.dnd5th3backend.exception.NoAuthorizationException;
 import com.dnd5th3.dnd5th3backend.exception.PostNotFoundException;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
 import com.dnd5th3.dnd5th3backend.repository.vote.VoteRepository;
 import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.*;
 
+@Slf4j
 @RequiredArgsConstructor
 @Transactional
 @Service
@@ -68,8 +71,11 @@ public class PostsService {
         return foundPost;
     }
 
-    public void deletePost(Long id) {
+    public void deletePost(Long id, Member member) {
         Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
+        if (foundPost.getMember().getId() != member.getId()) {
+            throw new NoAuthorizationException("삭제 권한 없음");
+        }
         postsRepository.delete(foundPost);
     }
 

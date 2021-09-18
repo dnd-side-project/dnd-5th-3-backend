@@ -1,6 +1,7 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.IdResponseDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.VoteRequestDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
@@ -45,6 +46,8 @@ import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentReque
 import static com.dnd5th3.dnd5th3backend.utils.ApiDocumentUtils.getDocumentResponse;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.mock;
+import static org.springframework.restdocs.headers.HeaderDocumentation.headerWithName;
+import static org.springframework.restdocs.headers.HeaderDocumentation.requestHeaders;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.document;
 import static org.springframework.restdocs.mockmvc.MockMvcRestDocumentation.documentationConfiguration;
 import static org.springframework.restdocs.payload.PayloadDocumentation.*;
@@ -115,6 +118,7 @@ class PostsControllerTest {
                 .part(new MockPart("title", "test".getBytes(StandardCharsets.UTF_8)))
                 .part(new MockPart("content", "content".getBytes(StandardCharsets.UTF_8)))
                 .principal(new UsernamePasswordAuthenticationToken(member, null))
+                .header("Authorization", "Bearer Token")
                 .contentType(MediaType.MULTIPART_MIXED)
         );
 
@@ -125,6 +129,9 @@ class PostsControllerTest {
                 .andDo(document("posts/save",
                         getDocumentRequest(),
                         getDocumentResponse(),
+                        requestHeaders(
+                                headerWithName("Authorization").description("현재 사용자 토큰")
+                        ),
                         requestParts(
                                 partWithName("title").description("글 제목"),
                                 partWithName("content").description("글 내용"),
@@ -260,7 +267,10 @@ class PostsControllerTest {
     @Test
     void deletePostApiTest() throws Exception {
         //when
-        ResultActions result  = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/posts/{id}", 1L));
+        ResultActions result = mvc.perform(RestDocumentationRequestBuilders.delete("/api/v1/posts/{id}", 1L)
+                .principal(new UsernamePasswordAuthenticationToken(member, null))
+                .header("Authorization", "Bearer Token")
+        );
 
         //then
         result
@@ -270,6 +280,9 @@ class PostsControllerTest {
                         getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("id").description("게시글 id")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("현재 사용자 토큰")
                         ),
                         responseFields(
                                 fieldWithPath("id").description("삭제된 게시글 id").type(Long.class)
@@ -418,6 +431,7 @@ class PostsControllerTest {
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.post("/api/v1/posts/{id}/vote", 1L)
                 .principal(new UsernamePasswordAuthenticationToken(member, null))
+                .header("Authorization", "Bearer Token")
                 .contentType(MediaType.APPLICATION_JSON)
                 .accept(MediaType.APPLICATION_JSON)
                 .characterEncoding("UTF-8")
@@ -432,6 +446,9 @@ class PostsControllerTest {
                         getDocumentResponse(),
                         pathParameters(
                                 parameterWithName("id").description("투표할 게시글 id")
+                        ),
+                        requestHeaders(
+                                headerWithName("Authorization").description("현재 사용자 토큰")
                         ),
                         requestFields(
                                 fieldWithPath("result").description("PERMIT(찬성), REJECT(반대)")
