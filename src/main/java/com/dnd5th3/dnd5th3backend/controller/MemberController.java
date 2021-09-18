@@ -53,6 +53,12 @@ public class MemberController {
         return ResponseEntity.ok(existsName);
     }
 
+    @GetMapping("/check/{email}/social")
+    public ResponseEntity<Boolean> checkSocialAPI(@PathVariable String email){
+        boolean isSocialAccount = memberService.isSocialAccount(email);
+        return ResponseEntity.ok(isSocialAccount);
+    }
+
     @PutMapping
     public ResponseEntity<MemberResponseDto> updateProfileAPI(@RequestBody MemberRequestDto memberRequestDto,@AuthenticationPrincipal Member member){
         Member updateMember = memberService.updateMember(memberRequestDto,member);

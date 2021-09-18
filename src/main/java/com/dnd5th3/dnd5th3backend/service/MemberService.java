@@ -89,6 +89,11 @@ public class MemberService {
         return passwordEncoder.matches(password,targetMember.getPassword());
     }
 
+    public boolean isSocialAccount(String email){
+        Member member = memberRepository.findByEmail(email);
+        return MemberType.SOCIAL.equals(member.getMemberType());
+    }
+
     @Transactional
     public Member updateMember(MemberRequestDto memberRequestDto, Member member) {
         Member targetMember = memberRepository.findByEmail(member.getEmail());
