@@ -77,8 +77,8 @@ public class PostsController {
     }
 
     @DeleteMapping("/api/v1/posts/{id}")
-    public IdResponseDto deletePost(@PathVariable(name = "id") Long id) {
-        postsService.deletePost(id);
+    public IdResponseDto deletePost(@PathVariable(name = "id") Long id, @AuthenticationPrincipal Member member) {
+        postsService.deletePost(id, member);
         return IdResponseDto.builder().id(id).build();
     }
 
