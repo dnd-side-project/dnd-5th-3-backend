@@ -26,3 +26,6 @@ cloud:
 logging:
   level:
     root: INFO
+  config:
+    path: /var/log
+    filename: dev
