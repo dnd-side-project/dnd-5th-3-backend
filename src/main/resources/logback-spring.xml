@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration scan="true" scanPeriod="60 seconds">
-    <springProperty scope="context" name="LOG_LEVEL" value="logging.level.root"/>
+    <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root"/>
     <!-- property -->
     <property name="LOG_PATH" value="${log.config.path}"/>
     <property name="LOG_NAME" value="${log.config.filename}"/>
