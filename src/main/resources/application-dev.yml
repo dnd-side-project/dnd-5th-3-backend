@@ -10,6 +10,9 @@ spring:
       ddl-auto: update
     database: mysql
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
+  output:
+    ansi:
+      enabled: always
 
 cloud:
   aws:
@@ -26,3 +29,6 @@ cloud:
 logging:
   level:
     root: INFO
+  config:
+    path: /var/log
+    filename: dev
