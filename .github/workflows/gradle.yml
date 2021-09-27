@@ -6,8 +6,6 @@ name: moomool backend ci
 on:
   push:
     branches: [ develop ]
-  pull_request:
-    branches: [ develop ]
 
 jobs:
   build:
