@@ -57,7 +57,7 @@ jobs:
         aws s3 cp \
         --region ap-northeast-2 \
         --acl private \
-        deploy.zip s3://"${AWS_BUCKET_NAME}"
+        deploy/deploy.zip s3://"${AWS_BUCKET_NAME}"
     
     - name: Deploy
       env:
