@@ -52,22 +52,20 @@ jobs:
       env:
         AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-        AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
       run: |
         aws s3 cp \
         --region ap-northeast-2 \
         --acl private \
-        deploy/deploy.zip s3://"${AWS_BUCKET_NAME}"
+        deploy/deploy.zip s3://dnd5th3
     
     - name: Deploy
       env:
         AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
         AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
-        AWS_BUCKET_NAME: ${{ secrets.AWS_BUCKET_NAME }}
       run: |
         aws deploy create-deployment \
         --application-name dnd5th3 \
         --deployment-group-name dnd5th3-group \
         --file-exists-behavior OVERWRITE \
-        --s3-location bucket="${AWS_BUCKET_NAME}",bundleType=zip,key=deploy.zip \
+        --s3-location bucket=dnd5th3,bundleType=zip,key=deploy.zip \
         --region ap-northeast-2
