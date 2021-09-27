@@ -2,9 +2,6 @@
 <configuration scan="true" scanPeriod="60 seconds">
     <springProperty scope="context" name="LOG_LEVEL" source="logging.level.root"/>
     <!-- property -->
-    <property name="LOG_PATH" value="${logging.file.path}"/>
-    <property name="LOG_NAME" value="${logging.file.name}"/>
-    <property name="ERR_LOG_NAME" value="${logging.file.name}-err"/>
     <property name="LOG_PATTERN" value="%-5level %d{yy-MM-dd HH:mm:ss}[%thread] [%logger{0}:%line] - %msg%n"/>
     <!-- console appender -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
@@ -14,12 +11,12 @@
     </appender>
     <!-- file appender -->
     <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
-        <file>${LOG_PATH}/${LOG_NAME}.log</file>
+        <file>/home/myapp/logs/dev.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${LOG_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <fileNamePattern>/home/myapp/logs/dev.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>
@@ -33,12 +30,12 @@
             <onMatch>ACCEPT</onMatch>
             <onMismatch>DENY</onMismatch>
         </filter>
-        <file>${LOG_PATH}/${ERR_LOG_NAME}.log</file>
+        <file>/home/myapp/logs/dev-err.log</file>
         <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
             <pattern>${LOG_PATTERN}</pattern>
         </encoder>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${LOG_PATH}/${ERR_LOG_NAME}.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <fileNamePattern>/home/myapp/logs/dev-err.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
             <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
                 <maxFileSize>10MB</maxFileSize>
             </timeBasedFileNamingAndTriggeringPolicy>

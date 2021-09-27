@@ -29,7 +29,4 @@ cloud:
 logging:
   level:
     root: INFO
-  file:
-    path: /home/myapp/log
-    name: dev
   config: classpath:logback-config.xml
