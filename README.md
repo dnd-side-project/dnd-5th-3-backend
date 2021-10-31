@@ -43,7 +43,7 @@ Moomool(무물)의 백앤드 API 서버 레포지토리 입니다.
 
 - CI/CD
 
-  > AWS CodeBuild, Github Actions
+  > AWS CodeDeploy, Github Actions
 
 - ETC
 
