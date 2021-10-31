@@ -7,6 +7,8 @@
   <img src="https://img.shields.io/github/license/dnd-side-project/dnd-5th-3-backend"/> 
 </p>
 
+![image (1)](https://user-images.githubusercontent.com/59433441/139581423-f986d532-d793-4e94-be64-00adb5fdf287.png)
+
 여러분의 고민을 해결해주는 투표 커뮤니티 서비스 :speech_balloon: </br>
 Moomool(무물)의 백앤드 API 서버 레포지토리 입니다.
 
