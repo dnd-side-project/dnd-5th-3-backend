@@ -1,0 +1,112 @@
+= Comment API Docs
+강성효
+1.0.0, 05/08/2021
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+[[comment-get]]
+== GET :: 댓글 조회
+
+=== HTTP Request
+include::{snippets}/comment/get/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/comment/get/path-parameters.adoc[]
+
+=== Request Parameters
+include::{snippets}/comment/get/request-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/get/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/get/response-fields.adoc[]
+
+- 페이지를 기준으로 최신순이 최하단에 위치하도록 정렬됨
+
+[[comment-detail]]
+== GET :: 댓글 상세
+
+=== HTTP Request
+include::{snippets}/comment/detail/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/comment/detail/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/detail/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/detail/response-fields.adoc[]
+
+- layer는 댓글 분류를 나타냄 (0:상단 댓글, 1: 대댓글)
+
+
+[[comment-save]]
+== POST :: 댓글 등록
+
+=== HTTP Request
+include::{snippets}/comment/save/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/comment/save/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/save/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/save/response-fields.adoc[]
+
+[[comment-reply]]
+== POST :: 대댓글 등록
+
+=== HTTP Request
+include::{snippets}/comment/reply/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/comment/reply/path-parameters.adoc[]
+
+=== Request Fields
+include::{snippets}/comment/reply/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/reply/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/reply/response-fields.adoc[]
+
+[[comment-edit]]
+== PUT :: 댓글 수정
+
+=== HTTP Request
+include::{snippets}/comment/edit/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/comment/edit/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/edit/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/edit/response-fields.adoc[]
+
+[[comment-delete]]
+== DELETE :: 댓글 삭제
+
+=== HTTP Request
+include::{snippets}/comment/delete/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/comment/delete/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/comment/delete/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/comment/delete/response-fields.adoc[]

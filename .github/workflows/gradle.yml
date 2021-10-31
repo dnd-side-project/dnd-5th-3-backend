@@ -1,12 +1,10 @@
 # This workflow will build a Java project with Gradle
 # For more information see: https://help.github.com/actions/language-and-framework-guides/building-and-testing-java-with-gradle
 
-name: Java CI with Gradle
+name: moomool backend ci
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
     branches: [ main ]
 
 jobs:
@@ -21,7 +19,51 @@ jobs:
       with:
         java-version: '11'
         distribution: 'adopt'
+        
     - name: Grant execute permission for gradlew
       run: chmod +x gradlew
     - name: Build with Gradle
+      env:
+        AWS_ACCESS_KEY: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_KEY: ${{ secrets.AWS_SECRET_KEY }}
+        JWT_SECRET: ${{ secrets.JWT_SECRET }}
+        MAIL_PW: ${{ secrets.MAIL_PW }}
+        OAUTH_CLIENT_ID: ${{ secrets.OAUTH_CLIENT_ID }}
+        OAUTH_CLIENT_SECRET: ${{ secrets.OAUTH_CLIENT_SECRET }}
       run: ./gradlew build
+    
+    - name: Make directory for deploy
+      run: mkdir deploy
+    
+    - name: Copy files for deploy
+      run: |
+        cp scripts/*.sh deploy/
+        cp Dockerfile deploy/
+        cp appspec.yml deploy/
+        cp build/libs/*.jar deploy/
+
+    - name: Make zip file
+      run: cd deploy && zip -r deploy *
+    
+    # deploy
+    - name: Deliver to AWS S3
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      run: |
+        aws s3 cp \
+        --region ap-northeast-2 \
+        --acl private \
+        deploy/deploy.zip s3://dnd5th3
+    
+    - name: Deploy
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_KEY }}
+      run: |
+        aws deploy create-deployment \
+        --application-name dnd5th3 \
+        --deployment-group-name dnd5th3-group \
+        --file-exists-behavior OVERWRITE \
+        --s3-location bucket=dnd5th3,bundleType=zip,key=deploy.zip \
+        --region ap-northeast-2

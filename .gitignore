@@ -38,3 +38,9 @@ out/
 
 ### QueryDsl ###
 /src/main/generated/
+
+### db_volume ###
+db_volume
+
+### env ###
+/src/main/resources/application-env.yml

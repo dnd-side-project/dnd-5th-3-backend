@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="ko"  xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout/layout}">
+<body>
+<div layout:fragment="content">
+    <div class="container">
+        <small>총 <b>[[${memberListResponseDto.totalCount}]]</b>명</small>
+        <div class="list-group">
+            <th:block th:each=" member : ${memberListResponseDto.memberDtoList}">
+                <div th:value="${member.id}" class="list-group-item list-group-item flex-column align-items-start mt-1">
+                    <div class="d-flex w-100 justify-content-between">
+                        <h5 class="mb-1" th:text="${member.name}"></h5>
+                        <small th:text="${member.email}"></small>
+                    </div>
+                    <p class="mb-1">
+                        <div class="form-group">
+                            <label for="role"></label>
+                                <select class="form-control">
+                                <option th:text="${member.role}"></option>
+                            </select>
+                        </div>
+                    </p>
+                    <footer class=" d-flex w-100 justify-content-between">
+                        <small>가입일 : [[${member.createdDate.toLocalDate}]] </small>
+                        <span>
+                              <a class="badge badge-primary">수정</a>
+                              <a class="badge badge-danger">삭제</a>
+                        </span>
+                    </footer>
+                </div>
+            </th:block>
+        </div>
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center mt-3">
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/admin/members(page=${memberListResponseDto.pageNum-1})}"  aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                        <span class="sr-only">Previous</span>
+                    </a>
+                </li>
+                <li class="page-item active"><a class="page-link" href="#">[[${memberListResponseDto.pageNum}]]</a></li>
+                <li class="page-item">
+                    <a class="page-link" th:href="@{/admin/members(page=${memberListResponseDto.pageNum+1})}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                        <span class="sr-only">Next</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</div>
+
+</body>
+</html>

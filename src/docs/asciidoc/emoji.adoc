@@ -1,0 +1,41 @@
+= Emoji API Docs
+강성효
+1.0.0, 05/08/2021
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+[[emoji-save]]
+== POST :: 댓글이모지 등록
+
+=== HTTP Request
+include::{snippets}/emoji/save/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/emoji/save/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/emoji/save/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/emoji/save/response-fields.adoc[]
+
+[[emoji-update]]
+== PUT :: 댓글이모지 개수 업데이트
+
+=== HTTP Request
+include::{snippets}/emoji/update/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/emoji/update/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/emoji/update/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/emoji/update/response-fields.adoc[]

@@ -30,6 +30,7 @@ dependencies {
      */
     implementation 'org.springframework.boot:spring-boot-starter-web'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
 
     /**
      * Test dependencies
@@ -72,10 +73,40 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     /**
+     * Spring Cloud
+     */
+    implementation 'org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE'
+
+    /**
      * Data Rest
      */
     implementation 'org.springframework.boot:spring-boot-starter-data-rest'
     implementation 'org.springframework.data:spring-data-rest-hal-explorer'
+
+    /**
+     * JWT
+     */
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+    /**
+     * Oauth2
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
+
+    /**
+     * thymeleaf
+     */
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    implementation 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.5.3'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    /**
+     * Etc
+     */
+    implementation 'org.modelmapper:modelmapper:2.4.3'
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.12.4'
+    implementation 'org.springframework.boot:spring-boot-starter-mail'
 
 
 }
@@ -152,8 +183,18 @@ asciidoctor {
 
 bootJar {
     dependsOn asciidoctor
-    copy {
-        from "${asciidoctor.outputDir}"
-        into 'src/main/resources/static/docs'
+    duplicatesStrategy(DuplicatesStrategy.INCLUDE)
+    from("${asciidoctor.outputDir}") {
+        into "BOOT-INF/classes/static/docs"
     }
+}
+
+task copyDocument(type: Copy) {
+    dependsOn asciidoctor
+    from file("build/docs/asciidoc")
+    into file("src/main/resources/static/docs")
+}
+
+build {
+    dependsOn copyDocument
 }

@@ -1,0 +1,144 @@
+= Member API Docs
+강성효
+1.0.0, 05/08/2021
+:doctype: book
+:icons: font
+:source-highlighter: highlightjs
+:toc: left
+:toclevels: 2
+:sectlinks:
+:operation-http-request-title: Example Request
+:operation-http-response-title: Example Response
+
+[[member-save]]
+== POST :: 회원가입
+
+=== HTTP Request
+include::{snippets}/member/save/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/save/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/save/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/save/response-fields.adoc[]
+
+[[member-login]]
+== POST :: 로그인
+
+=== HTTP Request
+include::{snippets}/member/login/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/login/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/login/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/login/response-fields.adoc[]
+
+* HTTP Header에 [Authorization : 엑세스토큰] 형태로 추가
+
+[[member-update]]
+== PUT :: 프로필 업데이트
+
+=== HTTP Request
+include::{snippets}/member/update/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/update/request-fields.adoc[]
+* 각각 호출 가능
+
+=== HTTP Response
+include::{snippets}/member/update/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/update/response-fields.adoc[]
+
+
+[[member-reissue]]
+== PUT :: 엑세스 토큰 재발급
+
+=== HTTP Request
+include::{snippets}/member/reissue/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/reissue/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/reissue/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/reissue/response-fields.adoc[]
+
+[[member-exists-email]]
+== GET :: 이메일 중복 확인
+
+=== HTTP Request
+include::{snippets}/member/exists/email/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/member/exists/email/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/exists/email/http-response.adoc[]
+
+[[member-exists-name]]
+== GET :: 닉네임 중복 확인
+
+=== HTTP Request
+include::{snippets}/member/exists/name/http-request.adoc[]
+
+=== Path Parameters
+include::{snippets}/member/exists/name/path-parameters.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/exists/name/http-response.adoc[]
+
+
+[[member-check-password]]
+== POST :: 비밀번호 확인
+
+=== HTTP Request
+include::{snippets}/member/check/password/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/check/password/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/check/password/http-response.adoc[]
+
+[[member-delete]]
+== DELETE :: 회원탈퇴
+
+=== HTTP Request
+include::{snippets}/member/delete/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/delete/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/delete/http-response.adoc[]
+
+=== Response Fields
+include::{snippets}/member/delete/response-fields.adoc[]
+
+[[member-reset]]
+== PUT :: 임시비밀번호 발급
+
+=== HTTP Request
+include::{snippets}/member/reset/http-request.adoc[]
+
+=== Request Fields
+include::{snippets}/member/reset/request-fields.adoc[]
+
+=== HTTP Response
+include::{snippets}/member/reset/http-response.adoc[]
+- 임시비밀번호는 메일로 전송
+
+
+
+
