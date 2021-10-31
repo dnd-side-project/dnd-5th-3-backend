@@ -19,6 +19,7 @@ Moomool(무물)의 백앤드 API 서버 레포지토리 입니다.
 ## 🎬 Preview
 
 
+<img src = "https://user-images.githubusercontent.com/36832676/139582030-ec5cb896-e21e-47e0-9c68-690407bc915c.gif" width="30%" height="30%">
 
 ## 💻 Tech Stack
 
