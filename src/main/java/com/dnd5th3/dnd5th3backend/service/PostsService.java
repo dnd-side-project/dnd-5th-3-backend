@@ -1,5 +1,6 @@
 package com.dnd5th3.dnd5th3backend.service;
 
+import com.dnd5th3.dnd5th3backend.controller.dto.post.SortType;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
@@ -93,22 +94,22 @@ public class PostsService {
         });
 
         //인기순
-        if ("rank-count".equals(sorted)) {
+        if (SortType.RANK_COUNT.getValue().equals(sorted)) {
             List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount();
             return allPostsOrderByRankCount;
         }
         //최신순
-        if ("created-date".equals(sorted)) {
+        if (SortType.CREATED_DATE.getValue().equals(sorted)) {
             List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
             return allPostsOrderByCreatedDate;
         }
         //최근마감순
-        if ("already-done".equals(sorted)) {
+        if (SortType.ALREADY_DONE.getValue().equals(sorted)) {
             List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
             return allPostsOrderByAlreadyDone;
         }
         //마감임박순
-        if ("almost-done".equals(sorted)) {
+        if (SortType.ALMOST_DONE.getValue().equals(sorted)) {
             List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
             return allPostsOrderByAlmostDone;
         }
