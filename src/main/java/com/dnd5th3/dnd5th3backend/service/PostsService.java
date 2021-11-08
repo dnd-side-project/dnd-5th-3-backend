@@ -50,11 +50,11 @@ public class PostsService {
         //프록시 객체 초기화
         Hibernate.initialize(foundPost.getMember());
         //투표 종료 여부
-        if (foundPost.getIsVoted() == false && LocalDateTime.now().isAfter(foundPost.getVoteDeadline())) {
+        if (Boolean.FALSE.equals(foundPost.getIsVoted()) && LocalDateTime.now().isAfter(foundPost.getVoteDeadline())) {
             foundPost.makeVotedStatusTrue();
         }
         //메인페이지 게시 조건 종료 여부
-        if (foundPost.getIsPostsEnd() == false && LocalDateTime.now().isAfter(foundPost.getPostsDeadline())) {
+        if (Boolean.FALSE.equals(foundPost.getIsPostsEnd()) && LocalDateTime.now().isAfter(foundPost.getPostsDeadline())) {
             foundPost.makePostsEndStatusTrue();
         }
         //조회수 증가
@@ -85,10 +85,10 @@ public class PostsService {
         //프록시 객체 초기화, 투표 종료 여부 초기화
         allPosts.stream().forEach(p -> {
             Hibernate.initialize(p.getMember());
-            if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
+            if (Boolean.FALSE.equals(p.getIsVoted()) && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
                 p.makeVotedStatusTrue();
             }
-            if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
+            if (Boolean.FALSE.equals(p.getIsPostsEnd()) && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
                 p.makePostsEndStatusTrue();
             }
         });
@@ -125,10 +125,10 @@ public class PostsService {
         top50RankedList.stream().forEach(p -> {
             Hibernate.initialize(p.getMember());
             Hibernate.initialize(p.getComments());
-            if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
+            if (Boolean.FALSE.equals(p.getIsVoted()) && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
                 p.makeVotedStatusTrue();
             }
-            if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
+            if (Boolean.FALSE.equals(p.getIsPostsEnd()) && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
                 p.makePostsEndStatusTrue();
             }
         });
