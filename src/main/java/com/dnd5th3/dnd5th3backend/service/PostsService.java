@@ -167,30 +167,6 @@ public class PostsService {
         return resultMap;
     }
 
-    public List<Posts> findAllPostsByMember(Member member, String sorted) {
-        //내가 쓴 글
-        if ("written".equals(sorted)) {
-            List<Posts> postsByMember = postsRepository.findPostsByMemberOrderByCreatedDate(member);
-            postsByMember.stream().forEach(p -> {
-                Hibernate.initialize(p.getMember());
-            });
-            return postsByMember;
-        }
-        //투표한 글
-        if ("voted".equals(sorted)) {
-            List<Vote> voteList = voteRepository.findVoteByMemberOrderByCreatedDate(member);
-            List<Posts> postsList = new ArrayList<>();
-            voteList.forEach(v -> {
-                Hibernate.initialize(v.getPosts());
-                Hibernate.initialize(v.getPosts().getMember());
-                postsList.add(v.getPosts());
-            });
-            return postsList;
-        }
-
-        throw new PostNotFoundException("게시글을 불러올 수 없습니다.");
-    }
-
     private void updateVoteStatusAndPostStatus(Posts posts) {
         //투표 종료 여부
         if (Boolean.FALSE.equals(posts.getIsVoted()) && LocalDateTime.now().isAfter(posts.getVoteDeadline())) {

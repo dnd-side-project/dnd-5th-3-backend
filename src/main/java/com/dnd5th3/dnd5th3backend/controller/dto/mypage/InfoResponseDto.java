@@ -12,5 +12,5 @@ public class InfoResponseDto {
 
     private String name;
     private String email;
-    private List<PostsListDto> posts;
+    private List<PostsListDto> postsListDtos;
 }
