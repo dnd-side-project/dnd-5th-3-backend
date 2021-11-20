@@ -2,12 +2,16 @@ package com.dnd5th3.dnd5th3backend.controller;
 
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
 import com.dnd5th3.dnd5th3backend.config.QuerydslConfig;
+import com.dnd5th3.dnd5th3backend.controller.dto.mypage.InfoResponseDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.mypage.SortType;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.PostsListDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.MemberType;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
+import com.dnd5th3.dnd5th3backend.service.MyPageService;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import com.google.common.base.Charsets;
 import org.junit.jupiter.api.BeforeEach;
@@ -62,9 +66,11 @@ class MyPageControllerTest {
     @Autowired
     private WebApplicationContext context;
     @MockBean
-    private PostsService postsService;
+    private MyPageService myPageService;
 
     private Member member;
+    private Posts posts;
+    private List<Posts> postsList;
 
     @BeforeEach
     void setUp(RestDocumentationContextProvider restDocumentation) {
@@ -72,32 +78,33 @@ class MyPageControllerTest {
                 .apply(documentationConfiguration(restDocumentation))
                 .apply(springSecurity(new MockSecurityFilter()))
                 .build();
-        member = Member.builder().email("test@gmail.com")
-                .password("1234")
-                .role(Role.ROLE_USER)
-                .name("name")
+        member = Member.builder().email("test@gmail.com").password("1234").role(Role.ROLE_USER).name("name")
                 .build();
-    }
-
-    @DisplayName("마이페이지 조회 api 테스트")
-    @Test
-    void mypageApiTest() throws Exception {
-        //given
-        Posts post = Posts.builder()
-                .id(1L)
-                .member(member)
-                .title("test")
-                .productImageUrl("test.jpg")
-                .isVoted(false)
-                .permitCount(2)
-                .rejectCount(8)
+        posts = Posts.builder().id(1L).member(member).title("test").productImageUrl("test.jpg")
+                .isVoted(false).permitCount(2).rejectCount(8)
                 .voteDeadline(LocalDateTime.of(2021, 8, 27, 12, 0, 0))
                 .build();
-        post.setCreatedDate(LocalDateTime.of(2021, 8, 26, 12, 0, 0));
-        List<Posts> postsList = new ArrayList<>();
-        postsList.add(post);
+        posts.setCreatedDate(LocalDateTime.of(2021, 8, 26, 12, 0, 0));
+        postsList = new ArrayList<>();
+        postsList.add(posts);
+    }
 
-        given(postsService.findAllPostsByMember(member, "written")).willReturn(postsList);
+    @DisplayName("사용자의 이름, 이메일, 정렬된 게시글 목록을 반환한다.")
+    @Test
+    void getInfoApiTest() throws Exception {
+        //given
+        PostsListDto postsListDto = PostsListDto.builder().id(posts.getId()).name(posts.getMember().getName())
+                .title(posts.getTitle()).productImageUrl(posts.getProductImageUrl())
+                .isVoted(posts.getIsVoted()).permitRatio(20L).rejectRatio(80L)
+                .createdDate(LocalDateTime.of(2021, 8, 26, 12, 00, 00))
+                .voteDeadline(LocalDateTime.of(2021, 8, 27, 12, 00, 00))
+                .build();
+        List<PostsListDto> postsList =new ArrayList<>();
+        postsList.add(0, postsListDto);
+
+        InfoResponseDto responseDto = InfoResponseDto.builder()
+                .name(member.getName()).email(member.getEmail()).postsList(postsList).build();
+        given(myPageService.findMemberInfoWithSortType(member, SortType.WRITTEN.getValue())).willReturn(responseDto);
 
         //when
         ResultActions result = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/mypage?sorted=written")
@@ -116,28 +123,28 @@ class MyPageControllerTest {
                         responseFields(
                                 fieldWithPath("name").description("사용자 이름"),
                                 fieldWithPath("email").description("사용자 이메일"),
-                                fieldWithPath("posts.[].id").description("게시글 id"),
-                                fieldWithPath("posts.[].name").description("작성자 이름"),
-                                fieldWithPath("posts.[].title").description("글 제목"),
-                                fieldWithPath("posts.[].productImageUrl").description("상품 이미지"),
-                                fieldWithPath("posts.[].isVoted").description("투표 종료 여부"),
-                                fieldWithPath("posts.[].permitRatio").description("찬성 투표 비율"),
-                                fieldWithPath("posts.[].rejectRatio").description("반대 투표 비율"),
-                                fieldWithPath("posts.[].createdDate").description("작성된 시간"),
-                                fieldWithPath("posts.[].voteDeadline").description("투표 종료 시간")
+                                fieldWithPath("postsList.[].id").description("게시글 id"),
+                                fieldWithPath("postsList.[].name").description("작성자 이름"),
+                                fieldWithPath("postsList.[].title").description("글 제목"),
+                                fieldWithPath("postsList.[].productImageUrl").description("상품 이미지"),
+                                fieldWithPath("postsList.[].isVoted").description("투표 종료 여부"),
+                                fieldWithPath("postsList.[].permitRatio").description("찬성 투표 비율"),
+                                fieldWithPath("postsList.[].rejectRatio").description("반대 투표 비율"),
+                                fieldWithPath("postsList.[].createdDate").description("작성된 시간"),
+                                fieldWithPath("postsList.[].voteDeadline").description("투표 종료 시간")
                         )
                 ))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.name").value("name"))
                 .andExpect(jsonPath("$.email").value("test@gmail.com"))
-                .andExpect(jsonPath("$.posts[0].id").value(1L))
-                .andExpect(jsonPath("$.posts[0].name").value("name"))
-                .andExpect(jsonPath("$.posts[0].title").value("test"))
-                .andExpect(jsonPath("$.posts[0].productImageUrl").value("test.jpg"))
-                .andExpect(jsonPath("$.posts[0].isVoted").value(false))
-                .andExpect(jsonPath("$.posts[0].permitRatio").value(20L))
-                .andExpect(jsonPath("$.posts[0].rejectRatio").value(80L))
-                .andExpect(jsonPath("$.posts[0].createdDate").value("2021-08-26T12:00:00"))
-                .andExpect(jsonPath("$.posts[0].voteDeadline").value("2021-08-27T12:00:00"));
+                .andExpect(jsonPath("$.postsList[0].id").value(1L))
+                .andExpect(jsonPath("$.postsList[0].name").value("name"))
+                .andExpect(jsonPath("$.postsList[0].title").value("test"))
+                .andExpect(jsonPath("$.postsList[0].productImageUrl").value("test.jpg"))
+                .andExpect(jsonPath("$.postsList[0].isVoted").value(false))
+                .andExpect(jsonPath("$.postsList[0].permitRatio").value(20L))
+                .andExpect(jsonPath("$.postsList[0].rejectRatio").value(80L))
+                .andExpect(jsonPath("$.postsList[0].createdDate").value("2021-08-26T12:00:00"))
+                .andExpect(jsonPath("$.postsList[0].voteDeadline").value("2021-08-27T12:00:00"));
     }
 }
