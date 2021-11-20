@@ -26,13 +26,13 @@ public class MyPageService {
     private final VoteRepository voteRepository;
 
     public InfoResponseDto findMemberInfoWithSortType(Member member, String sorted) {
-        List<PostsListDto> postsListDtos = new ArrayList<>();
+        List<PostsListDto> postsList = new ArrayList<>();
         /**
          * 내가 쓴 글
          */
         if (SortType.WRITTEN.getValue().equals(sorted)) {
             List<Posts> posts = postsRepository.findPostsByMemberOrderByCreatedDate(member);
-            postsListDtos = makePostsToDtos(posts);
+            postsList = makePostsToDtos(posts);
         }
         /**
          * 투표한 글
@@ -43,13 +43,13 @@ public class MyPageService {
             votes.forEach(v -> {
                 posts.add(v.getPosts());
             });
-            postsListDtos = makePostsToDtos(posts);
+            postsList = makePostsToDtos(posts);
         }
 
         return InfoResponseDto.builder()
                 .name(member.getName())
                 .email(member.getEmail())
-                .postsListDtos(postsListDtos)
+                .postsList(postsList)
                 .build();
     }
 
