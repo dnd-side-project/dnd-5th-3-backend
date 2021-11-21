@@ -49,14 +49,7 @@ public class PostsService {
         Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
         //프록시 객체 초기화
         Hibernate.initialize(foundPost.getMember());
-        //투표 종료 여부
-        if (foundPost.getIsVoted() == false && LocalDateTime.now().isAfter(foundPost.getVoteDeadline())) {
-            foundPost.makeVotedStatusTrue();
-        }
-        //메인페이지 게시 조건 종료 여부
-        if (foundPost.getIsPostsEnd() == false && LocalDateTime.now().isAfter(foundPost.getPostsDeadline())) {
-            foundPost.makePostsEndStatusTrue();
-        }
+        updateVoteStatusAndPostStatus(foundPost);
         //조회수 증가
         foundPost.increaseRankCount();
 
@@ -85,12 +78,7 @@ public class PostsService {
         //프록시 객체 초기화, 투표 종료 여부 초기화
         allPosts.stream().forEach(p -> {
             Hibernate.initialize(p.getMember());
-            if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
-                p.makeVotedStatusTrue();
-            }
-            if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
-                p.makePostsEndStatusTrue();
-            }
+            updateVoteStatusAndPostStatus(p);
         });
 
         //인기순
@@ -125,12 +113,7 @@ public class PostsService {
         top50RankedList.stream().forEach(p -> {
             Hibernate.initialize(p.getMember());
             Hibernate.initialize(p.getComments());
-            if (p.getIsVoted() == false && LocalDateTime.now().isAfter(p.getVoteDeadline())) {
-                p.makeVotedStatusTrue();
-            }
-            if (p.getIsPostsEnd() == false && LocalDateTime.now().isAfter(p.getPostsDeadline())) {
-                p.makePostsEndStatusTrue();
-            }
+            updateVoteStatusAndPostStatus(p);
         });
         //추출한 50개 중 반응(댓글)이 있는 것들만 필터링
         List<Posts> filterByCommentCount = new ArrayList<>();
@@ -206,5 +189,16 @@ public class PostsService {
         }
 
         throw new PostNotFoundException("게시글을 불러올 수 없습니다.");
+    }
+
+    private void updateVoteStatusAndPostStatus(Posts posts) {
+        //투표 종료 여부
+        if (Boolean.FALSE.equals(posts.getIsVoted()) && LocalDateTime.now().isAfter(posts.getVoteDeadline())) {
+            posts.makeVotedStatusTrue();
+        }
+        //메인페이지 게시 조건 종료 여부
+        if (Boolean.FALSE.equals(posts.getIsPostsEnd()) && LocalDateTime.now().isAfter(posts.getPostsDeadline())) {
+            posts.makePostsEndStatusTrue();
+        }
     }
 }

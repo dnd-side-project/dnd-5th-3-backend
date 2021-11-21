@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -68,8 +70,8 @@ class PostsServiceTest {
         Posts savedPosts = postsService.savePost(post.getMember(), post.getTitle(), post.getContent(), post.getProductImageUrl());
 
         //then
-        Assertions.assertEquals(savedPosts.getId(), post.getId());
-        Assertions.assertEquals(savedPosts.getMember().getId(), post.getMember().getId());
+        assertEquals(savedPosts.getId(), post.getId());
+        assertEquals(savedPosts.getMember().getId(), post.getMember().getId());
     }
 
     @DisplayName("post 상세조회 테스트")
@@ -82,9 +84,29 @@ class PostsServiceTest {
         Posts foundPost = postsService.findPostById(1L);
 
         //then
-        Assertions.assertEquals(post.getMember().getName(), foundPost.getMember().getName());
-        Assertions.assertEquals(post.getTitle(), foundPost.getTitle());
-        Assertions.assertEquals(post.getRankCount(), 1);
+        assertEquals(post.getMember().getName(), foundPost.getMember().getName());
+        assertEquals(post.getTitle(), foundPost.getTitle());
+        assertEquals(post.getRankCount(), 1);
+        assertEquals(false, post.getIsVoted());
+        assertEquals(false, post.getIsPostsEnd());
+    }
+
+    @DisplayName("투표 종료 여부, 메인페이지 게시 조건 종료 여부 검사 테스트")
+    @Test
+    void updateVoteStatusAndPostStatus() throws Exception {
+        //given
+        Posts voteEnd = Posts.builder().rankCount(0).isVoted(false).voteDeadline(LocalDateTime.now().minusDays(1L)).build();
+        Posts postEnd = Posts.builder().rankCount(0).isPostsEnd(false).postsDeadline(LocalDateTime.now().minusDays(1L)).build();
+        given(postsRepository.findById(2L)).willReturn(Optional.of(voteEnd));
+        given(postsRepository.findById(3L)).willReturn(Optional.of(postEnd));
+
+        //when
+        Posts voteEndPost = postsService.findPostById(2L);
+        Posts postEndPost = postsService.findPostById(3L);
+
+        //then
+        assertEquals(true, voteEndPost.getIsVoted());
+        assertEquals(true, postEndPost.getIsPostsEnd());
     }
 
     @DisplayName("post 수정 테스트")
@@ -100,9 +122,9 @@ class PostsServiceTest {
         Posts updatedPost = postsService.updatePost(post.getId(), title, content, productImageUrl);
 
         //then
-        Assertions.assertEquals(updatedPost.getTitle(), title);
-        Assertions.assertEquals(updatedPost.getContent(), content);
-        Assertions.assertEquals(updatedPost.getProductImageUrl(), productImageUrl);
+        assertEquals(updatedPost.getTitle(), title);
+        assertEquals(updatedPost.getContent(), content);
+        assertEquals(updatedPost.getProductImageUrl(), productImageUrl);
     }
 
     @DisplayName("post 삭제 테스트")
@@ -208,10 +230,10 @@ class PostsServiceTest {
         List<Posts> orderByAlmostDoneList = postsService.findAllPosts("almost-done");
 
         //then
-        Assertions.assertEquals(orderByRankCountList.get(0).getId(), posts1.getId());
-        Assertions.assertEquals(orderByCreatedDateList.get(0).getId(), posts2.getId());
-        Assertions.assertEquals(orderByAlreadyDoneList.get(0).getId(), posts3.getId());
-        Assertions.assertEquals(orderByAlmostDoneList.get(0).getId(), posts1.getId());
+        assertEquals(orderByRankCountList.get(0).getId(), posts1.getId());
+        assertEquals(orderByCreatedDateList.get(0).getId(), posts2.getId());
+        assertEquals(orderByAlreadyDoneList.get(0).getId(), posts3.getId());
+        assertEquals(orderByAlmostDoneList.get(0).getId(), posts1.getId());
     }
 
     @DisplayName("사용자별 post 리스트 조회 테스트")
@@ -238,8 +260,8 @@ class PostsServiceTest {
         List<Posts> sortedByVoted = postsService.findAllPostsByMember(member, "voted");
 
         //then
-        Assertions.assertEquals(post.getId(), sortedByWrote.get(0).getId());
-        Assertions.assertEquals(post.getId(), sortedByVoted.get(0).getId());
+        assertEquals(post.getId(), sortedByWrote.get(0).getId());
+        assertEquals(post.getId(), sortedByVoted.get(0).getId());
     }
 
 }
