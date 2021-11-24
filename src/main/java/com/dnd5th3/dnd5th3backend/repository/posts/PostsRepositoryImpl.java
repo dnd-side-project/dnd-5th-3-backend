@@ -93,17 +93,17 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
                 .selectFrom(posts)
                 .join(posts.member)
                 .fetchJoin()
-                .where(sortTypeContains(sortType))
+                .where(eqSortType(sortType))
                 .orderBy(specifier(sortType))
                 .fetch();
     }
 
-    private BooleanExpression sortTypeContains(String sorted) {
-        if (SortType.RANK_COUNT.getValue().equals(sorted)) {
+    private BooleanExpression eqSortType(String sortType) {
+        if (SortType.RANK_COUNT.getValue().equals(sortType)) {
             return posts.isPostsEnd.eq(false);
-        } else if (SortType.ALMOST_DONE.getValue().equals(sorted)) {
+        } else if (SortType.ALMOST_DONE.getValue().equals(sortType)) {
             return posts.isVoted.eq(false);
-        } else if (SortType.ALREADY_DONE.getValue().equals(sorted)) {
+        } else if (SortType.ALREADY_DONE.getValue().equals(sortType)) {
             return posts.isVoted.eq(true);
         }
 
