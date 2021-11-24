@@ -84,10 +84,21 @@ public class Posts extends BaseTime {
 
     public void makePostsEndStatusTrue() { this.isPostsEnd = true; }
 
+    public void updateVoteStatusAndPostStatus() {
+        //투표 종료 여부
+        if (Boolean.FALSE.equals(getIsVoted()) && LocalDateTime.now().isAfter(getVoteDeadline())) {
+            makeVotedStatusTrue();
+        }
+        //메인페이지 게시 조건 종료 여부
+        if (Boolean.FALSE.equals(getIsPostsEnd()) && LocalDateTime.now().isAfter(getPostsDeadline())) {
+            makePostsEndStatusTrue();
+        }
+    }
+
     public void increaseVoteCount(VoteType result) {
-        if (result.equals(VoteType.PERMIT)) {
+        if (VoteType.PERMIT.equals(result)) {
             this.permitCount += 1;
-        } else if (result.equals(VoteType.REJECT)) {
+        } else if (VoteType.REJECT.equals(result)) {
             this.rejectCount += 1;
         }
     }

@@ -32,7 +32,7 @@ public class MyPageService {
          */
         if (SortType.WRITTEN.getValue().equals(sorted)) {
             List<Posts> posts = postsRepository.findPostsByMemberOrderByCreatedDate(member);
-            postsList = makePostsToDtos(posts);
+            postsList = PostsListDto.makePostsToListDtos(posts);
         }
         /**
          * 투표한 글
@@ -43,7 +43,7 @@ public class MyPageService {
             votes.forEach(v -> {
                 posts.add(v.getPosts());
             });
-            postsList = makePostsToDtos(posts);
+            postsList = PostsListDto.makePostsToListDtos(posts);
         }
 
         return InfoResponseDto.builder()
@@ -51,23 +51,5 @@ public class MyPageService {
                 .email(member.getEmail())
                 .postsList(postsList)
                 .build();
-    }
-
-    private List<PostsListDto> makePostsToDtos(List<Posts> posts) {
-        return posts.stream().map(p -> {
-            VoteRatioVo ratioVo = new VoteRatioVo(p);
-            String productImageUrl = p.getProductImageUrl() == null ? "" : p.getProductImageUrl();
-            return PostsListDto.builder()
-                    .id(p.getId())
-                    .name(p.getMember().getName())
-                    .title(p.getTitle())
-                    .productImageUrl(productImageUrl)
-                    .isVoted(p.getIsVoted())
-                    .permitRatio(ratioVo.getPermitRatio())
-                    .rejectRatio(ratioVo.getRejectRatio())
-                    .createdDate(p.getCreatedDate())
-                    .voteDeadline(p.getVoteDeadline())
-                    .build();
-        }).collect(Collectors.toList());
     }
 }
