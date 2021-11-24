@@ -1,5 +1,7 @@
 package com.dnd5th3.dnd5th3backend.service;
 
+import com.dnd5th3.dnd5th3backend.controller.dto.post.AllPostResponseDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.PostsListDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.SortType;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -105,6 +108,13 @@ public class PostsService {
         return allPosts;
     }
 
+    public AllPostResponseDto findAllPostsWithSortType(String sortType) {
+        List<Posts> postsList = postsRepository.findPostsWithSortType(sortType);
+        postsList.forEach(posts -> updateVoteStatusAndPostStatus(posts));
+        List<PostsListDto> listDtos = makePostsToDtos(postsList);
+        return AllPostResponseDto.builder().listDtos(listDtos).build();
+    }
+
     public Map<String, Posts> findMainPosts() {
         Map<String, Posts> resultMap = new HashMap<>();
         //상위 50개 컨텐츠 추출
@@ -176,5 +186,23 @@ public class PostsService {
         if (Boolean.FALSE.equals(posts.getIsPostsEnd()) && LocalDateTime.now().isAfter(posts.getPostsDeadline())) {
             posts.makePostsEndStatusTrue();
         }
+    }
+
+    private List<PostsListDto> makePostsToDtos(List<Posts> posts) {
+        return posts.stream().map(p -> {
+            VoteRatioVo ratioVo = new VoteRatioVo(p);
+            String productImageUrl = p.getProductImageUrl() == null ? "" : p.getProductImageUrl();
+            return PostsListDto.builder()
+                    .id(p.getId())
+                    .name(p.getMember().getName())
+                    .title(p.getTitle())
+                    .productImageUrl(productImageUrl)
+                    .isVoted(p.getIsVoted())
+                    .permitRatio(ratioVo.getPermitRatio())
+                    .rejectRatio(ratioVo.getRejectRatio())
+                    .createdDate(p.getCreatedDate())
+                    .voteDeadline(p.getVoteDeadline())
+                    .build();
+        }).collect(Collectors.toList());
     }
 }

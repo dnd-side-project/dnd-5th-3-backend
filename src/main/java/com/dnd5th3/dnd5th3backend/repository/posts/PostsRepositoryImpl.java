@@ -1,8 +1,12 @@
 package com.dnd5th3.dnd5th3backend.repository.posts;
 
+import com.dnd5th3.dnd5th3backend.controller.dto.post.SortType;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
+import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.EntityPath;
+import com.querydsl.core.types.OrderSpecifier;
+import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 
@@ -81,5 +85,45 @@ public class PostsRepositoryImpl implements PostsRepositoryCustom{
                 .orderBy(posts.createdDate.desc())
                 .fetchAll()
                 .fetch();
+    }
+
+    @Override
+    public List<Posts> findPostsWithSortType(String sortType) {
+        return query
+                .selectFrom(posts)
+                .join(posts.member)
+                .fetchJoin()
+                .where(sortTypeContains(sortType))
+                .orderBy(specifier(sortType))
+                .fetch();
+    }
+
+    private BooleanExpression sortTypeContains(String sorted) {
+        if (SortType.RANK_COUNT.getValue().equals(sorted)) {
+            return posts.isPostsEnd.eq(false);
+        } else if (SortType.ALMOST_DONE.getValue().equals(sorted)) {
+            return posts.isVoted.eq(false);
+        } else if (SortType.ALREADY_DONE.getValue().equals(sorted)) {
+            return posts.isVoted.eq(true);
+        }
+
+        return null;
+    }
+
+    private OrderSpecifier specifier(String sorted) {
+        if (SortType.RANK_COUNT.getValue().equals(sorted)) {
+            return posts.rankCount.desc();
+        } else if (SortType.CREATED_DATE.getValue().equals(sorted)) {
+            return posts.createdDate.desc();
+        } else if (SortType.ALMOST_DONE.getValue().equals(sorted)) {
+            return posts.voteDeadline.asc();
+        } else if (SortType.ALREADY_DONE.equals(sorted)) {
+            return posts.voteDeadline.desc();
+        }
+
+        /**
+         * 조건이 없을시 생성된 시간으로 정렬
+         */
+        return posts.createdDate.desc();
     }
 }
