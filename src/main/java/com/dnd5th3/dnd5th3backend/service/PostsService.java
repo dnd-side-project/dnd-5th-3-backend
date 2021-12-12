@@ -2,7 +2,6 @@ package com.dnd5th3.dnd5th3backend.service;
 
 import com.dnd5th3.dnd5th3backend.controller.dto.post.AllPostResponseDto;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.PostsListDto;
-import com.dnd5th3.dnd5th3backend.controller.dto.post.SortType;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
@@ -73,38 +72,6 @@ public class PostsService {
             throw new NoAuthorizationException("삭제 권한 없음");
         }
         postsRepository.delete(foundPost);
-    }
-
-    public List<Posts> findAllPosts(String sorted) {
-        List<Posts> allPosts = postsRepository.findAll();
-        //프록시 객체 초기화, 투표 종료 여부 초기화
-        allPosts.stream().forEach(p -> {
-            Hibernate.initialize(p.getMember());
-            p.updateVoteStatusAndPostStatus();
-        });
-
-        //인기순
-        if (SortType.RANK_COUNT.getValue().equals(sorted)) {
-            List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount();
-            return allPostsOrderByRankCount;
-        }
-        //최신순
-        if (SortType.CREATED_DATE.getValue().equals(sorted)) {
-            List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
-            return allPostsOrderByCreatedDate;
-        }
-        //최근마감순
-        if (SortType.ALREADY_DONE.getValue().equals(sorted)) {
-            List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
-            return allPostsOrderByAlreadyDone;
-        }
-        //마감임박순
-        if (SortType.ALMOST_DONE.getValue().equals(sorted)) {
-            List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
-            return allPostsOrderByAlmostDone;
-        }
-
-        return allPosts;
     }
 
     public AllPostResponseDto findAllPostsWithSortType(String sortType) {
