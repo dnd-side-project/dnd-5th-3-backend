@@ -1,14 +1,13 @@
 package com.dnd5th3.dnd5th3backend.service;
 
-import com.dnd5th3.dnd5th3backend.controller.dto.post.SortType;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.AllPostResponseDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.PostsListDto;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
-import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.exception.NoAuthorizationException;
 import com.dnd5th3.dnd5th3backend.exception.PostNotFoundException;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
-import com.dnd5th3.dnd5th3backend.repository.vote.VoteRepository;
 import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -26,7 +28,6 @@ import java.util.*;
 public class PostsService {
 
     private final PostsRepository postsRepository;
-    private final VoteRepository voteRepository;
 
     public Posts savePost(Member member, String title, String content, String productImageUrl) {
         Posts newPosts = Posts.builder()
@@ -49,7 +50,7 @@ public class PostsService {
         Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
         //프록시 객체 초기화
         Hibernate.initialize(foundPost.getMember());
-        updateVoteStatusAndPostStatus(foundPost);
+        foundPost.updateVoteStatusAndPostStatus();
         //조회수 증가
         foundPost.increaseRankCount();
 
@@ -73,36 +74,11 @@ public class PostsService {
         postsRepository.delete(foundPost);
     }
 
-    public List<Posts> findAllPosts(String sorted) {
-        List<Posts> allPosts = postsRepository.findAll();
-        //프록시 객체 초기화, 투표 종료 여부 초기화
-        allPosts.stream().forEach(p -> {
-            Hibernate.initialize(p.getMember());
-            updateVoteStatusAndPostStatus(p);
-        });
-
-        //인기순
-        if (SortType.RANK_COUNT.getValue().equals(sorted)) {
-            List<Posts> allPostsOrderByRankCount = postsRepository.findPostsOrderByRankCount();
-            return allPostsOrderByRankCount;
-        }
-        //최신순
-        if (SortType.CREATED_DATE.getValue().equals(sorted)) {
-            List<Posts> allPostsOrderByCreatedDate = postsRepository.findPostsOrderByCreatedDate();
-            return allPostsOrderByCreatedDate;
-        }
-        //최근마감순
-        if (SortType.ALREADY_DONE.getValue().equals(sorted)) {
-            List<Posts> allPostsOrderByAlreadyDone = postsRepository.findPostsOrderByAlreadyDone();
-            return allPostsOrderByAlreadyDone;
-        }
-        //마감임박순
-        if (SortType.ALMOST_DONE.getValue().equals(sorted)) {
-            List<Posts> allPostsOrderByAlmostDone = postsRepository.findPostsOrderByAlmostDone();
-            return allPostsOrderByAlmostDone;
-        }
-
-        return allPosts;
+    public AllPostResponseDto findAllPostsWithSortType(String sortType) {
+        List<Posts> postsList = postsRepository.findPostsWithSortType(sortType);
+        postsList.forEach(post -> post.updateVoteStatusAndPostStatus());
+        List<PostsListDto> listDtos = PostsListDto.makePostsToListDtos(postsList);
+        return AllPostResponseDto.builder().listDtos(listDtos).build();
     }
 
     public Map<String, Posts> findMainPosts() {
@@ -113,7 +89,7 @@ public class PostsService {
         top50RankedList.stream().forEach(p -> {
             Hibernate.initialize(p.getMember());
             Hibernate.initialize(p.getComments());
-            updateVoteStatusAndPostStatus(p);
+            p.updateVoteStatusAndPostStatus();
         });
         //추출한 50개 중 반응(댓글)이 있는 것들만 필터링
         List<Posts> filterByCommentCount = new ArrayList<>();
@@ -165,16 +141,5 @@ public class PostsService {
         resultMap.put("recommendPost", recommendPost);
 
         return resultMap;
-    }
-
-    private void updateVoteStatusAndPostStatus(Posts posts) {
-        //투표 종료 여부
-        if (Boolean.FALSE.equals(posts.getIsVoted()) && LocalDateTime.now().isAfter(posts.getVoteDeadline())) {
-            posts.makeVotedStatusTrue();
-        }
-        //메인페이지 게시 조건 종료 여부
-        if (Boolean.FALSE.equals(posts.getIsPostsEnd()) && LocalDateTime.now().isAfter(posts.getPostsDeadline())) {
-            posts.makePostsEndStatusTrue();
-        }
     }
 }

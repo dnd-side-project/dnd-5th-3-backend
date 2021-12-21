@@ -13,4 +13,5 @@ public interface PostsRepositoryCustom {
     List<Posts> findPostsOrderByAlmostDone();
     List<Posts> findPostsTop50Ranked();
     List<Posts> findPostsByMemberOrderByCreatedDate(Member member);
+    List<Posts> findPostsWithSortType(String sortType);
 }

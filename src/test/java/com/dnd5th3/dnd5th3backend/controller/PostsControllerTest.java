@@ -1,8 +1,7 @@
 package com.dnd5th3.dnd5th3backend.controller;
 
 import com.dnd5th3.dnd5th3backend.config.MockSecurityFilter;
-import com.dnd5th3.dnd5th3backend.controller.dto.post.IdResponseDto;
-import com.dnd5th3.dnd5th3backend.controller.dto.post.VoteRequestDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.*;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
@@ -291,44 +290,38 @@ class PostsControllerTest {
                 .andExpect(jsonPath("$.id").value(1L));
     }
 
-    @DisplayName("post 리스트 조회 api 테스트")
+    @DisplayName("전체 게시물 조회 api 테스트")
     @Test
     void findPostsListApiTest() throws Exception {
         //given
-        Posts posts1 = Posts.builder()
+        List<PostsListDto> listDtos = new ArrayList<>();
+        PostsListDto dto1 = PostsListDto.builder()
                 .id(1L)
-                .member(member)
+                .name(member.getName())
                 .title("test1")
                 .productImageUrl("test1.jpg")
                 .isVoted(false)
-                .isPostsEnd(false)
-                .rankCount(15)
-                .permitCount(10)
-                .rejectCount(25)
+                .permitRatio(29L)
+                .rejectRatio(71L)
+                .createdDate(LocalDateTime.of(2021, 8, 4, 12, 0, 0))
                 .voteDeadline(LocalDateTime.of(2021, 8, 5, 12, 0, 0))
-                .postsDeadline(LocalDateTime.of(2021, 8, 12, 12, 0, 0))
                 .build();
-        posts1.setCreatedDate(LocalDateTime.of(2021, 8, 4, 12, 0, 0));
-        Posts posts2 = Posts.builder()
+        PostsListDto dto2 = PostsListDto.builder()
                 .id(2L)
-                .member(member)
-                .title("test2")
-                .productImageUrl("test2.jpg")
+                .name(member.getName())
+                .title("test2").
+                productImageUrl("test2.jpg")
                 .isVoted(false)
-                .isPostsEnd(false)
-                .rankCount(10)
-                .permitCount(30)
-                .rejectCount(10)
+                .permitRatio(75L)
+                .rejectRatio(25L)
+                .createdDate(LocalDateTime.of(2021, 8, 4, 15, 0, 0))
                 .voteDeadline(LocalDateTime.of(2021, 8, 5, 15, 0, 0))
-                .postsDeadline(LocalDateTime.of(2021, 8, 12, 15, 0, 0))
                 .build();
-        posts2.setCreatedDate(LocalDateTime.of(2021, 8, 4, 15, 0, 0));
+        listDtos.add(dto2);
+        listDtos.add(dto1);
+        AllPostResponseDto responseDto = AllPostResponseDto.builder().listDtos(listDtos).build();
 
-        List<Posts> orderByCreatedDateList = new ArrayList<>();
-        orderByCreatedDateList.add(posts2);
-        orderByCreatedDateList.add(posts1);
-
-        given(postsService.findAllPosts("created-date")).willReturn(orderByCreatedDateList);
+        given(postsService.findAllPostsWithSortType(SortType.CREATED_DATE.getValue())).willReturn(responseDto);
 
         //when
         ResultActions rankCountResult = mvc.perform(RestDocumentationRequestBuilders.get("/api/v1/posts?sorted=rank-count"));
@@ -355,36 +348,36 @@ class PostsControllerTest {
                                 parameterWithName("sorted").description("정렬 방법")
                         ),
                         responseFields(
-                                fieldWithPath("posts.[].id").description("게시글 id"),
-                                fieldWithPath("posts.[].name").description("작성자 이름"),
-                                fieldWithPath("posts.[].title").description("글 제목"),
-                                fieldWithPath("posts.[].productImageUrl").description("상품 이미지"),
-                                fieldWithPath("posts.[].isVoted").description("투표 종료 여부"),
-                                fieldWithPath("posts.[].permitRatio").description("찬성 투표 비율"),
-                                fieldWithPath("posts.[].rejectRatio").description("반대 투표 비율"),
-                                fieldWithPath("posts.[].createdDate").description("작성된 시간"),
-                                fieldWithPath("posts.[].voteDeadline").description("투표 종료 시간")
+                                fieldWithPath("listDtos.[].id").description("게시글 id"),
+                                fieldWithPath("listDtos.[].name").description("작성자 이름"),
+                                fieldWithPath("listDtos.[].title").description("글 제목"),
+                                fieldWithPath("listDtos.[].productImageUrl").description("상품 이미지"),
+                                fieldWithPath("listDtos.[].isVoted").description("투표 종료 여부"),
+                                fieldWithPath("listDtos.[].permitRatio").description("찬성 투표 비율"),
+                                fieldWithPath("listDtos.[].rejectRatio").description("반대 투표 비율"),
+                                fieldWithPath("listDtos.[].createdDate").description("작성된 시간"),
+                                fieldWithPath("listDtos.[].voteDeadline").description("투표 종료 시간")
                         )
                 ))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.posts[0].id").value(2L))
-                .andExpect(jsonPath("$.posts[0].name").value("name"))
-                .andExpect(jsonPath("$.posts[0].title").value("test2"))
-                .andExpect(jsonPath("$.posts[0].productImageUrl").value("test2.jpg"))
-                .andExpect(jsonPath("$.posts[0].isVoted").value(false))
-                .andExpect(jsonPath("$.posts[0].permitRatio").value(75L))
-                .andExpect(jsonPath("$.posts[0].rejectRatio").value(25L))
-                .andExpect(jsonPath("$.posts[0].createdDate").value("2021-08-04T15:00:00"))
-                .andExpect(jsonPath("$.posts[0].voteDeadline").value("2021-08-05T15:00:00"))
-                .andExpect(jsonPath("$.posts[1].id").value(1L))
-                .andExpect(jsonPath("$.posts[1].name").value("name"))
-                .andExpect(jsonPath("$.posts[1].title").value("test1"))
-                .andExpect(jsonPath("$.posts[1].productImageUrl").value("test1.jpg"))
-                .andExpect(jsonPath("$.posts[1].isVoted").value(false))
-                .andExpect(jsonPath("$.posts[1].permitRatio").value(29L))
-                .andExpect(jsonPath("$.posts[1].rejectRatio").value(71L))
-                .andExpect(jsonPath("$.posts[1].createdDate").value("2021-08-04T12:00:00"))
-                .andExpect(jsonPath("$.posts[1].voteDeadline").value("2021-08-05T12:00:00"));
+                .andExpect(jsonPath("$.listDtos[0].id").value(2L))
+                .andExpect(jsonPath("$.listDtos[0].name").value("name"))
+                .andExpect(jsonPath("$.listDtos[0].title").value("test2"))
+                .andExpect(jsonPath("$.listDtos[0].productImageUrl").value("test2.jpg"))
+                .andExpect(jsonPath("$.listDtos[0].isVoted").value(false))
+                .andExpect(jsonPath("$.listDtos[0].permitRatio").value(75L))
+                .andExpect(jsonPath("$.listDtos[0].rejectRatio").value(25L))
+                .andExpect(jsonPath("$.listDtos[0].createdDate").value("2021-08-04T15:00:00"))
+                .andExpect(jsonPath("$.listDtos[0].voteDeadline").value("2021-08-05T15:00:00"))
+                .andExpect(jsonPath("$.listDtos[1].id").value(1L))
+                .andExpect(jsonPath("$.listDtos[1].name").value("name"))
+                .andExpect(jsonPath("$.listDtos[1].title").value("test1"))
+                .andExpect(jsonPath("$.listDtos[1].productImageUrl").value("test1.jpg"))
+                .andExpect(jsonPath("$.listDtos[1].isVoted").value(false))
+                .andExpect(jsonPath("$.listDtos[1].permitRatio").value(29L))
+                .andExpect(jsonPath("$.listDtos[1].rejectRatio").value(71L))
+                .andExpect(jsonPath("$.listDtos[1].createdDate").value("2021-08-04T12:00:00"))
+                .andExpect(jsonPath("$.listDtos[1].voteDeadline").value("2021-08-05T12:00:00"));
 
         alreadyDoneResult
                 .andDo(document("posts/findAll/alreadyDone",

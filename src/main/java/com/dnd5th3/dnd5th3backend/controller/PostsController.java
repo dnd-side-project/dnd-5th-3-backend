@@ -3,14 +3,15 @@ package com.dnd5th3.dnd5th3backend.controller;
 import com.dnd5th3.dnd5th3backend.controller.dto.post.*;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
-import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
 import com.dnd5th3.dnd5th3backend.domain.vote.Vote;
 import com.dnd5th3.dnd5th3backend.domain.vote.VoteType;
+import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
 import com.dnd5th3.dnd5th3backend.service.PostsService;
 import com.dnd5th3.dnd5th3backend.service.VoteService;
 import com.dnd5th3.dnd5th3backend.utils.S3Uploader;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,7 +22,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @RestController
@@ -83,25 +83,9 @@ public class PostsController {
     }
 
     @GetMapping("/api/v1/posts")
-    public AllResponseDto findPostsList(@RequestParam String sorted) {
-        List<Posts> postsList = postsService.findAllPosts(sorted);
-        List<PostsListDto> dtoList = postsList.stream().map(p -> {
-            VoteRatioVo ratioVo = new VoteRatioVo(p);
-            String productImageUrl = p.getProductImageUrl() == null ? "" : p.getProductImageUrl();
-            return PostsListDto.builder()
-                    .id(p.getId())
-                    .name(p.getMember().getName())
-                    .title(p.getTitle())
-                    .productImageUrl(productImageUrl)
-                    .isVoted(p.getIsVoted())
-                    .permitRatio(ratioVo.getPermitRatio())
-                    .rejectRatio(ratioVo.getRejectRatio())
-                    .createdDate(p.getCreatedDate())
-                    .voteDeadline(p.getVoteDeadline())
-                    .build();
-        }).collect(Collectors.toList());
-
-        return new AllResponseDto(dtoList);
+    public ResponseEntity<AllPostResponseDto> findAllPosts(@RequestParam(name = "sorted") String sortType) {
+        AllPostResponseDto responseDto = postsService.findAllPostsWithSortType(sortType);
+        return ResponseEntity.ok(responseDto);
     }
 
     @PostMapping("/api/v1/posts/{id}/vote")

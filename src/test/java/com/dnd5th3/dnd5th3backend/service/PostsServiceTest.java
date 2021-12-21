@@ -1,5 +1,7 @@
 package com.dnd5th3.dnd5th3backend.service;
 
+import com.dnd5th3.dnd5th3backend.controller.dto.post.AllPostResponseDto;
+import com.dnd5th3.dnd5th3backend.controller.dto.post.SortType;
 import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.member.Role;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
@@ -133,99 +135,18 @@ class PostsServiceTest {
         verify(postsRepository, times(1)).delete(eq(post));
     }
 
-    @DisplayName("post 리스트 조회 테스트")
+    @DisplayName("정렬된 전체 게시물 조회 테스트")
     @Test
-    void findPostsListTest() throws Exception {
+    void findAllPostsWithSortType() throws Exception {
         //given
-        Posts posts1 = Posts.builder()
-                .id(1L)
-                .member(member)
-                .title("test1")
-                .content("test content1")
-                .productImageUrl("test1.jpg")
-                .isVoted(false)
-                .isPostsEnd(false)
-                .permitCount(0)
-                .rejectCount(0)
-                .rankCount(15)
-                .voteDeadline(LocalDateTime.now().plusDays(1L))
-                .postsDeadline(LocalDateTime.now().plusDays(7L))
-                .build();
-        Posts posts2 = Posts.builder()
-                .id(2L)
-                .member(member)
-                .title("test2")
-                .content("test content2")
-                .productImageUrl("test2.jpg")
-                .isVoted(false)
-                .isPostsEnd(false)
-                .permitCount(0)
-                .rejectCount(0)
-                .rankCount(10)
-                .voteDeadline(LocalDateTime.now().plusDays(1L))
-                .postsDeadline(LocalDateTime.now().plusDays(7L))
-                .build();
-
-        List<Posts> rankCountList = new ArrayList<>();
-        rankCountList.add(posts1);
-        rankCountList.add(posts2);
-
-        List<Posts> createdDateList = new ArrayList<>();
-        createdDateList.add(posts2);
-        createdDateList.add(posts1);
-
-        Posts posts3 = Posts.builder()
-                .id(3L)
-                .member(member)
-                .title("test3")
-                .content("test content3")
-                .productImageUrl("test3.jpg")
-                .isVoted(true)
-                .isPostsEnd(false)
-                .permitCount(0)
-                .rejectCount(0)
-                .rankCount(20)
-                .voteDeadline(LocalDateTime.now().plusDays(1L))
-                .postsDeadline(LocalDateTime.now().plusDays(7L))
-                .build();
-        Posts posts4 = Posts.builder()
-                .id(4L)
-                .member(member)
-                .title("test4")
-                .content("test content4")
-                .productImageUrl("test4.jpg")
-                .isVoted(true)
-                .isPostsEnd(false)
-                .permitCount(0)
-                .rejectCount(0)
-                .rankCount(25)
-                .voteDeadline(LocalDateTime.now().plusDays(1L))
-                .postsDeadline(LocalDateTime.now().plusDays(7L))
-                .build();
-
-        List<Posts> alreadyDoneList = new ArrayList<>();
-        alreadyDoneList.add(posts3);
-        alreadyDoneList.add(posts4);
-
-        List<Posts> almostDoneList = new ArrayList<>();
-        almostDoneList.add(posts1);
-        alreadyDoneList.add(posts2);
-
-        when(postsRepository.findPostsOrderByRankCount()).thenReturn(rankCountList);
-        when(postsRepository.findPostsOrderByCreatedDate()).thenReturn(createdDateList);
-        when(postsRepository.findPostsOrderByAlreadyDone()).thenReturn(alreadyDoneList);
-        when(postsRepository.findPostsOrderByAlmostDone()).thenReturn(almostDoneList);
+        List<Posts> postsList = new ArrayList<>();
+        postsList.add(post);
+        given(postsRepository.findPostsWithSortType(SortType.RANK_COUNT.getValue())).willReturn(postsList);
 
         //when
-        List<Posts> orderByRankCountList = postsService.findAllPosts("rank-count");
-        List<Posts> orderByCreatedDateList = postsService.findAllPosts("created-date");
-        List<Posts> orderByAlreadyDoneList = postsService.findAllPosts("already-done");
-        List<Posts> orderByAlmostDoneList = postsService.findAllPosts("almost-done");
+        AllPostResponseDto responseDto = postsService.findAllPostsWithSortType(SortType.RANK_COUNT.getValue());
 
         //then
-        assertEquals(orderByRankCountList.get(0).getId(), posts1.getId());
-        assertEquals(orderByCreatedDateList.get(0).getId(), posts2.getId());
-        assertEquals(orderByAlreadyDoneList.get(0).getId(), posts3.getId());
-        assertEquals(orderByAlmostDoneList.get(0).getId(), posts1.getId());
+        assertEquals(responseDto.getListDtos().get(0).getId(), post.getId());
     }
 }
