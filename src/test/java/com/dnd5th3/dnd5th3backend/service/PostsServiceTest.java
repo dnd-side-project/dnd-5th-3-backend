@@ -73,7 +73,7 @@ class PostsServiceTest {
     @Test
     void findPostByIdTest() throws Exception{
         //given
-        when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
+        when(postsRepository.findPostsById(1L)).thenReturn(post);
 
         //when
         Posts foundPost = postsService.findPostById(1L);
@@ -92,8 +92,8 @@ class PostsServiceTest {
         //given
         Posts voteEnd = Posts.builder().rankCount(0).isVoted(false).voteDeadline(LocalDateTime.now().minusDays(1L)).build();
         Posts postEnd = Posts.builder().rankCount(0).isPostsEnd(false).postsDeadline(LocalDateTime.now().minusDays(1L)).build();
-        given(postsRepository.findById(2L)).willReturn(Optional.of(voteEnd));
-        given(postsRepository.findById(3L)).willReturn(Optional.of(postEnd));
+        given(postsRepository.findPostsById(2L)).willReturn(voteEnd);
+        given(postsRepository.findPostsById(3L)).willReturn(postEnd);
 
         //when
         Posts voteEndPost = postsService.findPostById(2L);
@@ -111,7 +111,7 @@ class PostsServiceTest {
         String title = "update";
         String content = "update content";
         String productImageUrl = "update.jpg";
-        when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
+        when(postsRepository.findPostsById(1L)).thenReturn(post);
 
         //when
         Posts updatedPost = postsService.updatePost(post.getId(), title, content, productImageUrl);
@@ -126,7 +126,7 @@ class PostsServiceTest {
     @Test
     void deletePostTest() throws Exception {
         //given
-        when(postsRepository.findById(1L)).thenReturn(Optional.of(post));
+        when(postsRepository.findPostsById(1L)).thenReturn(post);
 
         //when
         postsService.deletePost(post.getId(), member);
