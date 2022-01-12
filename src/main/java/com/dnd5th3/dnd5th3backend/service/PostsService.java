@@ -6,12 +6,10 @@ import com.dnd5th3.dnd5th3backend.domain.member.Member;
 import com.dnd5th3.dnd5th3backend.domain.posts.Posts;
 import com.dnd5th3.dnd5th3backend.domain.vote.vo.VoteRatioVo;
 import com.dnd5th3.dnd5th3backend.exception.NoAuthorizationException;
-import com.dnd5th3.dnd5th3backend.exception.PostNotFoundException;
 import com.dnd5th3.dnd5th3backend.repository.posts.PostsRepository;
 import com.dnd5th3.dnd5th3backend.utils.RandomNumber;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.Hibernate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -47,27 +45,22 @@ public class PostsService {
     }
 
     public Posts findPostById(Long id) {
-        Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
-        //프록시 객체 초기화
-        Hibernate.initialize(foundPost.getMember());
+        Posts foundPost = postsRepository.findPostsById(id);
         foundPost.updateVoteStatusAndPostStatus();
-        //조회수 증가
         foundPost.increaseRankCount();
 
         return foundPost;
     }
 
     public Posts updatePost(Long id, String title, String content, String productImageUrl) {
-        Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
-        //프록시 객체 초기화
-        Hibernate.initialize(foundPost.getMember());
+        Posts foundPost = postsRepository.findPostsById(id);
         foundPost.update(title, content, productImageUrl);
 
         return foundPost;
     }
 
     public void deletePost(Long id, Member member) {
-        Posts foundPost = postsRepository.findById(id).orElseThrow(() -> new PostNotFoundException("해당 Id의 게시글이 존재하지 않습니다."));
+        Posts foundPost = postsRepository.findPostsById(id);
         if (foundPost.getMember().getId() != member.getId()) {
             throw new NoAuthorizationException("삭제 권한 없음");
         }
@@ -85,10 +78,7 @@ public class PostsService {
         Map<String, Posts> resultMap = new HashMap<>();
         //상위 50개 컨텐츠 추출
         List<Posts> top50RankedList = postsRepository.findPostsTop50Ranked();
-        //프록시 객체 초기화, 투표 종료 여부 초기화
         top50RankedList.stream().forEach(p -> {
-            Hibernate.initialize(p.getMember());
-            Hibernate.initialize(p.getComments());
             p.updateVoteStatusAndPostStatus();
         });
         //추출한 50개 중 반응(댓글)이 있는 것들만 필터링
